@@ -48,6 +48,12 @@ class PlayerAssessment(BaseModel):
     dribbling_time: float  # seconds
     passing_accuracy: float  # percentage
     shooting_accuracy: float  # percentage
+    # Body composition and fitness metrics
+    bmi: Optional[float] = None  # Body Mass Index
+    body_fat: Optional[float] = None  # Body fat percentage
+    muscle_mass: Optional[float] = None  # Muscle mass percentage
+    resting_heart_rate: Optional[int] = None  # BPM
+    vo2_max: Optional[float] = None  # ml/kg/min
     # Gamification
     total_coins: int = Field(default=0)
     level: int = Field(default=1)
