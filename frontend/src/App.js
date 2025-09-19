@@ -88,7 +88,7 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <Label htmlFor="player_name" className="text-orange-800 font-bold flex items-center">
-                <Fire className="ml-2 w-4 h-4" />
+                <Flame className="ml-2 w-4 h-4" />
                 اسم المحارب الناري
               </Label>
               <Input
