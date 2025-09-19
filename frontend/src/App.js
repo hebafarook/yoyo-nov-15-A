@@ -1301,7 +1301,7 @@ const Dashboard = () => {
                     }`}
                   >
                     <span className="font-bold text-lg flex items-center">
-                      <Fire className="w-4 h-4 ml-2" />
+                      <Flame className="w-4 h-4 ml-2" />
                       {assessment.player_name}
                     </span>
                     <span className="text-sm opacity-75 flex items-center">
