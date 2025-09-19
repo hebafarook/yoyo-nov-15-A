@@ -12,7 +12,7 @@ import { Badge } from "./components/ui/badge";
 import { Progress } from "./components/ui/progress";
 import { useSpeechSynthesis, useSpeechRecognition } from "react-speech-kit";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
-import { Activity, Target, TrendingUp, Mic, MicOff, Volume2, VolumeX, Square } from "lucide-react";
+import { Activity, Target, TrendingUp, Mic, MicOff, Volume2, VolumeX, Square, Trophy, Users, Music, Bell, Coins, Gift, Fire, Zap, Crown, Star } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -73,29 +73,40 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
   };
 
   return (
-    <Card className="max-w-4xl mx-auto bg-gradient-to-br from-emerald-50 to-blue-50 border-emerald-200">
+    <Card className="max-w-4xl mx-auto bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 border-orange-300 fire-glow">
       <CardHeader className="text-center">
-        <CardTitle className="text-3xl font-bold text-emerald-800">تقييم اللاعب</CardTitle>
-        <CardDescription className="text-emerald-600">إكمال تقييم الأداء التفصيلي</CardDescription>
+        <CardTitle className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-yellow-600 bg-clip-text text-transparent">
+          🔥 تقييم يويو الفتى الناري 🔥
+        </CardTitle>
+        <CardDescription className="text-orange-700 text-lg font-semibold">
+          ✨ اكتشف قوتك الحقيقية وأشعل النار في الملعب! ✨
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <Label htmlFor="player_name" className="text-emerald-700 font-semibold">اسم اللاعب</Label>
+              <Label htmlFor="player_name" className="text-orange-800 font-bold flex items-center">
+                <Fire className="ml-2 w-4 h-4" />
+                اسم المحارب الناري
+              </Label>
               <Input
                 id="player_name"
                 name="player_name"
                 value={formData.player_name}
                 onChange={handleChange}
                 required
-                className="border-emerald-300 focus:border-emerald-500"
+                className="border-orange-400 focus:border-red-500 bg-gradient-to-r from-orange-100 to-yellow-100"
                 dir="rtl"
+                placeholder="أدخل اسمك يا بطل!"
               />
             </div>
             <div>
-              <Label htmlFor="age" className="text-emerald-700 font-semibold">العمر</Label>
+              <Label htmlFor="age" className="text-orange-800 font-bold flex items-center">
+                <Star className="ml-2 w-4 h-4" />
+                عمر النجم
+              </Label>
               <Input
                 id="age"
                 name="age"
@@ -103,35 +114,39 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                 value={formData.age}
                 onChange={handleChange}
                 required
-                className="border-emerald-300 focus:border-emerald-500"
+                className="border-orange-400 focus:border-red-500 bg-gradient-to-r from-orange-100 to-yellow-100"
+                placeholder="كم عمرك؟"
               />
             </div>
             <div>
-              <Label htmlFor="position" className="text-emerald-700 font-semibold">المركز</Label>
+              <Label htmlFor="position" className="text-orange-800 font-bold flex items-center">
+                <Target className="ml-2 w-4 h-4" />
+                مركز القوة
+              </Label>
               <Select onValueChange={(value) => setFormData({...formData, position: value})}>
-                <SelectTrigger className="border-emerald-300 focus:border-emerald-500">
-                  <SelectValue placeholder="اختر المركز" />
+                <SelectTrigger className="border-orange-400 focus:border-red-500 bg-gradient-to-r from-orange-100 to-yellow-100">
+                  <SelectValue placeholder="اختر مركزك في المعركة" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="goalkeeper">حارس مرمى</SelectItem>
-                  <SelectItem value="defender">مدافع</SelectItem>
-                  <SelectItem value="midfielder">لاعب وسط</SelectItem>
-                  <SelectItem value="forward">مهاجم</SelectItem>
-                  <SelectItem value="striker">مهاجم صريح</SelectItem>
+                  <SelectItem value="goalkeeper">🥅 حارس الحصن</SelectItem>
+                  <SelectItem value="defender">🛡️ محارب الدفاع</SelectItem>
+                  <SelectItem value="midfielder">⚡ سيد الوسط</SelectItem>
+                  <SelectItem value="forward">🗡️ مهاجم ناري</SelectItem>
+                  <SelectItem value="striker">🔥 مدمر الشباك</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           {/* Speed Metrics */}
-          <div className="bg-white rounded-lg p-6 border border-emerald-200">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4 flex items-center">
-              <Activity className="ml-2" />
-              مقاييس السرعة
+          <div className="bg-gradient-to-r from-red-100 to-orange-100 rounded-lg p-6 border-2 border-red-300 fire-glow">
+            <h3 className="text-xl font-bold text-red-800 mb-4 flex items-center">
+              <Zap className="ml-2 text-yellow-500" />
+              قوة السرعة الخارقة ⚡
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="sprint_40m" className="text-emerald-700">عدو 40 متر (ثانية)</Label>
+                <Label htmlFor="sprint_40m" className="text-red-700 font-semibold">🏃‍♂️ عدو 40 متر (ثانية)</Label>
                 <Input
                   id="sprint_40m"
                   name="sprint_40m"
@@ -140,11 +155,12 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.sprint_40m}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-red-400 focus:border-red-600 bg-gradient-to-r from-red-50 to-orange-50"
+                  placeholder="سرعة البرق!"
                 />
               </div>
               <div>
-                <Label htmlFor="sprint_100m" className="text-emerald-700">عدو 100 متر (ثانية)</Label>
+                <Label htmlFor="sprint_100m" className="text-red-700 font-semibold">🚀 عدو 100 متر (ثانية)</Label>
                 <Input
                   id="sprint_100m"
                   name="sprint_100m"
@@ -153,21 +169,22 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.sprint_100m}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-red-400 focus:border-red-600 bg-gradient-to-r from-red-50 to-orange-50"
+                  placeholder="أسرع من الريح!"
                 />
               </div>
             </div>
           </div>
 
           {/* Agility Metrics */}
-          <div className="bg-white rounded-lg p-6 border border-emerald-200">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4 flex items-center">
-              <Target className="ml-2" />
-              مقاييس الرشاقة
+          <div className="bg-gradient-to-r from-yellow-100 to-orange-100 rounded-lg p-6 border-2 border-yellow-400 fire-glow">
+            <h3 className="text-xl font-bold text-yellow-800 mb-4 flex items-center">
+              <Target className="ml-2 text-orange-500" />
+              مهارات الرشاقة الذهبية 🎯
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="cone_drill" className="text-emerald-700">تدريب المخاريط (ثانية)</Label>
+                <Label htmlFor="cone_drill" className="text-yellow-700 font-semibold">🔶 تدريب المخاريط (ثانية)</Label>
                 <Input
                   id="cone_drill"
                   name="cone_drill"
@@ -176,11 +193,11 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.cone_drill}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-yellow-400 focus:border-orange-500 bg-gradient-to-r from-yellow-50 to-orange-50"
                 />
               </div>
               <div>
-                <Label htmlFor="ladder_drill" className="text-emerald-700">تدريب السلم (ثانية)</Label>
+                <Label htmlFor="ladder_drill" className="text-yellow-700 font-semibold">🪜 تدريب السلم (ثانية)</Label>
                 <Input
                   id="ladder_drill"
                   name="ladder_drill"
@@ -189,11 +206,11 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.ladder_drill}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-yellow-400 focus:border-orange-500 bg-gradient-to-r from-yellow-50 to-orange-50"
                 />
               </div>
               <div>
-                <Label htmlFor="shuttle_run" className="text-emerald-700">الجري المكوكي (ثانية)</Label>
+                <Label htmlFor="shuttle_run" className="text-yellow-700 font-semibold">🔄 الجري المكوكي (ثانية)</Label>
                 <Input
                   id="shuttle_run"
                   name="shuttle_run"
@@ -202,18 +219,20 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.shuttle_run}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-yellow-400 focus:border-orange-500 bg-gradient-to-r from-yellow-50 to-orange-50"
                 />
               </div>
             </div>
           </div>
 
           {/* Flexibility Metrics */}
-          <div className="bg-white rounded-lg p-6 border border-emerald-200">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4">مقاييس المرونة</h3>
+          <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-6 border-2 border-green-400 fire-glow">
+            <h3 className="text-xl font-bold text-green-800 mb-4 flex items-center">
+              🧘‍♂️ قوة المرونة السحرية
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="sit_reach" className="text-emerald-700">الجلوس والوصول (سم)</Label>
+                <Label htmlFor="sit_reach" className="text-green-700 font-semibold">🤸‍♂️ الجلوس والوصول (سم)</Label>
                 <Input
                   id="sit_reach"
                   name="sit_reach"
@@ -222,11 +241,11 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.sit_reach}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-green-400 focus:border-blue-500 bg-gradient-to-r from-green-50 to-blue-50"
                 />
               </div>
               <div>
-                <Label htmlFor="shoulder_flexibility" className="text-emerald-700">مرونة الكتف (درجة)</Label>
+                <Label htmlFor="shoulder_flexibility" className="text-green-700 font-semibold">💪 مرونة الكتف (درجة)</Label>
                 <Input
                   id="shoulder_flexibility"
                   name="shoulder_flexibility"
@@ -234,11 +253,11 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.shoulder_flexibility}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-green-400 focus:border-blue-500 bg-gradient-to-r from-green-50 to-blue-50"
                 />
               </div>
               <div>
-                <Label htmlFor="hip_flexibility" className="text-emerald-700">مرونة الورك (درجة)</Label>
+                <Label htmlFor="hip_flexibility" className="text-green-700 font-semibold">🦵 مرونة الورك (درجة)</Label>
                 <Input
                   id="hip_flexibility"  
                   name="hip_flexibility"
@@ -246,18 +265,20 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.hip_flexibility}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-green-400 focus:border-blue-500 bg-gradient-to-r from-green-50 to-blue-50"
                 />
               </div>
             </div>
           </div>
 
           {/* Ball Handling Metrics */}
-          <div className="bg-white rounded-lg p-6 border border-emerald-200">
-            <h3 className="text-xl font-bold text-emerald-800 mb-4">مقاييس التحكم بالكرة</h3>
+          <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-6 border-2 border-purple-400 fire-glow">
+            <h3 className="text-xl font-bold text-purple-800 mb-4 flex items-center">
+              ⚽ سحر التحكم بالكرة ✨
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="juggling_count" className="text-emerald-700">عدد الشقلبات</Label>
+                <Label htmlFor="juggling_count" className="text-purple-700 font-semibold">🤹‍♂️ عدد الشقلبات السحرية</Label>
                 <Input
                   id="juggling_count"
                   name="juggling_count"
@@ -265,11 +286,11 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.juggling_count}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-purple-400 focus:border-pink-500 bg-gradient-to-r from-purple-50 to-pink-50"
                 />
               </div>
               <div>
-                <Label htmlFor="dribbling_time" className="text-emerald-700">وقت المراوغة (ثانية)</Label>
+                <Label htmlFor="dribbling_time" className="text-purple-700 font-semibold">🏃‍♂️ وقت المراوغة الساحرة (ثانية)</Label>
                 <Input
                   id="dribbling_time"
                   name="dribbling_time"
@@ -278,11 +299,11 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.dribbling_time}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-purple-400 focus:border-pink-500 bg-gradient-to-r from-purple-50 to-pink-50"
                 />
               </div>
               <div>
-                <Label htmlFor="passing_accuracy" className="text-emerald-700">دقة التمرير (%)</Label>
+                <Label htmlFor="passing_accuracy" className="text-purple-700 font-semibold">🎯 دقة التمرير (%)</Label>
                 <Input
                   id="passing_accuracy"
                   name="passing_accuracy"
@@ -291,11 +312,11 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.passing_accuracy}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-purple-400 focus:border-pink-500 bg-gradient-to-r from-purple-50 to-pink-50"
                 />
               </div>
               <div>
-                <Label htmlFor="shooting_accuracy" className="text-emerald-700">دقة التسديد (%)</Label>
+                <Label htmlFor="shooting_accuracy" className="text-purple-700 font-semibold">⚽ دقة التسديد القاتلة (%)</Label>
                 <Input
                   id="shooting_accuracy"
                   name="shooting_accuracy"
@@ -304,7 +325,7 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.shooting_accuracy}
                   onChange={handleChange}
                   required
-                  className="border-emerald-300 focus:border-emerald-500"
+                  className="border-purple-400 focus:border-pink-500 bg-gradient-to-r from-purple-50 to-pink-50"
                 />
               </div>
             </div>
@@ -313,9 +334,9 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
           <Button 
             type="submit" 
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
+            className="w-full bg-gradient-to-r from-orange-600 via-red-600 to-yellow-600 hover:from-orange-700 hover:via-red-700 hover:to-yellow-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 fire-glow text-xl"
           >
-            {isLoading ? "جاري إنشاء التقييم..." : "إنشاء التقييم"}
+            {isLoading ? "🔥 جاري إنشاء ملف يويو الناري..." : "🚀 أشعل النار وابدأ رحلة المجد! 🚀"}
           </Button>
         </form>
       </CardContent>
@@ -327,6 +348,8 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
 const TrainingProgram = ({ playerId, playerName }) => {
   const [programs, setPrograms] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [spotifyLink, setSpotifyLink] = useState("");
+  const [isGroup, setIsGroup] = useState(false);
   const { speak, cancel, speaking, voices } = useSpeechSynthesis();
 
   useEffect(() => {
@@ -347,9 +370,12 @@ const TrainingProgram = ({ playerId, playerName }) => {
     try {
       const response = await axios.post(`${API}/training-programs`, {
         player_id: playerId,
-        program_type: programType
+        program_type: programType,
+        is_group: isGroup,
+        spotify_playlist: spotifyLink || null
       });
       setPrograms([response.data, ...programs]);
+      setSpotifyLink("");
     } catch (error) {
       console.error("خطأ في إنشاء البرنامج:", error);
     }
@@ -360,7 +386,6 @@ const TrainingProgram = ({ playerId, playerName }) => {
     if (speaking) {
       cancel();
     } else {
-      // Get Arabic voice if available, otherwise use first available voice
       const arabicVoice = voices.find(voice => voice.lang.includes('ar')) || voices[0];
       speak({ 
         text: content, 
@@ -378,50 +403,84 @@ const TrainingProgram = ({ playerId, playerName }) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-emerald-800 mb-4">برامج التدريب للاعب {playerName}</h2>
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-yellow-600 bg-clip-text text-transparent mb-4">
+          🔥 برامج التدريب الناري ليويو {playerName} 🔥
+        </h2>
+        
+        {/* Options */}
+        <div className="bg-gradient-to-r from-orange-100 to-red-100 p-4 rounded-lg mb-4 border-2 border-orange-300">
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center justify-center space-x-4">
+              <Label className="flex items-center space-x-2 ml-4">
+                <input
+                  type="checkbox"
+                  checked={isGroup}
+                  onChange={(e) => setIsGroup(e.target.checked)}
+                  className="form-checkbox text-orange-600"
+                />
+                <Users className="w-4 h-4 text-orange-600 ml-2" />
+                <span className="text-orange-800 font-semibold">تدريب جماعي مع الأصدقاء</span>
+              </Label>
+            </div>
+            <div className="flex items-center justify-center space-x-2">
+              <Music className="w-5 h-5 text-green-600" />
+              <Input
+                placeholder="رابط Spotify للتحفيز (اختياري)"
+                value={spotifyLink}
+                onChange={(e) => setSpotifyLink(e.target.value)}
+                className="max-w-md border-green-400 focus:border-green-600"
+                dir="rtl"
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="flex justify-center space-x-4">
           <Button
             onClick={() => generateProgram("AI_Generated")}
             disabled={isGenerating}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 ml-4"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 fire-glow ml-4"
           >
-            {isGenerating ? "جاري الإنشاء..." : "برنامج ذكي مُنشأ بالذكاء الاصطناعي"}
+            {isGenerating ? "🔥 جاري الإنشاء..." : "🤖 برنامج يويو الذكي الناري"}
           </Button>
           <Button
             onClick={() => generateProgram("Ronaldo_Template")}
             disabled={isGenerating}
-            className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700"
+            className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 fire-glow"
           >
-            {isGenerating ? "جاري الإنشاء..." : "قالب رونالدو"}
+            {isGenerating ? "🔥 جاري الإنشاء..." : "👑 قالب رونالدو الأسطوري"}
           </Button>
         </div>
       </div>
 
       <div className="grid gap-6">
         {programs.map((program) => (
-          <Card key={program.id} className="bg-gradient-to-br from-white to-gray-50">
+          <Card key={program.id} className="bg-gradient-to-br from-white to-orange-50 border-2 border-orange-200 fire-glow">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <div>
-                  <CardTitle className="text-xl text-emerald-800">
-                    برنامج {program.program_type === "AI_Generated" ? "الذكاء الاصطناعي" : program.program_type === "Ronaldo_Template" ? "رونالدو" : "مخصص"}
+                  <CardTitle className="text-xl text-orange-800 flex items-center">
+                    <Fire className="ml-2 w-5 h-5" />
+                    برنامج {program.program_type === "AI_Generated" ? "الذكاء الاصطناعي الناري 🤖" : program.program_type === "Ronaldo_Template" ? "رونالدو الأسطوري 👑" : "مخصص 🔥"}
                   </CardTitle>
-                  <CardDescription>
-                    تم إنشاؤه: {new Date(program.created_at).toLocaleDateString('ar-SA')}
+                  <CardDescription className="flex items-center space-x-2">
+                    <span>تم إنشاؤه: {new Date(program.created_at).toLocaleDateString('ar-SA')}</span>
+                    {program.is_group && <Badge className="bg-blue-100 text-blue-800 mr-2">تدريب جماعي 👥</Badge>}
+                    {program.spotify_playlist && <Badge className="bg-green-100 text-green-800 mr-2">موسيقى تحفيزية 🎵</Badge>}
                   </CardDescription>
                 </div>
                 <div className="flex space-x-2">
                   <Badge 
                     variant={program.program_type === "AI_Generated" ? "default" : "secondary"}
-                    className="bg-emerald-100 text-emerald-800 ml-2"
+                    className="bg-orange-100 text-orange-800 ml-2"
                   >
-                    {program.program_type === "AI_Generated" ? "ذكاء اصطناعي" : program.program_type === "Ronaldo_Template" ? "رونالدو" : "مخصص"}
+                    {program.program_type === "AI_Generated" ? "ذكاء اصطناعي 🤖" : program.program_type === "Ronaldo_Template" ? "رونالدو 👑" : "مخصص 🔥"}
                   </Badge>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => speakProgram(program.program_content)}
-                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+                    className="border-orange-300 text-orange-700 hover:bg-orange-50"
                   >
                     {speaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                   </Button>
@@ -435,18 +494,28 @@ const TrainingProgram = ({ playerId, playerName }) => {
                       <Square className="w-4 h-4" />
                     </Button>
                   )}
+                  {program.spotify_playlist && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open(program.spotify_playlist, '_blank')}
+                      className="border-green-300 text-green-700 hover:bg-green-50"
+                    >
+                      <Music className="w-4 h-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="content" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="content">محتوى البرنامج</TabsTrigger>
-                  <TabsTrigger value="schedule">الجدول الأسبوعي</TabsTrigger>
-                  <TabsTrigger value="milestones">المعالم المرحلية</TabsTrigger>
+                  <TabsTrigger value="content">محتوى البرنامج الناري 🔥</TabsTrigger>
+                  <TabsTrigger value="schedule">الجدول الأسبوعي المحفز ⚡</TabsTrigger>
+                  <TabsTrigger value="milestones">معالم المجد 🏆</TabsTrigger>
                 </TabsList>
                 <TabsContent value="content" className="mt-4">
-                  <div className="bg-white p-4 rounded-lg border border-emerald-200 max-h-96 overflow-y-auto">
+                  <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-lg border border-orange-200 max-h-96 overflow-y-auto">
                     <pre className="whitespace-pre-wrap text-sm text-gray-700 text-right" dir="rtl">{program.program_content}</pre>
                   </div>
                 </TabsContent>
@@ -463,8 +532,11 @@ const TrainingProgram = ({ playerId, playerName }) => {
                         'Sunday': 'الأحد'
                       };
                       return (
-                        <div key={day} className="bg-white p-3 rounded-lg border border-emerald-200">
-                          <div className="font-semibold text-emerald-800 text-right">{arabicDays[day] || day}</div>
+                        <div key={day} className="bg-gradient-to-r from-yellow-50 to-orange-50 p-3 rounded-lg border border-yellow-200">
+                          <div className="font-semibold text-orange-800 text-right flex items-center">
+                            <Fire className="w-4 h-4 ml-2" />
+                            {arabicDays[day] || day}
+                          </div>
                           <div className="text-sm text-gray-600 text-right" dir="rtl">{activity}</div>
                         </div>
                       );
@@ -474,13 +546,22 @@ const TrainingProgram = ({ playerId, playerName }) => {
                 <TabsContent value="milestones" className="mt-4">
                   <div className="space-y-3">
                     {program.milestones?.map((milestone, index) => (
-                      <div key={index} className="bg-white p-4 rounded-lg border border-emerald-200 flex justify-between items-center">
+                      <div key={index} className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200 flex justify-between items-center">
                         <div className="text-right">
-                          <span className="font-semibold text-emerald-800">الأسبوع {milestone.week}:</span>
+                          <span className="font-semibold text-green-800 flex items-center">
+                            <Trophy className="w-4 h-4 ml-2" />
+                            الأسبوع {milestone.week}:
+                          </span>
                           <span className="mr-2 text-gray-700" dir="rtl">{milestone.target}</span>
+                          {milestone.coins && (
+                            <Badge className="bg-yellow-100 text-yellow-800 mr-2">
+                              <Coins className="w-3 h-3 ml-1" />
+                              {milestone.coins} عملة
+                            </Badge>
+                          )}
                         </div>
-                        <Badge variant="outline" className="border-emerald-300 text-emerald-700">
-                          هدف
+                        <Badge variant="outline" className="border-green-300 text-green-700">
+                          هدف ناري 🔥
                         </Badge>
                       </div>
                     ))}
@@ -495,17 +576,20 @@ const TrainingProgram = ({ playerId, playerName }) => {
   );
 };
 
-// Progress Tracker Component
+// Progress Tracker Component with Achievements
 const ProgressTracker = ({ playerId, playerName }) => {
   const [progressData, setProgressData] = useState([]);
+  const [trophies, setTrophies] = useState([]);
   const [newEntry, setNewEntry] = useState({
     metric_type: "",
     metric_name: "",
     value: ""
   });
+  const [lastResult, setLastResult] = useState(null);
 
   useEffect(() => {
     fetchProgress();
+    fetchTrophies();
   }, [playerId]);
 
   const fetchProgress = async () => {
@@ -517,15 +601,26 @@ const ProgressTracker = ({ playerId, playerName }) => {
     }
   };
 
+  const fetchTrophies = async () => {
+    try {
+      const response = await axios.get(`${API}/trophies/${playerId}`);
+      setTrophies(response.data);
+    } catch (error) {
+      console.error("خطأ في جلب الكؤوس:", error);
+    }
+  };
+
   const addProgress = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API}/progress`, {
+      const response = await axios.post(`${API}/progress`, {
         player_id: playerId,
         ...newEntry
       });
       setNewEntry({ metric_type: "", metric_name: "", value: "" });
+      setLastResult(response.data);
       fetchProgress();
+      fetchTrophies();
     } catch (error) {
       console.error("خطأ في إضافة التقدم:", error);
     }
@@ -561,53 +656,117 @@ const ProgressTracker = ({ playerId, playerName }) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-emerald-800 mb-4">تتبع التقدم للاعب {playerName}</h2>
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-yellow-600 bg-clip-text text-transparent mb-4">
+          🏆 متتبع إنجازات يويو {playerName} 🏆
+        </h2>
       </div>
 
+      {/* Last Result Display */}
+      {lastResult && (
+        <Card className="bg-gradient-to-r from-green-100 to-blue-100 border-2 border-green-400 fire-glow">
+          <CardHeader>
+            <CardTitle className="text-green-800 flex items-center">
+              <Gift className="ml-2 w-5 h-5" />
+              {lastResult.message}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-center space-x-4">
+              <Badge className="bg-yellow-100 text-yellow-800 text-lg p-2 ml-4">
+                <Coins className="w-4 h-4 ml-1" />
+                +{lastResult.coins_earned} عملة ذهبية
+              </Badge>
+              {lastResult.trophies_unlocked && lastResult.trophies_unlocked.length > 0 && (
+                <div className="flex space-x-2">
+                  {lastResult.trophies_unlocked.map((trophy, index) => (
+                    <Badge key={index} className="bg-purple-100 text-purple-800 text-lg p-2 mr-2">
+                      <Trophy className="w-4 h-4 ml-1" />
+                      {trophy.icon} {trophy.trophy_name}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Trophies Display */}
+      {trophies.length > 0 && (
+        <Card className="bg-gradient-to-r from-yellow-100 to-orange-100 border-2 border-yellow-400">
+          <CardHeader>
+            <CardTitle className="text-yellow-800 flex items-center">
+              <Crown className="ml-2 w-5 h-5" />
+              🏆 كؤوس يويو الناري 🏆
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {trophies.map((trophy) => (
+                <div key={trophy.id} className="bg-gradient-to-r from-gold-100 to-yellow-100 p-4 rounded-lg border border-yellow-300 text-center">
+                  <div className="text-4xl mb-2">{trophy.icon}</div>
+                  <div className="font-bold text-yellow-800">{trophy.trophy_name}</div>
+                  <div className="text-sm text-yellow-600 mt-1">{trophy.description}</div>
+                  <Badge className="bg-yellow-200 text-yellow-800 mt-2">
+                    <Coins className="w-3 h-3 ml-1" />
+                    +{trophy.coins_reward}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Add Progress Entry */}
-      <Card className="bg-gradient-to-br from-emerald-50 to-blue-50">
+      <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-300">
         <CardHeader>
-          <CardTitle className="text-emerald-800">إضافة إدخال التقدم</CardTitle>
+          <CardTitle className="text-orange-800 flex items-center">
+            <Fire className="ml-2 w-5 h-5" />
+            🚀 أضف إنجازك الجديد يا يويو! 🚀
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={addProgress} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div>
-              <Label className="text-emerald-700">نوع المقياس</Label>
+              <Label className="text-orange-700 font-semibold">نوع المقياس</Label>
               <Select onValueChange={(value) => setNewEntry({...newEntry, metric_type: value})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="اختر النوع" />
+                <SelectTrigger className="border-orange-400 focus:border-red-500">
+                  <SelectValue placeholder="اختر نوع التحدي" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="speed">السرعة</SelectItem>
-                  <SelectItem value="agility">الرشاقة</SelectItem>
-                  <SelectItem value="flexibility">المرونة</SelectItem>
-                  <SelectItem value="ball_handling">التحكم بالكرة</SelectItem>
+                  <SelectItem value="speed">⚡ السرعة الخارقة</SelectItem>
+                  <SelectItem value="agility">🎯 الرشاقة الذهبية</SelectItem>
+                  <SelectItem value="flexibility">🧘‍♂️ المرونة السحرية</SelectItem>
+                  <SelectItem value="ball_handling">⚽ سحر التحكم بالكرة</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label className="text-emerald-700">اسم المقياس</Label>
+              <Label className="text-orange-700 font-semibold">اسم المقياس</Label>
               <Input
-                placeholder="مثال: عدو 40 متر"
+                placeholder="مثال: عدو 40 متر الناري"
                 value={newEntry.metric_name}
                 onChange={(e) => setNewEntry({...newEntry, metric_name: e.target.value})}
                 required
                 dir="rtl"
+                className="border-orange-400 focus:border-red-500"
               />
             </div>
             <div>
-              <Label className="text-emerald-700">القيمة</Label>
+              <Label className="text-orange-700 font-semibold">القيمة المذهلة</Label>
               <Input
                 type="number"
                 step="0.01"
-                placeholder="القيمة"
+                placeholder="إنجازك"
                 value={newEntry.value}
                 onChange={(e) => setNewEntry({...newEntry, value: e.target.value})}
                 required
+                className="border-orange-400 focus:border-red-500"
               />
             </div>
-            <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700">
-              إضافة الإدخال
+            <Button type="submit" className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 fire-glow">
+              🔥 سجل الإنجاز
             </Button>
           </form>
         </CardContent>
@@ -615,11 +774,11 @@ const ProgressTracker = ({ playerId, playerName }) => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card className="border-2 border-blue-300">
           <CardHeader>
-            <CardTitle className="text-emerald-800 flex items-center">
+            <CardTitle className="text-blue-800 flex items-center">
               <TrendingUp className="ml-2" />
-              التقدم عبر الوقت
+              🚀 رحلة التقدم عبر الزمن
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -636,7 +795,7 @@ const ProgressTracker = ({ playerId, playerName }) => {
                     type="monotone"
                     dataKey={metric}
                     stroke={`hsl(${index * 60}, 70%, 50%)`}
-                    strokeWidth={2}
+                    strokeWidth={3}
                   />
                 ))}
               </LineChart>
@@ -644,9 +803,9 @@ const ProgressTracker = ({ playerId, playerName }) => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-2 border-purple-300">
           <CardHeader>
-            <CardTitle className="text-emerald-800">ملف الأداء الحالي</CardTitle>
+            <CardTitle className="text-purple-800">🌟 ملف القوة الحالي</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -655,11 +814,12 @@ const ProgressTracker = ({ playerId, playerName }) => {
                 <PolarAngleAxis dataKey="metric" />
                 <PolarRadiusAxis />
                 <Radar
-                  name="الأداء"
+                  name="قوة يويو"
                   dataKey="value"
-                  stroke="#10b981"
-                  fill="#10b981"
+                  stroke="#f97316"
+                  fill="#f97316"
                   fillOpacity={0.3}
+                  strokeWidth={3}
                 />
               </RadarChart>
             </ResponsiveContainer>
@@ -670,15 +830,17 @@ const ProgressTracker = ({ playerId, playerName }) => {
   );
 };
 
-// Voice Notes Component
+// Enhanced Voice Notes Component
 const VoiceNotes = ({ playerId, playerName }) => {
   const [notes, setNotes] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [isListening, setIsListening] = useState(false);
   const { transcript, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition();
   const { speak, cancel, speaking, voices } = useSpeechSynthesis();
 
   useEffect(() => {
     fetchNotes();
+    fetchNotifications();
   }, [playerId]);
 
   const fetchNotes = async () => {
@@ -687,6 +849,15 @@ const VoiceNotes = ({ playerId, playerName }) => {
       setNotes(response.data);
     } catch (error) {
       console.error("خطأ في جلب الملاحظات:", error);
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get(`${API}/notifications/${playerId}`);
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("خطأ في جلب الإشعارات:", error);
     }
   };
 
@@ -705,11 +876,35 @@ const VoiceNotes = ({ playerId, playerName }) => {
     }
   };
 
+  const createMotivationNotification = async () => {
+    try {
+      const motivationalMessages = [
+        "🔥 يويو! حان وقت إشعال النار في التدريب!",
+        "⚡ استيقظ يا محارب! الملعب ينتظر قوتك!",
+        "🚀 اليوم هو يومك لتحطيم كل الأرقام القياسية!",
+        "👑 أنت الأسطورة! اذهب وأظهر للعالم قوتك الحقيقية!"
+      ];
+      
+      const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+      
+      await axios.post(`${API}/notifications`, {
+        player_id: playerId,
+        title: "⏰ إشعار التحفيز الناري",
+        message: randomMessage,
+        notification_type: "motivation",
+        spotify_link: "https://open.spotify.com/playlist/37i9dQZF1DX76Wlfdnj7AP" // Example workout playlist
+      });
+      
+      fetchNotifications();
+    } catch (error) {
+      console.error("خطأ في إنشاء إشعار التحفيز:", error);
+    }
+  };
+
   const speakNote = (text) => {
     if (speaking) {
       cancel();
     } else {
-      // Get Arabic voice if available
       const arabicVoice = voices.find(voice => voice.lang.includes('ar')) || voices[0];
       speak({ 
         text: text, 
@@ -731,36 +926,82 @@ const VoiceNotes = ({ playerId, playerName }) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-emerald-800 mb-4">الملاحظات الصوتية للاعب {playerName}</h2>
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-yellow-600 bg-clip-text text-transparent mb-4">
+          🎤 مذكرات يويو الصوتية والإشعارات 🔔
+        </h2>
       </div>
 
+      {/* Notifications */}
+      {notifications.length > 0 && (
+        <Card className="bg-gradient-to-r from-blue-100 to-purple-100 border-2 border-blue-300">
+          <CardHeader>
+            <CardTitle className="text-blue-800 flex items-center">
+              <Bell className="ml-2 w-5 h-5" />
+              🔔 إشعارات التحفيز الناري
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3 max-h-40 overflow-y-auto">
+              {notifications.slice(0, 5).map((notification) => (
+                <div key={notification.id} className="bg-white p-3 rounded-lg border border-blue-200 flex justify-between items-center">
+                  <div className="text-right flex-1">
+                    <div className="font-semibold text-blue-800">{notification.title}</div>
+                    <div className="text-sm text-blue-600" dir="rtl">{notification.message}</div>
+                    {notification.spotify_link && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => window.open(notification.spotify_link, '_blank')}
+                        className="mt-2 border-green-300 text-green-700 hover:bg-green-50"
+                      >
+                        <Music className="w-3 h-3 ml-1" />
+                        استمع للتحفيز
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Voice Input */}
-      <Card className="bg-gradient-to-br from-emerald-50 to-blue-50">
+      <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-300">
         <CardHeader>
-          <CardTitle className="text-emerald-800">تسجيل ملاحظات التدريب</CardTitle>
+          <CardTitle className="text-orange-800 flex items-center">
+            <Fire className="ml-2 w-5 h-5" />
+            🎤 سجل مذكراتك الناري
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center space-x-4">
             <Button
               onClick={() => setIsListening(!isListening)}
-              className={`${isListening ? 'bg-red-600 hover:bg-red-700' : 'bg-emerald-600 hover:bg-emerald-700'} transition-colors ml-4`}
+              className={`${isListening ? 'bg-red-600 hover:bg-red-700' : 'bg-orange-600 hover:bg-orange-700'} transition-colors ml-4 fire-glow`}
             >
               {isListening ? <MicOff className="ml-2" /> : <Mic className="ml-2" />}
-              {isListening ? 'إيقاف التسجيل' : 'بدء التسجيل'}
+              {isListening ? '🔴 إيقاف التسجيل' : '🎤 بدء التسجيل الناري'}
             </Button>
             <Button
               onClick={saveNote}
               disabled={!transcript}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-blue-600 hover:bg-blue-700 fire-glow"
             >
-              حفظ الملاحظة
+              💾 حفظ المذكرة
             </Button>
             <Button
               onClick={resetTranscript}
               variant="outline"
               className="border-gray-300"
             >
-              مسح
+              🗑️ مسح
+            </Button>
+            <Button
+              onClick={createMotivationNotification}
+              className="bg-purple-600 hover:bg-purple-700 fire-glow"
+            >
+              🔔 إشعار تحفيزي
             </Button>
             {speaking && (
               <Button
@@ -769,13 +1010,13 @@ const VoiceNotes = ({ playerId, playerName }) => {
                 className="border-red-300 text-red-700 hover:bg-red-50"
               >
                 <Square className="w-4 h-4 ml-2" />
-                إيقاف
+                إيقاف الصوت
               </Button>
             )}
           </div>
           
           {transcript && (
-            <div className="bg-white p-4 rounded-lg border border-emerald-200">
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border border-orange-200">
               <p className="text-gray-700 text-right" dir="rtl">{transcript}</p>
             </div>
           )}
@@ -785,7 +1026,7 @@ const VoiceNotes = ({ playerId, playerName }) => {
       {/* Notes List */}
       <div className="space-y-4">
         {notes.map((note) => (
-          <Card key={note.id} className="bg-white">
+          <Card key={note.id} className="bg-gradient-to-r from-white to-orange-50 border border-orange-200">
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
@@ -798,10 +1039,184 @@ const VoiceNotes = ({ playerId, playerName }) => {
                   size="sm"
                   variant="outline"
                   onClick={() => speakNote(note.note_text)}
-                  className="mr-4"
+                  className="mr-4 border-orange-300 text-orange-700 hover:bg-orange-50"
                 >
                   {speaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Group Training Component
+const GroupTraining = ({ playerId, playerName }) => {
+  const [groups, setGroups] = useState([]);
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
+  const [newGroup, setNewGroup] = useState({
+    training_name: "",
+    description: "",
+    invited_members: "",
+    spotify_playlist: ""
+  });
+
+  useEffect(() => {
+    fetchGroups();
+  }, [playerId]);
+
+  const fetchGroups = async () => {
+    try {
+      const response = await axios.get(`${API}/group-training/${playerId}`);
+      setGroups(response.data);
+    } catch (error) {
+      console.error("خطأ في جلب المجموعات:", error);
+    }
+  };
+
+  const createGroup = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${API}/group-training`, {
+        creator_id: playerId,
+        training_name: newGroup.training_name,
+        description: newGroup.description,
+        invited_members: newGroup.invited_members.split(',').map(id => id.trim()),
+        spotify_playlist: newGroup.spotify_playlist || null
+      });
+      
+      setNewGroup({
+        training_name: "",
+        description: "",
+        invited_members: "",
+        spotify_playlist: ""
+      });
+      setShowCreateGroup(false);
+      fetchGroups();
+    } catch (error) {
+      console.error("خطأ في إنشاء المجموعة:", error);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-yellow-600 bg-clip-text text-transparent mb-4">
+          👥 تدريبات المجموعة الناري 👥
+        </h2>
+        <Button
+          onClick={() => setShowCreateGroup(!showCreateGroup)}
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 fire-glow"
+        >
+          <Users className="ml-2 w-4 h-4" />
+          إنشاء مجموعة تدريب جديدة
+        </Button>
+      </div>
+
+      {/* Create Group Form */}
+      {showCreateGroup && (
+        <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300">
+          <CardHeader>
+            <CardTitle className="text-blue-800">🔥 إنشاء مجموعة تدريب ناري</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={createGroup} className="space-y-4">
+              <div>
+                <Label className="text-blue-700 font-semibold">اسم المجموعة الناري</Label>
+                <Input
+                  value={newGroup.training_name}
+                  onChange={(e) => setNewGroup({...newGroup, training_name: e.target.value})}
+                  required
+                  placeholder="مثال: محاربو يويو النار"
+                  className="border-blue-400 focus:border-purple-500"
+                  dir="rtl"
+                />
+              </div>
+              <div>
+                <Label className="text-blue-700 font-semibold">وصف التحدي</Label>
+                <Input
+                  value={newGroup.description}
+                  onChange={(e) => setNewGroup({...newGroup, description: e.target.value})}
+                  required
+                  placeholder="وصف التدريب والأهداف"
+                  className="border-blue-400 focus:border-purple-500"
+                  dir="rtl"
+                />
+              </div>
+              <div>
+                <Label className="text-blue-700 font-semibold">معرفات الأصدقاء (مفصولة بفاصلة)</Label>
+                <Input
+                  value={newGroup.invited_members}
+                  onChange={(e) => setNewGroup({...newGroup, invited_members: e.target.value})}
+                  placeholder="ID1, ID2, ID3"
+                  className="border-blue-400 focus:border-purple-500"
+                />
+              </div>
+              <div>
+                <Label className="text-blue-700 font-semibold">رابط Spotify للتحفيز (اختياري)</Label>
+                <Input
+                  value={newGroup.spotify_playlist}
+                  onChange={(e) => setNewGroup({...newGroup, spotify_playlist: e.target.value})}
+                  placeholder="https://open.spotify.com/playlist/..."
+                  className="border-blue-400 focus:border-purple-500"
+                />
+              </div>
+              <div className="flex space-x-2">
+                <Button type="submit" className="bg-green-600 hover:bg-green-700 fire-glow mr-2">
+                  🚀 إنشاء المجموعة
+                </Button>
+                <Button type="button" onClick={() => setShowCreateGroup(false)} variant="outline">
+                  إلغاء
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Groups List */}
+      <div className="grid gap-6">
+        {groups.map((group) => (
+          <Card key={group.id} className="bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-300">
+            <CardHeader>
+              <CardTitle className="text-green-800 flex items-center">
+                <Users className="ml-2 w-5 h-5" />
+                {group.training_name}
+              </CardTitle>
+              <CardDescription>{group.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-4">
+                  <Badge className="bg-blue-100 text-blue-800 ml-4">
+                    👥 {group.members.length + 1} عضو
+                  </Badge>
+                  <Badge className="bg-purple-100 text-purple-800 ml-4">
+                    📅 {new Date(group.created_at).toLocaleDateString('ar-SA')}
+                  </Badge>
+                  {group.spotify_playlist && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open(group.spotify_playlist, '_blank')}
+                      className="border-green-300 text-green-700 hover:bg-green-50"
+                    >
+                      <Music className="w-4 h-4 ml-1" />
+                      استمع للموسيقى
+                    </Button>
+                  )}
+                </div>
+                {group.target_date && (
+                  <div className="text-sm text-gray-600">
+                    تاريخ الهدف: {new Date(group.target_date).toLocaleDateString('ar-SA')}
+                  </div>
+                )}
+                <Badge className="bg-yellow-100 text-yellow-800">
+                  <Coins className="w-3 h-3 ml-1" />
+                  مكافأة الإنجاز: {group.completion_reward} عملة
+                </Badge>
               </div>
             </CardContent>
           </Card>
@@ -837,19 +1252,40 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-100 via-blue-50 to-white" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-br from-orange-100 via-red-50 via-yellow-50 to-white fire-background" dir="rtl">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-emerald-800 mb-2">⚽ متتبع التدريب الاحترافي لكرة القدم</h1>
-          <p className="text-emerald-600 text-lg">مولد برامج التدريب الاحترافية لكرة القدم مع رؤى مدعومة بالذكاء الاصطناعي</p>
+          <h1 className="text-6xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-yellow-600 bg-clip-text text-transparent mb-4 fire-glow">
+            🔥 يويو الفتى الناري ⚽
+          </h1>
+          <p className="text-orange-700 text-xl font-bold">
+            ✨ مولد برامج التدريب الاحترافية مع رؤى مدعومة بالذكاء الاصطناعي ✨
+          </p>
+          <div className="flex justify-center items-center space-x-4 mt-4">
+            <Badge className="bg-yellow-100 text-yellow-800 text-lg p-2 ml-4">
+              <Fire className="w-4 h-4 ml-1" />
+              أشعل النار في قوتك
+            </Badge>
+            <Badge className="bg-blue-100 text-blue-800 text-lg p-2 ml-4">
+              <Users className="w-4 h-4 ml-1" />
+              تدرب مع الأصدقاء
+            </Badge>
+            <Badge className="bg-green-100 text-green-800 text-lg p-2">
+              <Trophy className="w-4 h-4 ml-1" />
+              اجمع الكؤوس والعملات
+            </Badge>
+          </div>
         </div>
 
         {/* Player Selection */}
         {assessments.length > 0 && (
-          <Card className="mb-8 bg-white border-emerald-200">
+          <Card className="mb-8 bg-gradient-to-r from-white to-orange-50 border-2 border-orange-300 fire-glow">
             <CardHeader>
-              <CardTitle className="text-emerald-800">اختيار اللاعب</CardTitle>
+              <CardTitle className="text-orange-800 flex items-center">
+                <Crown className="ml-2 w-5 h-5" />
+                اختيار المحارب الناري
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -858,14 +1294,25 @@ const Dashboard = () => {
                     key={assessment.id}
                     variant={selectedPlayer?.id === assessment.id ? "default" : "outline"}
                     onClick={() => setSelectedPlayer(assessment)}
-                    className={`p-4 h-auto flex flex-col items-end text-right ${
+                    className={`p-4 h-auto flex flex-col items-end text-right fire-glow ${
                       selectedPlayer?.id === assessment.id 
-                        ? 'bg-emerald-600 hover:bg-emerald-700' 
-                        : 'border-emerald-300 hover:bg-emerald-50'
+                        ? 'bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700' 
+                        : 'border-orange-300 hover:bg-orange-50'
                     }`}
                   >
-                    <span className="font-semibold">{assessment.player_name}</span>
-                    <span className="text-sm opacity-75">{assessment.position} • عمر {assessment.age}</span>
+                    <span className="font-bold text-lg flex items-center">
+                      <Fire className="w-4 h-4 ml-2" />
+                      {assessment.player_name}
+                    </span>
+                    <span className="text-sm opacity-75 flex items-center">
+                      <span>{assessment.position} • عمر {assessment.age}</span>
+                      {assessment.total_coins > 0 && (
+                        <Badge className="bg-yellow-100 text-yellow-800 mr-2">
+                          <Coins className="w-3 h-3 ml-1" />
+                          {assessment.total_coins}
+                        </Badge>
+                      )}
+                    </span>
                   </Button>
                 ))}
               </div>
@@ -875,11 +1322,22 @@ const Dashboard = () => {
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            <TabsTrigger value="assessment" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">التقييم</TabsTrigger>
-            <TabsTrigger value="training" disabled={!selectedPlayer} className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">برامج التدريب</TabsTrigger>
-            <TabsTrigger value="progress" disabled={!selectedPlayer} className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">تتبع التقدم</TabsTrigger>
-            <TabsTrigger value="voice" disabled={!selectedPlayer} className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">الملاحظات الصوتية</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 mb-8 bg-gradient-to-r from-orange-200 to-red-200">
+            <TabsTrigger value="assessment" className="data-[state=active]:bg-orange-600 data-[state=active]:text-white fire-glow">
+              🔥 التقييم
+            </TabsTrigger>
+            <TabsTrigger value="training" disabled={!selectedPlayer} className="data-[state=active]:bg-orange-600 data-[state=active]:text-white fire-glow">
+              🚀 برامج التدريب
+            </TabsTrigger>
+            <TabsTrigger value="progress" disabled={!selectedPlayer} className="data-[state=active]:bg-orange-600 data-[state=active]:text-white fire-glow">
+              🏆 تتبع التقدم
+            </TabsTrigger>
+            <TabsTrigger value="voice" disabled={!selectedPlayer} className="data-[state=active]:bg-orange-600 data-[state=active]:text-white fire-glow">
+              🎤 المذكرات والإشعارات
+            </TabsTrigger>
+            <TabsTrigger value="group" disabled={!selectedPlayer} className="data-[state=active]:bg-orange-600 data-[state=active]:text-white fire-glow">
+              👥 التدريب الجماعي
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="assessment">
@@ -907,6 +1365,15 @@ const Dashboard = () => {
           <TabsContent value="voice">
             {selectedPlayer && (
               <VoiceNotes 
+                playerId={selectedPlayer.id} 
+                playerName={selectedPlayer.player_name} 
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="group">
+            {selectedPlayer && (
+              <GroupTraining 
                 playerId={selectedPlayer.id} 
                 playerName={selectedPlayer.player_name} 
               />
