@@ -554,3 +554,77 @@ select:focus {
 .elegant-text-muted {
   color: var(--text-light);
 }
+
+/* VO2 Max Calculator Styles */
+.vo2-calculator-card {
+  background: var(--cream-secondary);
+  border: 1px solid var(--border-elegant);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(26, 54, 93, 0.08);
+  transition: all 0.3s ease;
+}
+
+.vo2-calculator-card:hover {
+  box-shadow: 0 4px 16px rgba(26, 54, 93, 0.12);
+  transform: translateY(-2px);
+}
+
+.vo2-calculator-card .card-header {
+  background: linear-gradient(135deg, var(--navy-primary), var(--navy-secondary));
+  color: var(--cream-primary);
+  border-radius: 12px 12px 0 0;
+  margin: -1px -1px 0 -1px;
+}
+
+.vo2-calculator-card .card-title {
+  color: var(--cream-primary);
+  font-weight: 600;
+}
+
+.vo2-calculator-card input,
+.vo2-calculator-card select {
+  background: var(--cream-primary);
+  border: 1px solid var(--border-elegant);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text-charcoal);
+  transition: all 0.3s ease;
+}
+
+.vo2-calculator-card input:focus,
+.vo2-calculator-card select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(214, 158, 46, 0.1);
+}
+
+.vo2-calculator-card .text-green-800 {
+  color: var(--navy-primary) !important;
+}
+
+.vo2-calculator-card .text-green-900 {
+  color: var(--navy-primary) !important;
+  font-weight: 700;
+}
+
+.vo2-calculator-card .text-green-700 {
+  color: var(--navy-secondary) !important;
+}
+
+.vo2-calculator-card .bg-green-50 {
+  background-color: rgba(214, 158, 46, 0.1) !important;
+  border-color: rgba(214, 158, 46, 0.3) !important;
+}
+
+.vo2-calculator-card .border-green-200 {
+  border-color: rgba(214, 158, 46, 0.3) !important;
+}
+
+.vo2-calculator-card .border-green-600 {
+  border-color: var(--accent-gold) !important;
+}
+
+.vo2-calculator-card .text-blue-600 {
+  color: var(--navy-primary) !important;
+}
