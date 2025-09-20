@@ -283,46 +283,6 @@ const LanguageProvider = ({ children }) => {
   );
 };
 
-// Get age category helper function based on handbook standards
-const getAgeCategory = (age) => {
-  if (age >= 12 && age <= 14) return 'youth_12_14';
-  if (age >= 15 && age <= 16) return 'youth_15_16';
-  if (age >= 17 && age <= 18) return 'youth_17_18';
-  return 'elite';
-};
-
-// Performance evaluation function based on handbook scoring
-const evaluatePerformance = (value, metric, ageCategory) => {
-  const standards = YOUTH_HANDBOOK_STANDARDS[ageCategory];
-  if (!standards || !standards[metric]) return null;
-  
-  const { excellent, good, average, poor } = standards[metric];
-  
-  // For time-based metrics (lower is better)
-  const timeBasedMetrics = ['sprint_30m'];
-  const isTimeBased = timeBasedMetrics.includes(metric);
-  
-  // For percentage/score metrics (higher is better)  
-  const higherIsBetter = ['yo_yo_test', 'vo2_max', 'vertical_jump', 'ball_control', 'passing_accuracy', 'dribbling_success', 'shooting_accuracy', 'defensive_duels'];
-  
-  // For body fat (lower is better)
-  const lowerIsBetter = ['body_fat'];
-  
-  if (isTimeBased || lowerIsBetter.includes(metric)) {
-    if (value <= excellent) return 'excellent';
-    if (value <= good) return 'good';
-    if (value <= average) return 'average';
-    return 'poor';
-  } else if (higherIsBetter.includes(metric)) {
-    if (value >= excellent) return 'excellent';
-    if (value >= good) return 'good';
-    if (value >= average) return 'average';
-    return 'poor';
-  }
-  
-  return 'average';
-};
-
 // Standards Legend Component
 const StandardsLegend = () => {
   const { t, direction } = useLanguage();
