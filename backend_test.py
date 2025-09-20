@@ -255,6 +255,148 @@ class SoccerTrainingAPITester:
             200
         )
 
+    def test_save_vo2_benchmark(self):
+        """Test saving a VO2 Max benchmark"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        benchmark_data = {
+            "player_id": self.player_id,
+            "vo2_max": 58.5,
+            "calculation_inputs": {
+                "age": 20,
+                "gender": "male",
+                "restingHeartRate": 60,
+                "maxHeartRate": 190
+            },
+            "calculation_method": "ACSM",
+            "notes": "Calculated using ACSM formula during fitness assessment",
+            "fitness_level": "Good"
+        }
+        
+        success, response = self.run_test(
+            "Save VO2 Max Benchmark",
+            "POST",
+            "vo2-benchmarks",
+            200,
+            data=benchmark_data
+        )
+        
+        if success and 'id' in response:
+            self.benchmark_id = response['id']
+            print(f"   Benchmark ID: {self.benchmark_id}")
+        
+        return success
+
+    def test_get_vo2_benchmarks(self):
+        """Test getting all VO2 Max benchmarks for a player"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        return self.run_test(
+            "Get VO2 Max Benchmarks",
+            "GET",
+            f"vo2-benchmarks/{self.player_id}",
+            200
+        )
+
+    def test_get_latest_vo2_benchmark(self):
+        """Test getting the latest VO2 Max benchmark for a player"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        return self.run_test(
+            "Get Latest VO2 Max Benchmark",
+            "GET",
+            f"vo2-benchmarks/latest/{self.player_id}",
+            200
+        )
+
+    def test_save_multiple_vo2_benchmarks(self):
+        """Test saving multiple VO2 Max benchmarks to verify sorting"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        # Save a second benchmark with different values
+        benchmark_data_2 = {
+            "player_id": self.player_id,
+            "vo2_max": 60.2,
+            "calculation_inputs": {
+                "age": 20,
+                "gender": "male",
+                "restingHeartRate": 58,
+                "maxHeartRate": 192
+            },
+            "calculation_method": "ACSM",
+            "notes": "Follow-up test showing improvement",
+            "fitness_level": "Very Good"
+        }
+        
+        return self.run_test(
+            "Save Second VO2 Max Benchmark",
+            "POST",
+            "vo2-benchmarks",
+            200,
+            data=benchmark_data_2
+        )
+
+    def test_delete_vo2_benchmark(self):
+        """Test deleting a VO2 Max benchmark"""
+        if not hasattr(self, 'benchmark_id') or not self.benchmark_id:
+            print("❌ Skipping - No benchmark ID available")
+            return False
+            
+        return self.run_test(
+            "Delete VO2 Max Benchmark",
+            "DELETE",
+            f"vo2-benchmarks/{self.benchmark_id}",
+            200
+        )
+
+    def test_weekly_progress_tracking(self):
+        """Test weekly progress tracking endpoints"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        # Create a weekly progress entry
+        progress_data = {
+            "player_id": self.player_id,
+            "week_number": 1,
+            "program_id": "test_program_123",
+            "completed_exercises": ["Sprint training", "Ball control drills"],
+            "performance_notes": "Excellent progress in speed work",
+            "intensity_rating": 4,
+            "fatigue_level": 2,
+            "improvement_areas": ["Shooting accuracy", "Tactical awareness"],
+            "week_completed": True
+        }
+        
+        return self.run_test(
+            "Create Weekly Progress",
+            "POST",
+            "weekly-progress",
+            200,
+            data=progress_data
+        )
+
+    def test_get_weekly_progress(self):
+        """Test getting weekly progress for a player"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        return self.run_test(
+            "Get Weekly Progress",
+            "GET",
+            f"weekly-progress/{self.player_id}",
+            200
+        )
+
 def main():
     print("🚀 Starting Soccer Pro Training Tracker API Tests")
     print("=" * 60)
