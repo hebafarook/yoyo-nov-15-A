@@ -976,17 +976,34 @@ const MainDashboard = () => {
 
         <TabsContent value="training">
           {currentPlayer ? (
-            <TrainingProgram 
-              playerId={currentPlayer.id} 
-              playerName={currentPlayer.player_name}
+            <TrainingDashboard 
+              playerId={currentPlayer.player_name} 
               playerData={currentPlayer}
             />
           ) : (
             <Card className="professional-card text-center p-12">
               <CardContent>
                 <Target className="w-16 h-16 mx-auto mb-4 text-[--text-muted]" />
-                <h3 className="text-2xl font-semibold mb-2">Complete Assessment First</h3>
-                <p className="text-[--text-muted]">Create a professional player assessment to unlock personalized training programs.</p>
+                <h3 className="text-2xl font-semibold mb-2">Elite Training Dashboard</h3>
+                <p className="text-[--text-muted]">Complete your assessment to unlock the advanced periodized training system with micro/macro cycles, detailed exercise instructions, and progress tracking.</p>
+                <div className="mt-6 space-y-2 text-sm text-[--text-muted]">
+                  <div className="flex items-center justify-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    Detailed exercise instructions with video guides
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    Periodized training with micro & macro cycles
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    Daily progress tracking and feedback
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    Performance visualization until assessment dates
+                  </div>
+                </div>
               </CardContent>
             </Card>
           )}
