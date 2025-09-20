@@ -177,24 +177,24 @@ const StandardsLegend = () => {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 professional-card">
-              <Crown className="w-8 h-8 mx-auto mb-3" style={{color: 'var(--primary-black)'}} />
-              <h4 className="font-semibold text-lg mb-1" style={{color: 'var(--text-black)'}}>{t('common.excellent')}</h4>
-              <p className="text-sm" style={{color: 'var(--text-gray-medium)'}}>Elite/International Level</p>
+              <Crown className="w-8 h-8 mx-auto mb-3" style={{color: 'var(--navy-primary)'}} />
+              <h4 className="font-semibold text-lg mb-1" style={{color: 'var(--navy-primary)'}}>{t('common.excellent')}</h4>
+              <p className="text-sm" style={{color: 'var(--text-gray)'}}>Elite/International Level</p>
             </div>
             <div className="text-center p-4 professional-card">
-              <Award className="w-8 h-8 mx-auto mb-3" style={{color: 'var(--text-gray-dark)'}} />
-              <h4 className="font-semibold text-lg mb-1" style={{color: 'var(--text-black)'}}>{t('common.good')}</h4>
-              <p className="text-sm" style={{color: 'var(--text-gray-medium)'}}>High Competitive Standard</p>
+              <Award className="w-8 h-8 mx-auto mb-3" style={{color: 'var(--navy-secondary)'}} />
+              <h4 className="font-semibold text-lg mb-1" style={{color: 'var(--navy-primary)'}}>{t('common.good')}</h4>
+              <p className="text-sm" style={{color: 'var(--text-gray)'}}>High Competitive Standard</p>
             </div>
             <div className="text-center p-4 professional-card">
-              <Star className="w-8 h-8 mx-auto mb-3" style={{color: 'var(--text-gray-medium)'}} />
-              <h4 className="font-semibold text-lg mb-1" style={{color: 'var(--text-black)'}}>{t('common.average')}</h4>
-              <p className="text-sm" style={{color: 'var(--text-gray-medium)'}}>Solid Club Level</p>
+              <Star className="w-8 h-8 mx-auto mb-3" style={{color: 'var(--text-light)'}} />
+              <h4 className="font-semibold text-lg mb-1" style={{color: 'var(--navy-primary)'}}>{t('common.average')}</h4>
+              <p className="text-sm" style={{color: 'var(--text-gray)'}}>Solid Club Level</p>
             </div>
             <div className="text-center p-4 professional-card">
-              <Target className="w-8 h-8 mx-auto mb-3" style={{color: 'var(--text-gray-light)'}} />
-              <h4 className="font-semibold text-lg mb-1" style={{color: 'var(--text-black)'}}>{t('common.poor')}</h4>
-              <p className="text-sm" style={{color: 'var(--text-gray-medium)'}}>Development Required</p>
+              <Target className="w-8 h-8 mx-auto mb-3" style={{color: 'var(--text-muted)'}} />
+              <h4 className="font-semibold text-lg mb-1" style={{color: 'var(--navy-primary)'}}>{t('common.poor')}</h4>
+              <p className="text-sm" style={{color: 'var(--text-gray)'}}>Development Required</p>
             </div>
           </div>
         </CardContent>
