@@ -921,6 +921,39 @@ const MainDashboard = () => {
   const [previousAssessments, setPreviousAssessments] = useState([]);
   const [isStartupReport, setIsStartupReport] = useState(false);
 
+  // Check for existing player on startup and show report
+  useEffect(() => {
+    const checkForExistingPlayer = async () => {
+      try {
+        const response = await axios.get(`${API}/assessments`);
+        if (response.data && response.data.length > 0) {
+          // Get the most recent assessment
+          const latestAssessment = response.data.sort((a, b) => 
+            new Date(b.created_at) - new Date(a.created_at)
+          )[0];
+          
+          // Load previous assessments for the player
+          await loadPreviousAssessments(latestAssessment.player_name);
+          
+          setCurrentPlayer(latestAssessment);
+          
+          // Show startup report for 15 seconds
+          setIsStartupReport(true);
+          setShowAssessmentReport(true);
+          
+          setTimeout(() => {
+            setShowAssessmentReport(false);
+            setIsStartupReport(false);
+          }, 15000);
+        }
+      } catch (error) {
+        console.error('Error checking for existing player:', error);
+      }
+    };
+
+    checkForExistingPlayer();
+  }, []);
+
   const handleAssessmentCreated = async (assessment) => {
     // Load previous assessments for comparison
     await loadPreviousAssessments(assessment.player_name);
