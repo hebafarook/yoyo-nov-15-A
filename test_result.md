@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Implement age-based soccer player standards from uploaded Youth Scouting Handbook, daily progressive weekly program structure, retest functionality, and fix/enhance standards benchmarking system"
+user_problem_statement: "Fix the tabs and add what is coming soon, change the color scheme to elite elegant royal colors blue black and red and gold, use visual indicators for tracking progress with numbers to show we are here and want to train to reach this in this timeframe, keep the program updated with input and change the exercise weekly accordingly"
 
 backend:
   - task: "Update standards from uploaded PDF"
