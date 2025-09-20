@@ -438,20 +438,21 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                 Physical Performance Tests
                 <span className="weight-badge">20% Weight</span>
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {['sprint_30m', 'yo_yo_test', 'vo2_max', 'vertical_jump', 'body_fat'].map((field) => (
+              
+              {/* Non-VO2 Max Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                {['sprint_30m', 'yo_yo_test', 'vertical_jump', 'body_fat'].map((field) => (
                   <div key={field}>
                     <Label className="text-base font-medium mb-2 block">
                       {field === 'sprint_30m' && '30m Sprint (seconds)'}
                       {field === 'yo_yo_test' && 'Yo-Yo Test (meters)'}
-                      {field === 'vo2_max' && 'VO2 Max (ml/kg/min)'}
                       {field === 'vertical_jump' && 'Vertical Jump (cm)'}
                       {field === 'body_fat' && 'Body Fat (%)'}
                     </Label>
                     <input
                       name={field}
                       type="number"
-                      step={field === 'sprint_30m' || field === 'vo2_max' || field === 'body_fat' ? '0.1' : '1'}
+                      step={field === 'sprint_30m' || field === 'body_fat' ? '0.1' : '1'}
                       value={formData[field]}
                       onChange={handleChange}
                       required
@@ -459,7 +460,6 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                       placeholder={
                         field === 'sprint_30m' ? 'e.g., 4.2' :
                         field === 'yo_yo_test' ? 'e.g., 1600' :
-                        field === 'vo2_max' ? 'e.g., 58.5' :
                         field === 'vertical_jump' ? 'e.g., 55' :
                         'e.g., 12.5'
                       }
@@ -471,6 +471,41 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                     />
                   </div>
                 ))}
+              </div>
+
+              {/* VO2 Max Special Section with Calculator */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Manual VO2 Max Input */}
+                <div>
+                  <Label className="text-base font-medium mb-2 block">
+                    VO2 Max (ml/kg/min)
+                  </Label>
+                  <input
+                    name="vo2_max"
+                    type="number"
+                    step="0.1"
+                    value={formData.vo2_max}
+                    onChange={handleChange}
+                    required
+                    className={getFieldValidation('vo2_max', formData.vo2_max, formData.age)}
+                    placeholder="e.g., 58.5"
+                  />
+                  <FieldExplanation 
+                    fieldName="vo2_max" 
+                    isVisible={explanationVisibility.vo2_max}
+                    onToggle={() => toggleExplanation('vo2_max')}
+                  />
+                </div>
+
+                {/* VO2 Max Calculator */}
+                <div>
+                  <VO2MaxCalculator
+                    onCalculate={handleVO2MaxCalculation}
+                    currentAge={formData.age}
+                    currentGender="male" // You can make this dynamic based on form data
+                    onSaveBenchmark={handleSaveBenchmark}
+                  />
+                </div>
               </div>
             </div>
 
