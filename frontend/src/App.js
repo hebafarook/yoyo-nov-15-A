@@ -170,7 +170,7 @@ const StandardsLegend = () => {
       <Card className="professional-card">
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-3">
-            <Crown className="w-6 h-6 text-[--secondary-gold]" />
+            <Crown className="w-6 h-6 text-black" />
             Performance Standards Guide
           </CardTitle>
         </CardHeader>
