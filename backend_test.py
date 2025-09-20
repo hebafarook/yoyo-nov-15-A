@@ -398,6 +398,228 @@ class SoccerTrainingAPITester:
             200
         )
 
+    # ========== NEW PERIODIZED TRAINING PROGRAM TESTS ==========
+    
+    def test_create_periodized_program(self):
+        """Test creating a comprehensive periodized training program"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        program_data = {
+            "player_id": self.player_id,
+            "program_name": "Elite Development Program - Test Player",
+            "total_duration_weeks": 14,
+            "program_objectives": [
+                "Develop technical skills under pressure",
+                "Improve physical conditioning and speed",
+                "Enhance tactical awareness and decision making"
+            ],
+            "assessment_interval_weeks": 4
+        }
+        
+        print("   ⚠️  This test may take 10-20 seconds due to complex program generation...")
+        success, response = self.run_test(
+            "Create Periodized Training Program",
+            "POST",
+            "periodized-programs",
+            200,
+            data=program_data
+        )
+        
+        if success:
+            print(f"   Program Name: {response.get('program_name', 'N/A')}")
+            print(f"   Total Weeks: {response.get('total_duration_weeks', 'N/A')}")
+            print(f"   Macro Cycles: {len(response.get('macro_cycles', []))}")
+            self.program_id = response.get('id')
+            
+        return success
+
+    def test_get_player_program(self):
+        """Test getting player's periodized program"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        success, response = self.run_test(
+            "Get Player's Periodized Program",
+            "GET",
+            f"periodized-programs/{self.player_id}",
+            200
+        )
+        
+        if success and response:
+            print(f"   Program Found: {response.get('program_name', 'N/A')}")
+            print(f"   Current Phase: {response.get('current_phase', 'N/A')}")
+            print(f"   Current Week: {response.get('current_week', 'N/A')}")
+            
+        return success
+
+    def test_get_current_routine(self):
+        """Test getting today's training routine"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        success, response = self.run_test(
+            "Get Current Training Routine",
+            "GET",
+            f"current-routine/{self.player_id}",
+            200
+        )
+        
+        if success:
+            routine = response.get('routine')
+            if routine:
+                print(f"   Today's Phase: {routine.get('phase', 'N/A')}")
+                print(f"   Exercises: {len(routine.get('exercises', []))}")
+                print(f"   Duration: {routine.get('total_duration', 'N/A')} minutes")
+            else:
+                print("   Today is a rest day or program completed")
+                
+        return success
+
+    def test_log_daily_progress(self):
+        """Test logging daily training progress"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        progress_data = {
+            "player_id": self.player_id,
+            "routine_id": "routine_123",
+            "completed_exercises": [
+                {
+                    "player_id": self.player_id,
+                    "exercise_id": "sprint_intervals_30m",
+                    "routine_id": "routine_123",
+                    "completed": True,
+                    "feedback": "Great intensity, felt strong",
+                    "difficulty_rating": 4,
+                    "performance_rating": 5,
+                    "time_taken": 25
+                },
+                {
+                    "player_id": self.player_id,
+                    "exercise_id": "ball_mastery_cone_weaving",
+                    "routine_id": "routine_123",
+                    "completed": True,
+                    "feedback": "Improved ball control",
+                    "difficulty_rating": 3,
+                    "performance_rating": 4,
+                    "time_taken": 20
+                }
+            ],
+            "overall_rating": 4,
+            "energy_level": 4,
+            "motivation_level": 5,
+            "daily_notes": "Excellent training session, felt very motivated",
+            "total_time_spent": 60
+        }
+        
+        success, response = self.run_test(
+            "Log Daily Training Progress",
+            "POST",
+            "daily-progress",
+            200,
+            data=progress_data
+        )
+        
+        if success:
+            print(f"   Exercises Completed: {len(response.get('completed_exercises', []))}")
+            print(f"   Overall Rating: {response.get('overall_rating', 'N/A')}/5")
+            print(f"   Total Time: {response.get('total_time_spent', 'N/A')} minutes")
+            
+        return success
+
+    def test_get_daily_progress(self):
+        """Test getting daily progress history"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        success, response = self.run_test(
+            "Get Daily Progress History",
+            "GET",
+            f"daily-progress/{self.player_id}",
+            200
+        )
+        
+        if success:
+            if isinstance(response, list):
+                print(f"   Progress Entries: {len(response)}")
+                if response:
+                    latest = response[0]
+                    print(f"   Latest Entry: {latest.get('overall_rating', 'N/A')}/5 rating")
+            else:
+                print("   Response format unexpected")
+                
+        return success
+
+    def test_get_performance_metrics(self):
+        """Test getting performance metrics and trends"""
+        if not self.player_id:
+            print("❌ Skipping - No player ID available")
+            return False
+            
+        success, response = self.run_test(
+            "Get Performance Metrics",
+            "GET",
+            f"performance-metrics/{self.player_id}",
+            200
+        )
+        
+        if success:
+            metrics = response.get('metrics', [])
+            trends = response.get('improvement_trends', {})
+            print(f"   Performance Metrics: {len(metrics)}")
+            print(f"   Improvement Trends: {len(trends)} categories")
+            if trends:
+                for trend_name, trend_data in trends.items():
+                    improvement = trend_data.get('improvement_percentage', 0)
+                    print(f"     {trend_name}: {improvement}% improvement")
+                    
+        return success
+
+    def test_periodized_program_edge_cases(self):
+        """Test edge cases for periodized program system"""
+        print("\n🔍 Testing Edge Cases...")
+        
+        # Test with non-existent player
+        success1, _ = self.run_test(
+            "Get Program for Non-existent Player",
+            "GET",
+            "periodized-programs/non_existent_player",
+            200  # Should return None/null, not error
+        )
+        
+        # Test current routine for non-existent player
+        success2, _ = self.run_test(
+            "Get Routine for Non-existent Player",
+            "GET",
+            "current-routine/non_existent_player",
+            404  # Should return 404
+        )
+        
+        # Test daily progress with invalid data
+        invalid_progress = {
+            "player_id": "invalid_player",
+            "routine_id": "",
+            "completed_exercises": [],
+            "overall_rating": 6,  # Invalid rating (should be 1-5)
+            "energy_level": 0,    # Invalid level
+            "motivation_level": -1  # Invalid level
+        }
+        
+        success3, _ = self.run_test(
+            "Log Progress with Invalid Data",
+            "POST",
+            "daily-progress",
+            422  # Should return validation error
+        )
+        
+        return success1 and success2 and success3
+
 def main():
     print("🚀 Starting Soccer Pro Training Tracker API Tests")
     print("=" * 60)
