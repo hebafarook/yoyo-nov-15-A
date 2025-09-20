@@ -97,7 +97,7 @@ const ProgressTracker = ({ playerData, targetGoals }) => {
                 <div key={metric.key} className="professional-card p-5">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <metric.icon className="w-5 h-5 text-[--primary-blue]" />
+                      <metric.icon className="w-5 h-5 text-black" />
                       <span className="font-semibold text-lg">{metric.label}</span>
                     </div>
                     <span className={`badge-${progress.improving && progress.percentage > 70 ? 'good' : progress.percentage > 50 ? 'average' : 'poor'}`}>
