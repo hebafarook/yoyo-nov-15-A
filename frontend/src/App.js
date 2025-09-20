@@ -384,7 +384,7 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                 )}
               </div>
               <div>
-                <Label htmlFor="position" className="text-base font-medium mb-2 block">
+                <Label htmlFor="position" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
                   Position
                 </Label>
                 <Select onValueChange={(value) => setFormData({...formData, position: value})}>
