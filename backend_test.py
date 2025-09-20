@@ -428,6 +428,20 @@ def main():
     test_results.append(tester.test_add_voice_note())
     test_results.append(tester.test_get_voice_notes())
     
+    # VO2 Max Benchmark tests (NEW - HIGH PRIORITY)
+    print("\n🔥 Testing NEW VO2 Max Benchmark Endpoints...")
+    test_results.append(tester.test_save_vo2_benchmark())
+    test_results.append(tester.test_get_vo2_benchmarks())
+    test_results.append(tester.test_get_latest_vo2_benchmark())
+    test_results.append(tester.test_save_multiple_vo2_benchmarks())
+    test_results.append(tester.test_get_latest_vo2_benchmark())  # Test again to verify latest
+    test_results.append(tester.test_delete_vo2_benchmark())
+    
+    # Weekly Progress Tracking tests
+    print("\n📊 Testing Weekly Progress Tracking...")
+    test_results.append(tester.test_weekly_progress_tracking())
+    test_results.append(tester.test_get_weekly_progress())
+    
     # Print final results
     print("\n" + "=" * 60)
     print("📊 FINAL TEST RESULTS")
