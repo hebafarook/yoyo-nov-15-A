@@ -275,6 +275,10 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
     try {
       const response = await axios.post(`${API}/assessments`, formData);
       onAssessmentCreated(response.data);
+      
+      // Create periodized training program for the player
+      await createPeriodizedProgram(formData.player_name);
+      
       // Reset form
       setFormData({
         player_name: "",
