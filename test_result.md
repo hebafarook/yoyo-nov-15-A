@@ -105,6 +105,18 @@
 user_problem_statement: "Fix the tabs and add what is coming soon, change the color scheme to elite elegant royal colors blue black and red and gold, use visual indicators for tracking progress with numbers to show we are here and want to train to reach this in this timeframe, keep the program updated with input and change the exercise weekly accordingly"
 
 backend:
+  - task: "VO2 Max Calculator Integration"
+    implemented: true
+    working: false
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Added VO2MaxBenchmark model and API endpoints for saving/retrieving VO2 max test results with ACSM formulas"
+
   - task: "Elite royal color scheme implementation"
     implemented: true
     working: true
