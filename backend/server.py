@@ -153,6 +153,24 @@ class VoiceNoteCreate(BaseModel):
     note_text: str
     audio_duration: Optional[float] = None
 
+class VO2MaxBenchmark(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    player_id: str
+    vo2_max: float  # ml/kg/min
+    calculation_inputs: Dict[str, Any]  # stores age, gender, heart rates, etc.
+    calculation_method: str = "ACSM"  # ACSM formula or other methods
+    test_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    notes: Optional[str] = None
+    fitness_level: Optional[str] = None
+
+class VO2MaxBenchmarkCreate(BaseModel):
+    player_id: str
+    vo2_max: float
+    calculation_inputs: Dict[str, Any]
+    calculation_method: str = "ACSM"
+    notes: Optional[str] = None
+    fitness_level: Optional[str] = None
+
 class Trophy(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     player_id: str
