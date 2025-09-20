@@ -1114,19 +1114,7 @@ const MainDashboard = () => {
         </TabsContent>
 
         <TabsContent value="body">
-          <ComingSoon 
-            title="Physical Performance Monitor"
-            description="Comprehensive fitness tracking and body composition analysis system"
-            icon={Activity}
-            features={[
-              "Body composition tracking",
-              "Fitness goal management",
-              "Nutrition planning integration",
-              "Recovery monitoring system"
-            ]}
-            estimatedRelease="Q1 2024"
-            priority="high"
-          />
+          <PhysicalPerformanceMonitor playerData={currentPlayer} />
         </TabsContent>
       </Tabs>
     </div>
