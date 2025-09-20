@@ -331,6 +331,34 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
     return validationClasses[performance];
   };
 
+  // VO2 Max Calculator handlers
+  const handleVO2MaxCalculation = (calculatedValue) => {
+    setFormData(prev => ({
+      ...prev,
+      vo2_max: calculatedValue.toString()
+    }));
+  };
+
+  const handleSaveBenchmark = async (benchmark) => {
+    try {
+      const benchmarkData = {
+        player_id: formData.player_name || "unknown", // Use player name as ID for now
+        vo2_max: benchmark.vo2Max,
+        calculation_inputs: benchmark.inputs,
+        calculation_method: "ACSM",
+        notes: benchmark.notes,
+        fitness_level: benchmark.fitness_level
+      };
+
+      const response = await axios.post(`${API}/vo2-benchmarks`, benchmarkData);
+      console.log('Benchmark saved:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error saving benchmark:', error);
+      throw error;
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto">
       <StandardsLegend />
