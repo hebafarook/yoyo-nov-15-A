@@ -23,51 +23,51 @@ const API = `${BACKEND_URL}/api`;
 // Daily Progressive Training Structure
 const DAILY_PROGRESSIVE_STRUCTURE = {
   week1: {
-    theme: "Elite Foundation Building",
+    theme: "Foundation Building",
     daily_focus: {
-      monday: { focus: "Royal Speed Foundation", intensity: "Medium", duration: 60 },
-      tuesday: { focus: "Elite Ball Control", intensity: "High", duration: 90 },
+      monday: { focus: "Speed Development", intensity: "Medium", duration: 60 },
+      tuesday: { focus: "Ball Control Training", intensity: "High", duration: 90 },
       wednesday: { focus: "Recovery & Flexibility", intensity: "Low", duration: 45 },
       thursday: { focus: "Tactical Awareness", intensity: "Medium", duration: 75 },
-      friday: { focus: "Precision Shooting", intensity: "High", duration: 60 },
+      friday: { focus: "Shooting Practice", intensity: "High", duration: 60 },
       saturday: { focus: "Match Simulation", intensity: "High", duration: 90 },
       sunday: { focus: "Active Recovery", intensity: "Low", duration: 30 }
     }
   },
   week2: {
-    theme: "Skill Mastery Development",
+    theme: "Skill Enhancement",
     daily_focus: {
-      monday: { focus: "Explosive Speed Training", intensity: "High", duration: 60 },
+      monday: { focus: "Speed Training", intensity: "High", duration: 60 },
       tuesday: { focus: "Advanced Technical Skills", intensity: "High", duration: 90 },
-      wednesday: { focus: "Elite Tactical Play", intensity: "Medium", duration: 75 },
-      thursday: { focus: "Competition Agility", intensity: "High", duration: 75 },
-      friday: { focus: "Clinical Finishing", intensity: "High", duration: 60 },
-      saturday: { focus: "Elite Match Play", intensity: "High", duration: 90 },
+      wednesday: { focus: "Tactical Development", intensity: "Medium", duration: 75 },
+      thursday: { focus: "Agility Training", intensity: "High", duration: 75 },
+      friday: { focus: "Finishing Drills", intensity: "High", duration: 60 },
+      saturday: { focus: "Competitive Match Play", intensity: "High", duration: 90 },
       sunday: { focus: "Mental Training", intensity: "Low", duration: 45 }
     }
   },
   week3: {
-    theme: "Performance Maximization",
+    theme: "Performance Optimization",
     daily_focus: {
-      monday: { focus: "Championship Speed", intensity: "Very High", duration: 60 },
-      tuesday: { focus: "Elite 1v1 Mastery", intensity: "High", duration: 90 },
-      wednesday: { focus: "Tactical Intelligence", intensity: "Medium", duration: 75 },
-      thursday: { focus: "Pro-Level Agility", intensity: "High", duration: 75 },
-      friday: { focus: "Elite Power Shooting", intensity: "Very High", duration: 60 },
-      saturday: { focus: "Championship Matches", intensity: "Very High", duration: 90 },
-      sunday: { focus: "Elite Recovery", intensity: "Low", duration: 45 }
+      monday: { focus: "Explosive Speed", intensity: "Very High", duration: 60 },
+      tuesday: { focus: "Elite Technical Work", intensity: "High", duration: 90 },
+      wednesday: { focus: "Advanced Tactics", intensity: "Medium", duration: 75 },
+      thursday: { focus: "Competition Agility", intensity: "High", duration: 75 },
+      friday: { focus: "Clinical Finishing", intensity: "Very High", duration: 60 },
+      saturday: { focus: "High-Level Match Play", intensity: "Very High", duration: 90 },
+      sunday: { focus: "Recovery & Analysis", intensity: "Low", duration: 45 }
     }
   },
   week4: {
-    theme: "Assessment & Elite Progression",
+    theme: "Assessment & Planning",
     daily_focus: {
       monday: { focus: "Speed Assessment", intensity: "High", duration: 60 },
       tuesday: { focus: "Technical Evaluation", intensity: "High", duration: 90 },
       wednesday: { focus: "Tactical Assessment", intensity: "Medium", duration: 75 },
       thursday: { focus: "Agility Testing", intensity: "High", duration: 75 },
-      friday: { focus: "Shooting Evaluation", intensity: "High", duration: 60 },
-      saturday: { focus: "Performance Review", intensity: "Medium", duration: 60 },
-      sunday: { focus: "Next Level Planning", intensity: "Low", duration: 30 }
+      friday: { focus: "Performance Review", intensity: "High", duration: 60 },
+      saturday: { focus: "Final Assessment", intensity: "Medium", duration: 60 },
+      sunday: { focus: "Program Planning", intensity: "Low", duration: 30 }
     }
   }
 };
@@ -89,36 +89,38 @@ const LanguageProvider = ({ children }) => {
 
   const translations = {
     en: {
-      'app.title': 'Yoyo the Fire Boy ⚽🔥',
-      'app.subtitle': 'Elite Soccer Training Tracker',
+      'app.title': 'Elite Soccer Player AI Coach',
+      'app.subtitle': 'Professional Training & Assessment Platform',
+      'app.description': 'Advanced AI-powered coaching system for developing elite soccer players through comprehensive assessment, personalized training programs, and performance tracking.',
       'nav.assessment': 'Assessment',
       'nav.training': 'Training Programs',
       'nav.progress': 'Progress Tracking',
       'nav.voice': 'Voice Notes',
-      'nav.trophies': 'Trophies & Achievements',
-      'nav.group': 'Group Training',
-      'nav.highlights': 'Player Highlights',
-      'nav.body': 'Body & Fitness',
-      'assessment.title': 'Elite Fire Boy Assessment 🔥',
-      'assessment.subtitle': 'Professional Elite Training Framework',
+      'nav.trophies': 'Achievements',
+      'nav.group': 'Team Management',
+      'nav.highlights': 'Performance Analytics',
+      'nav.body': 'Physical Metrics',
+      'assessment.title': 'Professional Player Assessment',
+      'assessment.subtitle': 'Comprehensive evaluation based on elite standards',
       'common.excellent': 'Excellent',
       'common.good': 'Good',
       'common.average': 'Average',
       'common.poor': 'Needs Improvement'
     },
     ar: {
-      'app.title': 'يويو الفتى الناري ⚽🔥',
-      'app.subtitle': 'متتبع التدريب النخبوي لكرة القدم',
+      'app.title': 'مدرب الذكي للاعبين كرة القدم النخبة',
+      'app.subtitle': 'منصة التدريب والتقييم المهنية',
+      'app.description': 'نظام تدريب متقدم مدعوم بالذكاء الاصطناعي لتطوير لاعبي كرة القدم النخبة من خلال التقييم الشامل وبرامج التدريب الشخصية وتتبع الأداء.',
       'nav.assessment': 'التقييم',
       'nav.training': 'برامج التدريب',
       'nav.progress': 'تتبع التقدم',
       'nav.voice': 'الملاحظات الصوتية',
-      'nav.trophies': 'الكؤوس والإنجازات',
-      'nav.group': 'التدريب الجماعي',
-      'nav.highlights': 'أبرز اللاعبين',
-      'nav.body': 'الجسم واللياقة',
-      'assessment.title': 'تقييم الفتى الناري النخبوي 🔥',
-      'assessment.subtitle': 'إطار التدريب النخبوي المحترف',
+      'nav.trophies': 'الإنجازات',
+      'nav.group': 'إدارة الفريق',
+      'nav.highlights': 'تحليل الأداء',
+      'nav.body': 'المقاييس البدنية',
+      'assessment.title': 'تقييم اللاعب المحترف',
+      'assessment.subtitle': 'تقييم شامل على أساس المعايير النخبة',
       'common.excellent': 'ممتاز',
       'common.good': 'جيد',
       'common.average': 'متوسط',
@@ -164,35 +166,35 @@ const StandardsLegend = () => {
   const { t, direction } = useLanguage();
   
   return (
-    <div className="mb-6">
-      <Card className="elite-card-gradient border-2 border-royal-gold/30">
+    <div className="mb-8">
+      <Card className="professional-card">
         <CardHeader>
-          <CardTitle className="text-royal-gold flex items-center text-lg">
-            <Crown className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-5 h-5`} />
-            Elite Performance Standards Guide
+          <CardTitle className="text-xl flex items-center gap-3">
+            <Crown className="w-6 h-6 text-[--secondary-gold]" />
+            Performance Standards Guide
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 performance-card rounded-lg">
-              <Crown className="w-8 h-8 mx-auto mb-2 text-royal-gold" />
-              <h4 className="font-bold text-royal-gold">{t('common.excellent')}</h4>
-              <p className="text-sm text-elite-white/70">Elite/International level</p>
+            <div className="text-center p-4 professional-card">
+              <Crown className="w-8 h-8 mx-auto mb-3 text-[--secondary-gold]" />
+              <h4 className="font-semibold text-lg mb-1">{t('common.excellent')}</h4>
+              <p className="text-sm text-[--text-muted]">Elite/International Level</p>
             </div>
-            <div className="text-center p-4 performance-card rounded-lg">
-              <Award className="w-8 h-8 mx-auto mb-2 text-royal-blue" />
-              <h4 className="font-bold text-royal-blue">{t('common.good')}</h4>
-              <p className="text-sm text-elite-white/70">High competitive standard</p>
+            <div className="text-center p-4 professional-card">
+              <Award className="w-8 h-8 mx-auto mb-3 text-[--success]" />
+              <h4 className="font-semibold text-lg mb-1">{t('common.good')}</h4>
+              <p className="text-sm text-[--text-muted]">High Competitive Standard</p>
             </div>
-            <div className="text-center p-4 performance-card rounded-lg">
-              <Star className="w-8 h-8 mx-auto mb-2 text-elite-silver" />
-              <h4 className="font-bold text-elite-silver">{t('common.average')}</h4>
-              <p className="text-sm text-elite-white/70">Solid club level</p>
+            <div className="text-center p-4 professional-card">
+              <Star className="w-8 h-8 mx-auto mb-3 text-[--text-muted]" />
+              <h4 className="font-semibold text-lg mb-1">{t('common.average')}</h4>
+              <p className="text-sm text-[--text-muted]">Solid Club Level</p>
             </div>
-            <div className="text-center p-4 performance-card rounded-lg">
-              <Target className="w-8 h-8 mx-auto mb-2 text-royal-red" />
-              <h4 className="font-bold text-royal-red">{t('common.poor')}</h4>
-              <p className="text-sm text-elite-white/70">Development needed</p>
+            <div className="text-center p-4 professional-card">
+              <Target className="w-8 h-8 mx-auto mb-3 text-[--error]" />
+              <h4 className="font-semibold text-lg mb-1">{t('common.poor')}</h4>
+              <p className="text-sm text-[--text-muted]">Development Required</p>
             </div>
           </div>
         </CardContent>
@@ -209,32 +211,32 @@ const FieldExplanation = ({ fieldName, isVisible, onToggle }) => {
   if (!explanation) return null;
 
   return (
-    <div className="mt-2">
-      <Button
+    <div className="mt-3">
+      <button
         type="button"
-        variant="ghost"
-        size="sm"
         onClick={onToggle}
-        className="text-xs text-royal-gold hover:text-royal-gold-light elite-button"
+        className="btn-secondary text-sm py-2 px-3"
       >
-        <HelpCircle className="w-3 h-3 mr-1" />
-        {isVisible ? 'Hide Explanation' : 'Show Explanation'}
-      </Button>
+        <HelpCircle className="w-4 h-4" />
+        {isVisible ? 'Hide Details' : 'Show Details'}
+      </button>
       
       {isVisible && (
-        <div className="mt-2 p-3 elite-card-gradient rounded-lg border border-royal-gold/30">
-          <h5 className="font-bold text-royal-gold mb-1">{explanation.title}</h5>
-          <p className="text-sm text-elite-white/90 mb-2" dir={direction}>{explanation.description}</p>
-          <p className="text-xs text-royal-blue mb-1"><strong>Why it matters:</strong> {explanation.importance}</p>
-          <p className="text-xs text-royal-red mb-1"><strong>Tips:</strong> {explanation.tips}</p>
-          <p className="text-xs text-royal-gold"><strong>Scoring:</strong> {explanation.scoring}</p>
+        <div className="mt-3 p-4 professional-card border border-[--primary-blue]">
+          <h5 className="font-semibold text-lg mb-2 text-[--primary-blue]">{explanation.title}</h5>
+          <p className="text-sm mb-3" dir={direction}>{explanation.description}</p>
+          <div className="space-y-2 text-sm">
+            <p><strong className="text-[--secondary-gold]">Importance:</strong> {explanation.importance}</p>
+            <p><strong className="text-[--success]">Tips:</strong> {explanation.tips}</p>
+            <p><strong className="text-[--primary-blue]">Scoring:</strong> {explanation.scoring}</p>
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-// Enhanced Assessment Component with Complete Handbook Standards
+// Enhanced Assessment Component
 const AssessmentForm = ({ onAssessmentCreated }) => {
   const { t, direction } = useLanguage();
   const [formData, setFormData] = useState({
@@ -271,6 +273,7 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
     try {
       const response = await axios.post(`${API}/assessments`, formData);
       onAssessmentCreated(response.data);
+      // Reset form
       setFormData({
         player_name: "",
         age: "",
@@ -309,62 +312,60 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
   };
 
   const getFieldValidation = (fieldName, value, age) => {
-    if (!value || !age) return null;
+    if (!value || !age) return 'input-field';
     
     const numValue = parseFloat(value);
     const ageCategory = getAgeCategory(parseInt(age));
     const performance = evaluatePerformance(numValue, fieldName, ageCategory);
     
-    if (!performance) return null;
+    if (!performance) return 'input-field';
     
-    const colors = {
-      excellent: 'border-royal-gold bg-royal-gold/20',
-      good: 'border-royal-blue bg-royal-blue/20',
-      average: 'border-elite-silver bg-elite-silver/20',
-      poor: 'border-royal-red bg-royal-red/20'
+    const validationClasses = {
+      excellent: 'input-field border-[--secondary-gold] bg-[--light-bg]',
+      good: 'input-field border-[--success] bg-[--light-bg]',
+      average: 'input-field border-[--text-muted] bg-[--light-bg]',
+      poor: 'input-field border-[--error] bg-[--light-bg]'
     };
     
-    return colors[performance];
+    return validationClasses[performance];
   };
 
   return (
-    <div>
+    <div className="max-w-5xl mx-auto">
       <StandardsLegend />
-      <Card className="max-w-6xl mx-auto elite-card-gradient border-2 border-royal-gold/30 fire-glow">
+      
+      <Card className="professional-card">
         <CardHeader className="text-center">
-          <CardTitle className="text-4xl font-bold elite-royal-gradient bg-clip-text text-transparent">
+          <CardTitle className="text-3xl font-bold mb-3">
             {t('assessment.title')}
           </CardTitle>
-          <CardDescription className="text-royal-gold text-lg font-semibold">
+          <CardDescription className="text-lg text-[--secondary-gold]">
             {t('assessment.subtitle')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Basic Info */}
+            {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <Label htmlFor="player_name" className="text-royal-gold font-bold flex items-center">
-                  <Flame className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-4 h-4`} />
+                <Label htmlFor="player_name" className="text-base font-medium mb-2 block">
                   Player Name
                 </Label>
-                <Input
+                <input
                   id="player_name"
                   name="player_name"
                   value={formData.player_name}
                   onChange={handleChange}
                   required
-                  className="elite-input"
-                  dir={direction}
-                  placeholder="Enter elite player name"
+                  className="input-field"
+                  placeholder="Enter player name"
                 />
               </div>
               <div>
-                <Label htmlFor="age" className="text-royal-gold font-bold flex items-center">
-                  <Star className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-4 h-4`} />
+                <Label htmlFor="age" className="text-base font-medium mb-2 block">
                   Age
                 </Label>
-                <Input
+                <input
                   id="age"
                   name="age"
                   type="number"
@@ -373,25 +374,24 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
                   value={formData.age}
                   onChange={handleChange}
                   required
-                  className="elite-input"
-                  placeholder="Your age"
+                  className="input-field"
+                  placeholder="Player age"
                 />
                 {formData.age && (
-                  <Badge className="mt-1 status-good">
+                  <span className="badge-good mt-2 inline-block">
                     Age Group: {getAgeCategory(parseInt(formData.age))}
-                  </Badge>
+                  </span>
                 )}
               </div>
               <div>
-                <Label htmlFor="position" className="text-royal-gold font-bold flex items-center">
-                  <Target className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-4 h-4`} />
+                <Label htmlFor="position" className="text-base font-medium mb-2 block">
                   Position
                 </Label>
                 <Select onValueChange={(value) => setFormData({...formData, position: value})}>
-                  <SelectTrigger className="elite-input">
-                    <SelectValue placeholder="Select your position" />
+                  <SelectTrigger className="input-field">
+                    <SelectValue placeholder="Select position" />
                   </SelectTrigger>
-                  <SelectContent className="elite-card-gradient border border-royal-gold/30">
+                  <SelectContent>
                     <SelectItem value="goalkeeper">Goalkeeper</SelectItem>
                     <SelectItem value="defender">Defender</SelectItem>
                     <SelectItem value="midfielder">Midfielder</SelectItem>
@@ -402,360 +402,168 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
               </div>
             </div>
 
-            {/* Physical Metrics - 20% Weight */}
-            <div className="performance-card p-6 rounded-lg border-2 border-royal-red/30">
-              <h3 className="text-xl font-bold text-royal-red mb-4 flex items-center">
-                <Dumbbell className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} text-royal-gold`} />
-                Physical Performance Tests (20% Weight) 💪
+            {/* Physical Performance - 20% Weight */}
+            <div className="assessment-section">
+              <h3>
+                <Dumbbell className="w-6 h-6" />
+                Physical Performance Tests
+                <span className="weight-badge">20% Weight</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div>
-                  <Label htmlFor="sprint_30m" className="text-royal-red font-semibold">30m Sprint (seconds)</Label>
-                  <Input
-                    id="sprint_30m"
-                    name="sprint_30m"
-                    type="number"
-                    step="0.01"
-                    min="3.5"
-                    max="8"
-                    value={formData.sprint_30m}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('sprint_30m', formData.sprint_30m, formData.age) || ''}`}
-                    placeholder="e.g., 4.2"
-                  />
-                  <FieldExplanation 
-                    fieldName="sprint_30m" 
-                    isVisible={explanationVisibility.sprint_30m}
-                    onToggle={() => toggleExplanation('sprint_30m')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="yo_yo_test" className="text-royal-red font-semibold">Yo-Yo Test (meters)</Label>
-                  <Input
-                    id="yo_yo_test"
-                    name="yo_yo_test"
-                    type="number"
-                    min="400"
-                    max="3000"
-                    value={formData.yo_yo_test}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('yo_yo_test', formData.yo_yo_test, formData.age) || ''}`}
-                    placeholder="e.g., 1600"
-                  />
-                  <FieldExplanation 
-                    fieldName="yo_yo_test" 
-                    isVisible={explanationVisibility.yo_yo_test}
-                    onToggle={() => toggleExplanation('yo_yo_test')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="vo2_max" className="text-royal-red font-semibold">VO2 Max (ml/kg/min)</Label>
-                  <Input
-                    id="vo2_max"
-                    name="vo2_max"
-                    type="number"
-                    step="0.1"
-                    min="35"
-                    max="80"
-                    value={formData.vo2_max}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('vo2_max', formData.vo2_max, formData.age) || ''}`}
-                    placeholder="e.g., 58.5"
-                  />
-                  <FieldExplanation 
-                    fieldName="vo2_max" 
-                    isVisible={explanationVisibility.vo2_max}
-                    onToggle={() => toggleExplanation('vo2_max')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="vertical_jump" className="text-royal-red font-semibold">Vertical Jump (cm)</Label>
-                  <Input
-                    id="vertical_jump"
-                    name="vertical_jump"
-                    type="number"
-                    min="20"
-                    max="80"
-                    value={formData.vertical_jump}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('vertical_jump', formData.vertical_jump, formData.age) || ''}`}
-                    placeholder="e.g., 55"
-                  />
-                  <FieldExplanation 
-                    fieldName="vertical_jump" 
-                    isVisible={explanationVisibility.vertical_jump}
-                    onToggle={() => toggleExplanation('vertical_jump')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="body_fat" className="text-royal-red font-semibold">Body Fat (%)</Label>
-                  <Input
-                    id="body_fat"
-                    name="body_fat"
-                    type="number"
-                    step="0.1"
-                    min="5"
-                    max="30"
-                    value={formData.body_fat}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('body_fat', formData.body_fat, formData.age) || ''}`}
-                    placeholder="e.g., 12.5"
-                  />
-                  <FieldExplanation 
-                    fieldName="body_fat" 
-                    isVisible={explanationVisibility.body_fat}
-                    onToggle={() => toggleExplanation('body_fat')}
-                  />
-                </div>
+                {['sprint_30m', 'yo_yo_test', 'vo2_max', 'vertical_jump', 'body_fat'].map((field) => (
+                  <div key={field}>
+                    <Label className="text-base font-medium mb-2 block">
+                      {field === 'sprint_30m' && '30m Sprint (seconds)'}
+                      {field === 'yo_yo_test' && 'Yo-Yo Test (meters)'}
+                      {field === 'vo2_max' && 'VO2 Max (ml/kg/min)'}
+                      {field === 'vertical_jump' && 'Vertical Jump (cm)'}
+                      {field === 'body_fat' && 'Body Fat (%)'}
+                    </Label>
+                    <input
+                      name={field}
+                      type="number"
+                      step={field === 'sprint_30m' || field === 'vo2_max' || field === 'body_fat' ? '0.1' : '1'}
+                      value={formData[field]}
+                      onChange={handleChange}
+                      required
+                      className={getFieldValidation(field, formData[field], formData.age)}
+                      placeholder={
+                        field === 'sprint_30m' ? 'e.g., 4.2' :
+                        field === 'yo_yo_test' ? 'e.g., 1600' :
+                        field === 'vo2_max' ? 'e.g., 58.5' :
+                        field === 'vertical_jump' ? 'e.g., 55' :
+                        'e.g., 12.5'
+                      }
+                    />
+                    <FieldExplanation 
+                      fieldName={field} 
+                      isVisible={explanationVisibility[field]}
+                      onToggle={() => toggleExplanation(field)}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Technical Skills - 40% Weight */}
-            <div className="performance-card p-6 rounded-lg border-2 border-royal-blue/30">
-              <h3 className="text-xl font-bold text-royal-blue mb-4 flex items-center">
-                <Gamepad2 className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} text-royal-gold`} />
-                Technical Skills Assessment (40% Weight) ⚽✨
+            <div className="assessment-section">
+              <h3>
+                <Gamepad2 className="w-6 h-6" />
+                Technical Skills Assessment
+                <span className="weight-badge">40% Weight</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div>
-                  <Label htmlFor="ball_control" className="text-royal-blue font-semibold">Ball Control (1-5 scale)</Label>
-                  <Input
-                    id="ball_control"
-                    name="ball_control"
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={formData.ball_control}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('ball_control', formData.ball_control, formData.age) || ''}`}
-                    placeholder="1-5 scale"
-                  />
-                  <FieldExplanation 
-                    fieldName="ball_control" 
-                    isVisible={explanationVisibility.ball_control}
-                    onToggle={() => toggleExplanation('ball_control')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="passing_accuracy" className="text-royal-blue font-semibold">Passing Accuracy (%)</Label>
-                  <Input
-                    id="passing_accuracy"
-                    name="passing_accuracy"
-                    type="number"
-                    step="0.1"
-                    min="40"
-                    max="100"
-                    value={formData.passing_accuracy}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('passing_accuracy', formData.passing_accuracy, formData.age) || ''}`}
-                    placeholder="e.g., 85.5"
-                  />
-                  <FieldExplanation 
-                    fieldName="passing_accuracy" 
-                    isVisible={explanationVisibility.passing_accuracy}
-                    onToggle={() => toggleExplanation('passing_accuracy')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="dribbling_success" className="text-royal-blue font-semibold">Dribbling Success (%)</Label>
-                  <Input
-                    id="dribbling_success"
-                    name="dribbling_success"
-                    type="number"
-                    step="0.1"
-                    min="20"
-                    max="100"
-                    value={formData.dribbling_success}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('dribbling_success', formData.dribbling_success, formData.age) || ''}`}
-                    placeholder="e.g., 65.0"
-                  />
-                  <FieldExplanation 
-                    fieldName="dribbling_success" 
-                    isVisible={explanationVisibility.dribbling_success}
-                    onToggle={() => toggleExplanation('dribbling_success')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="shooting_accuracy" className="text-royal-blue font-semibold">Shooting Accuracy (%)</Label>
-                  <Input
-                    id="shooting_accuracy"
-                    name="shooting_accuracy"
-                    type="number"
-                    step="0.1"
-                    min="30"
-                    max="100"
-                    value={formData.shooting_accuracy}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('shooting_accuracy', formData.shooting_accuracy, formData.age) || ''}`}
-                    placeholder="e.g., 72.5"
-                  />
-                  <FieldExplanation 
-                    fieldName="shooting_accuracy" 
-                    isVisible={explanationVisibility.shooting_accuracy}
-                    onToggle={() => toggleExplanation('shooting_accuracy')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="defensive_duels" className="text-royal-blue font-semibold">Defensive Duels (%)</Label>
-                  <Input
-                    id="defensive_duels"
-                    name="defensive_duels"
-                    type="number"
-                    step="0.1"
-                    min="30"
-                    max="100"
-                    value={formData.defensive_duels}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('defensive_duels', formData.defensive_duels, formData.age) || ''}`}
-                    placeholder="e.g., 68.0"
-                  />
-                  <FieldExplanation 
-                    fieldName="defensive_duels" 
-                    isVisible={explanationVisibility.defensive_duels}
-                    onToggle={() => toggleExplanation('defensive_duels')}
-                  />
-                </div>
+                {['ball_control', 'passing_accuracy', 'dribbling_success', 'shooting_accuracy', 'defensive_duels'].map((field) => (
+                  <div key={field}>
+                    <Label className="text-base font-medium mb-2 block">
+                      {field === 'ball_control' && 'Ball Control (1-5 scale)'}
+                      {field === 'passing_accuracy' && 'Passing Accuracy (%)'}
+                      {field === 'dribbling_success' && 'Dribbling Success (%)'}
+                      {field === 'shooting_accuracy' && 'Shooting Accuracy (%)'}
+                      {field === 'defensive_duels' && 'Defensive Duels (%)'}
+                    </Label>
+                    <input
+                      name={field}
+                      type="number"
+                      step={field === 'ball_control' ? '1' : '0.1'}
+                      min={field === 'ball_control' ? '1' : '0'}
+                      max={field === 'ball_control' ? '5' : '100'}
+                      value={formData[field]}
+                      onChange={handleChange}
+                      required
+                      className={getFieldValidation(field, formData[field], formData.age)}
+                      placeholder={
+                        field === 'ball_control' ? '1-5 scale' : 'Percentage (0-100)'
+                      }
+                    />
+                    <FieldExplanation 
+                      fieldName={field} 
+                      isVisible={explanationVisibility[field]}
+                      onToggle={() => toggleExplanation(field)}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Tactical Awareness - 30% Weight */}
-            <div className="performance-card p-6 rounded-lg border-2 border-royal-gold/30">
-              <h3 className="text-xl font-bold text-royal-gold mb-4 flex items-center">
-                <Brain className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} text-royal-blue`} />
-                Tactical Awareness Assessment (30% Weight) 🧠⚽
+            <div className="assessment-section">
+              <h3>
+                <Brain className="w-6 h-6" />
+                Tactical Awareness Assessment
+                <span className="weight-badge">30% Weight</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <Label htmlFor="game_intelligence" className="text-royal-gold font-semibold">Game Intelligence (1-5)</Label>
-                  <Input
-                    id="game_intelligence"
-                    name="game_intelligence"
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={formData.game_intelligence}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('game_intelligence', formData.game_intelligence, formData.age) || ''}`}
-                    placeholder="1-5 scale"
-                  />
-                  <FieldExplanation 
-                    fieldName="game_intelligence" 
-                    isVisible={explanationVisibility.game_intelligence}
-                    onToggle={() => toggleExplanation('game_intelligence')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="positioning" className="text-royal-gold font-semibold">Positioning (1-5)</Label>
-                  <Input
-                    id="positioning"
-                    name="positioning"
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={formData.positioning}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('positioning', formData.positioning, formData.age) || ''}`}
-                    placeholder="1-5 scale"
-                  />
-                  <FieldExplanation 
-                    fieldName="positioning" 
-                    isVisible={explanationVisibility.positioning}
-                    onToggle={() => toggleExplanation('positioning')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="decision_making" className="text-royal-gold font-semibold">Decision Making (1-5)</Label>
-                  <Input
-                    id="decision_making"
-                    name="decision_making"
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={formData.decision_making}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('decision_making', formData.decision_making, formData.age) || ''}`}
-                    placeholder="1-5 scale"
-                  />
-                  <FieldExplanation 
-                    fieldName="decision_making" 
-                    isVisible={explanationVisibility.decision_making}
-                    onToggle={() => toggleExplanation('decision_making')}
-                  />
-                </div>
+                {['game_intelligence', 'positioning', 'decision_making'].map((field) => (
+                  <div key={field}>
+                    <Label className="text-base font-medium mb-2 block">
+                      {field === 'game_intelligence' && 'Game Intelligence (1-5)'}
+                      {field === 'positioning' && 'Positioning (1-5)'}
+                      {field === 'decision_making' && 'Decision Making (1-5)'}
+                    </Label>
+                    <input
+                      name={field}
+                      type="number"
+                      min="1"
+                      max="5"
+                      value={formData[field]}
+                      onChange={handleChange}
+                      required
+                      className={getFieldValidation(field, formData[field], formData.age)}
+                      placeholder="1-5 scale"
+                    />
+                    <FieldExplanation 
+                      fieldName={field} 
+                      isVisible={explanationVisibility[field]}
+                      onToggle={() => toggleExplanation(field)}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Psychological Traits - 10% Weight */}
-            <div className="performance-card p-6 rounded-lg border-2 border-elite-silver/30">
-              <h3 className="text-xl font-bold text-elite-silver mb-4 flex items-center">
-                <Heart className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} text-royal-red`} />
-                Psychological Traits Assessment (10% Weight) 💚🧠
+            <div className="assessment-section">
+              <h3>
+                <Heart className="w-6 h-6" />
+                Psychological Traits Assessment
+                <span className="weight-badge">10% Weight</span>
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="coachability" className="text-elite-silver font-semibold">Coachability (1-5)</Label>
-                  <Input
-                    id="coachability"
-                    name="coachability"
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={formData.coachability}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('coachability', formData.coachability, formData.age) || ''}`}
-                    placeholder="1-5 scale"
-                  />
-                  <FieldExplanation 
-                    fieldName="coachability" 
-                    isVisible={explanationVisibility.coachability}
-                    onToggle={() => toggleExplanation('coachability')}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="mental_toughness" className="text-elite-silver font-semibold">Mental Toughness (1-5)</Label>
-                  <Input
-                    id="mental_toughness"
-                    name="mental_toughness"
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={formData.mental_toughness}
-                    onChange={handleChange}
-                    required
-                    className={`elite-input ${getFieldValidation('mental_toughness', formData.mental_toughness, formData.age) || ''}`}
-                    placeholder="1-5 scale"
-                  />
-                  <FieldExplanation 
-                    fieldName="mental_toughness" 
-                    isVisible={explanationVisibility.mental_toughness}
-                    onToggle={() => toggleExplanation('mental_toughness')}
-                  />
-                </div>
+                {['coachability', 'mental_toughness'].map((field) => (
+                  <div key={field}>
+                    <Label className="text-base font-medium mb-2 block">
+                      {field === 'coachability' && 'Coachability (1-5)'}
+                      {field === 'mental_toughness' && 'Mental Toughness (1-5)'}
+                    </Label>
+                    <input
+                      name={field}
+                      type="number"
+                      min="1"
+                      max="5"
+                      value={formData[field]}
+                      onChange={handleChange}
+                      required
+                      className={getFieldValidation(field, formData[field], formData.age)}
+                      placeholder="1-5 scale"
+                    />
+                    <FieldExplanation 
+                      fieldName={field} 
+                      isVisible={explanationVisibility[field]}
+                      onToggle={() => toggleExplanation(field)}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
 
-            <Button 
+            <button 
               type="submit" 
               disabled={isLoading}
-              className="w-full elite-button py-4 px-8 rounded-lg text-xl font-bold"
+              className={`btn-primary w-full py-4 text-lg font-semibold ${isLoading ? 'loading' : ''}`}
             >
-              {isLoading ? 'Creating Elite Assessment...' : 'Create Elite Fire Boy Assessment 🔥'}
-            </Button>
+              {isLoading ? 'Creating Assessment...' : 'Create Professional Assessment'}
+            </button>
           </form>
         </CardContent>
       </Card>
@@ -765,37 +573,37 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
 
 // Daily Progressive Program Component
 const DailyProgressiveProgram = ({ weekNumber, playerData }) => {
-  const { t, direction } = useLanguage();
+  const { direction } = useLanguage();
   const weekStructure = DAILY_PROGRESSIVE_STRUCTURE[`week${weekNumber}`];
   
   if (!weekStructure) return null;
   
   return (
-    <Card className="elite-card-gradient border-2 border-royal-blue/30 mb-6">
+    <Card className="professional-card mb-6">
       <CardHeader>
-        <CardTitle className="text-royal-blue flex items-center">
-          <Calendar className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-5 h-5`} />
+        <CardTitle className="flex items-center gap-3">
+          <Calendar className="w-5 h-5 text-[--primary-blue]" />
           Week {weekNumber}: {weekStructure.theme}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Object.entries(weekStructure.daily_focus).map(([day, details]) => (
-            <div key={day} className="performance-card p-4 rounded-lg">
-              <h4 className="font-bold text-royal-gold capitalize mb-2">{day}</h4>
+            <div key={day} className="professional-card p-4">
+              <h4 className="font-semibold text-lg capitalize mb-2 text-[--primary-blue]">{day}</h4>
               <div className="space-y-2">
-                <p className="text-sm font-semibold text-royal-blue">{details.focus}</p>
+                <p className="text-sm font-medium">{details.focus}</p>
                 <div className="flex justify-between items-center">
-                  <Badge className={`text-xs ${
-                    details.intensity === 'Very High' ? 'status-excellent' :
-                    details.intensity === 'High' ? 'status-good' :
-                    details.intensity === 'Medium' ? 'status-average' :
-                    'bg-royal-blue/20 text-royal-blue'
+                  <span className={`badge-${
+                    details.intensity === 'Very High' ? 'excellent' :
+                    details.intensity === 'High' ? 'good' :
+                    details.intensity === 'Medium' ? 'average' :
+                    'poor'
                   }`}>
                     {details.intensity}
-                  </Badge>
-                  <span className="text-xs text-elite-white/70 flex items-center">
-                    <Timer className="w-3 h-3 mr-1" />
+                  </span>
+                  <span className="text-sm text-[--text-muted] flex items-center gap-1">
+                    <Timer className="w-4 h-4" />
                     {details.duration}min
                   </span>
                 </div>
@@ -810,7 +618,7 @@ const DailyProgressiveProgram = ({ weekNumber, playerData }) => {
 
 // Enhanced Training Program Component
 const TrainingProgram = ({ playerId, playerName, playerData }) => {
-  const { t, formatText, direction } = useLanguage();
+  const { direction } = useLanguage();
   const [programs, setPrograms] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showDailyProgression, setShowDailyProgression] = useState(false);
@@ -847,13 +655,13 @@ const TrainingProgram = ({ playerId, playerName, playerData }) => {
     try {
       await axios.post(`${API}/notifications`, {
         player_id: playerId,
-        title: "🔥 Elite Retest Scheduled - Time to Show Your Elite Progress!",
-        message: "Your elite assessment cycle is complete. Time for reassessment to track your elite improvements!",
+        title: "Assessment Retest Scheduled",
+        message: "Your training cycle is complete. Time for reassessment to track improvements!",
         notification_type: "retest",
         scheduled_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
       
-      alert("Elite retest scheduled for next week! You'll receive a notification.");
+      alert("Retest scheduled for next week!");
     } catch (error) {
       console.error("Error scheduling retest:", error);
     }
@@ -867,35 +675,34 @@ const TrainingProgram = ({ playerId, playerName, playerData }) => {
       )}
 
       {/* Daily Progressive Training Display */}
-      <Card className="elite-card-gradient border-2 border-royal-gold/30">
+      <Card className="professional-card">
         <CardHeader>
-          <CardTitle className="text-royal-gold flex items-center justify-between">
-            <div className="flex items-center">
-              <Calendar className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-5 h-5`} />
-              Elite Daily Progression Plan
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Calendar className="w-5 h-5 text-[--primary-blue]" />
+              Daily Progression Plan
             </div>
-            <Button
-              variant="outline"
+            <button
               onClick={() => setShowDailyProgression(!showDailyProgression)}
-              className="elite-button"
+              className="btn-secondary"
             >
               {showDailyProgression ? 'Hide' : 'Show'} Daily Plan
-            </Button>
+            </button>
           </CardTitle>
         </CardHeader>
         {showDailyProgression && (
           <CardContent>
             <div className="mb-4">
-              <Label className="text-royal-gold font-semibold mb-2 block">Select Week:</Label>
+              <Label className="text-base font-medium mb-2 block">Select Week:</Label>
               <Select value={selectedWeek.toString()} onValueChange={(value) => setSelectedWeek(parseInt(value))}>
-                <SelectTrigger className="w-48 elite-input">
+                <SelectTrigger className="input-field w-64">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="elite-card-gradient border border-royal-gold/30">
-                  <SelectItem value="1">Week 1: Elite Foundation Building</SelectItem>
-                  <SelectItem value="2">Week 2: Skill Mastery Development</SelectItem>
-                  <SelectItem value="3">Week 3: Performance Maximization</SelectItem>
-                  <SelectItem value="4">Week 4: Assessment & Elite Progression</SelectItem>
+                <SelectContent>
+                  <SelectItem value="1">Week 1: Foundation Building</SelectItem>
+                  <SelectItem value="2">Week 2: Skill Enhancement</SelectItem>
+                  <SelectItem value="3">Week 3: Performance Optimization</SelectItem>
+                  <SelectItem value="4">Week 4: Assessment & Planning</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -906,45 +713,45 @@ const TrainingProgram = ({ playerId, playerName, playerData }) => {
 
       {/* Training Program Generation */}
       <div className="flex flex-wrap gap-4 mb-6">
-        <Button 
+        <button 
           onClick={() => generateProgram("AI_Generated")} 
           disabled={isGenerating}
-          className="elite-button"
+          className={`btn-primary ${isGenerating ? 'loading' : ''}`}
         >
-          <Zap className="w-4 h-4 mr-2" />
-          Generate Elite AI Program
-        </Button>
-        <Button 
+          <Zap className="w-4 h-4" />
+          Generate AI Program
+        </button>
+        <button 
           onClick={() => generateProgram("Ronaldo_Template")} 
           disabled={isGenerating}
-          className="elite-button"
+          className={`btn-secondary ${isGenerating ? 'loading' : ''}`}
         >
-          <Crown className="w-4 h-4 mr-2" />
-          Elite Ronaldo Template
-        </Button>
-        <Button 
+          <Crown className="w-4 h-4" />
+          Elite Template
+        </button>
+        <button 
           onClick={scheduleRetest}
-          className="elite-button"
+          className="btn-secondary"
         >
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Schedule Elite Retest
-        </Button>
+          <RefreshCw className="w-4 h-4" />
+          Schedule Retest
+        </button>
       </div>
 
       {/* Generated Programs */}
       {programs.map(program => (
-        <Card key={program.id} className="elite-card-gradient border-2 border-royal-blue/30">
+        <Card key={program.id} className="professional-card">
           <CardHeader>
-            <CardTitle className="text-royal-blue flex items-center">
-              <Trophy className={`${direction === 'rtl' ? 'ml-2' : 'mr-2'} w-5 h-5`} />
+            <CardTitle className="flex items-center gap-3">
+              <Trophy className="w-5 h-5 text-[--secondary-gold]" />
               {program.program_type} - {playerName}
             </CardTitle>
-            <CardDescription className="text-elite-white/70">
+            <CardDescription className="text-[--text-muted]">
               Created: {new Date(program.created_at).toLocaleDateString()}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="prose prose-sm max-w-none text-elite-white" dir={direction}>
+            <div className="prose max-w-none text-[--text-secondary]" dir={direction}>
               <div className="whitespace-pre-wrap">
                 {program.program_content}
               </div>
@@ -953,12 +760,12 @@ const TrainingProgram = ({ playerId, playerName, playerData }) => {
             {/* Weekly Schedule */}
             {program.weekly_schedule && Object.keys(program.weekly_schedule).length > 0 && (
               <div className="mt-6">
-                <h4 className="text-lg font-bold text-royal-gold mb-3">Elite Weekly Structure</h4>
+                <h4 className="text-lg font-semibold text-[--primary-blue] mb-3">Weekly Structure</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {Object.entries(program.weekly_schedule).map(([day, activity]) => (
-                    <div key={day} className="performance-card p-3 rounded-lg">
-                      <div className="font-semibold text-royal-gold capitalize">{day}</div>
-                      <div className="text-sm text-elite-white/80" dir={direction}>{activity}</div>
+                    <div key={day} className="professional-card p-3">
+                      <div className="font-medium text-[--primary-blue] capitalize">{day}</div>
+                      <div className="text-sm text-[--text-secondary]" dir={direction}>{activity}</div>
                     </div>
                   ))}
                 </div>
@@ -968,18 +775,18 @@ const TrainingProgram = ({ playerId, playerName, playerData }) => {
             {/* Milestones */}
             {program.milestones && program.milestones.length > 0 && (
               <div className="mt-6">
-                <h4 className="text-lg font-bold text-royal-red mb-3">Elite Milestones & Rewards</h4>
+                <h4 className="text-lg font-semibold text-[--secondary-gold] mb-3">Milestones & Rewards</h4>
                 <div className="space-y-2">
                   {program.milestones.map((milestone, index) => (
-                    <div key={index} className="performance-card p-3 rounded-lg flex items-center justify-between">
+                    <div key={index} className="professional-card p-3 flex items-center justify-between">
                       <div>
-                        <span className="font-semibold text-royal-gold">Week {milestone.week}:</span>
-                        <span className="text-elite-white ml-2" dir={direction}>{milestone.target}</span>
+                        <span className="font-medium text-[--primary-blue]">Week {milestone.week}:</span>
+                        <span className="text-[--text-secondary] ml-2" dir={direction}>{milestone.target}</span>
                       </div>
-                      <Badge className="status-excellent flex items-center">
-                        <Coins className="w-3 h-3 mr-1" />
+                      <span className="badge-excellent flex items-center gap-1">
+                        <Coins className="w-4 h-4" />
                         {milestone.coins}
-                      </Badge>
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -1007,7 +814,7 @@ const App = () => {
   );
 };
 
-// MainDashboard component with elite royal theme
+// MainDashboard component with professional styling
 const MainDashboard = () => {
   const { t, direction, toggleLanguage } = useLanguage();
   const [currentPlayer, setCurrentPlayer] = useState(null);
@@ -1019,61 +826,84 @@ const MainDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Elite Header */}
-      <div className="text-center mb-8 relative">
-        <Button
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      {/* Professional Header */}
+      <div className="app-header">
+        <button
           onClick={toggleLanguage}
-          variant="outline"
-          size="sm"
-          className="absolute top-0 right-0 elite-button"
+          className="language-toggle"
         >
           <Languages className="w-4 h-4 mr-2" />
           {direction === 'rtl' ? 'English' : 'العربية'}
-        </Button>
+        </button>
         
-        <h1 className="text-6xl font-bold elite-royal-gradient bg-clip-text text-transparent mb-2">
+        <h1 className="app-title">
           {t('app.title')}
         </h1>
-        <p className="text-xl text-royal-gold font-semibold">{t('app.subtitle')}</p>
+        <p className="app-subtitle">{t('app.subtitle')}</p>
+        <p className="app-description">{t('app.description')}</p>
       </div>
 
-      {/* Elite Tabs */}
+      {/* Professional Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-8">
-          <TabsTrigger value="assessment" className="elite-tab data-[state=active]:elite-tab">
-            <Target className="w-4 h-4 mr-2" />
-            Assessment
-          </TabsTrigger>
-          <TabsTrigger value="training" className="elite-tab">
-            <Zap className="w-4 h-4 mr-2" />
-            Training
-          </TabsTrigger>
-          <TabsTrigger value="progress" className="elite-tab">
-            <TrendingUp className="w-4 h-4 mr-2" />
-            Progress
-          </TabsTrigger>
-          <TabsTrigger value="voice" className="elite-tab">
-            <Mic className="w-4 h-4 mr-2" />
-            Voice Notes
-          </TabsTrigger>
-          <TabsTrigger value="trophies" className="elite-tab">
-            <Trophy className="w-4 h-4 mr-2" />
-            Trophies
-          </TabsTrigger>
-          <TabsTrigger value="group" className="elite-tab">
-            <Users className="w-4 h-4 mr-2" />
-            Group
-          </TabsTrigger>
-          <TabsTrigger value="highlights" className="elite-tab">
-            <Star className="w-4 h-4 mr-2" />
-            Highlights
-          </TabsTrigger>
-          <TabsTrigger value="body" className="elite-tab">
-            <Activity className="w-4 h-4 mr-2" />
-            Body & Fitness
-          </TabsTrigger>
-        </TabsList>
+        <div className="tab-list">
+          <button 
+            onClick={() => setActiveTab("assessment")}
+            className={`tab-trigger ${activeTab === "assessment" ? "active" : ""}`}
+          >
+            <Target className="w-4 h-4" />
+            {t('nav.assessment')}
+          </button>
+          <button 
+            onClick={() => setActiveTab("training")}
+            className={`tab-trigger ${activeTab === "training" ? "active" : ""}`}
+          >
+            <Zap className="w-4 h-4" />
+            {t('nav.training')}
+          </button>
+          <button 
+            onClick={() => setActiveTab("progress")}
+            className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
+          >
+            <TrendingUp className="w-4 h-4" />
+            {t('nav.progress')}
+          </button>
+          <button 
+            onClick={() => setActiveTab("voice")}
+            className={`tab-trigger ${activeTab === "voice" ? "active" : ""}`}
+          >
+            <Mic className="w-4 h-4" />
+            {t('nav.voice')}
+          </button>
+          <button 
+            onClick={() => setActiveTab("trophies")}
+            className={`tab-trigger ${activeTab === "trophies" ? "active" : ""}`}
+          >
+            <Trophy className="w-4 h-4" />
+            {t('nav.trophies')}
+          </button>
+          <button 
+            onClick={() => setActiveTab("group")}
+            className={`tab-trigger ${activeTab === "group" ? "active" : ""}`}
+          >
+            <Users className="w-4 h-4" />
+            {t('nav.group')}
+          </button>
+          <button 
+            onClick={() => setActiveTab("highlights")}
+            className={`tab-trigger ${activeTab === "highlights" ? "active" : ""}`}
+          >
+            <BarChart3 className="w-4 h-4" />
+            {t('nav.highlights')}
+          </button>
+          <button 
+            onClick={() => setActiveTab("body")}
+            className={`tab-trigger ${activeTab === "body" ? "active" : ""}`}
+          >
+            <Activity className="w-4 h-4" />
+            {t('nav.body')}
+          </button>
+        </div>
 
         <TabsContent value="assessment">
           <AssessmentForm onAssessmentCreated={handleAssessmentCreated} />
@@ -1087,11 +917,11 @@ const MainDashboard = () => {
               playerData={currentPlayer}
             />
           ) : (
-            <Card className="elite-card-gradient text-center p-8 border-2 border-royal-gold/30">
+            <Card className="professional-card text-center p-12">
               <CardContent>
-                <Target className="w-16 h-16 mx-auto mb-4 text-royal-gold" />
-                <h3 className="text-xl font-bold text-royal-gold mb-2">Complete Elite Assessment First</h3>
-                <p className="text-elite-white/70">Create your elite fire boy assessment to unlock personalized training programs!</p>
+                <Target className="w-16 h-16 mx-auto mb-4 text-[--text-muted]" />
+                <h3 className="text-2xl font-semibold mb-2">Complete Assessment First</h3>
+                <p className="text-[--text-muted]">Create a professional player assessment to unlock personalized training programs.</p>
               </CardContent>
             </Card>
           )}
@@ -1102,14 +932,14 @@ const MainDashboard = () => {
             <ProgressTracker playerData={currentPlayer} />
           ) : (
             <ComingSoon 
-              title="Elite Progress Tracking"
-              description="Advanced analytics and progress visualization for elite performance monitoring"
+              title="Advanced Progress Analytics"
+              description="Comprehensive performance tracking and predictive analytics for elite player development"
               icon={TrendingUp}
               features={[
                 "Real-time performance metrics",
-                "Progress comparison charts", 
-                "Goal tracking system",
-                "Performance predictions"
+                "Progress comparison analytics", 
+                "Goal tracking and predictions",
+                "Performance trend analysis"
               ]}
               estimatedRelease="Q1 2024"
               priority="high"
@@ -1119,14 +949,14 @@ const MainDashboard = () => {
 
         <TabsContent value="voice">
           <ComingSoon 
-            title="Elite Voice Notes"
-            description="AI-powered voice analysis and coaching feedback system"
+            title="AI Voice Coaching Assistant"
+            description="Intelligent voice analysis and personalized coaching feedback system"
             icon={Headphones}
             features={[
               "Voice-to-text coaching notes",
               "AI performance analysis",
               "Multilingual support",
-              "Voice command training"
+              "Real-time coaching feedback"
             ]}
             estimatedRelease="Q2 2024"
             priority="medium"
@@ -1135,14 +965,14 @@ const MainDashboard = () => {
 
         <TabsContent value="trophies">
           <ComingSoon 
-            title="Elite Trophies & Achievements"
-            description="Comprehensive achievement system with elite badges and rewards"
-            icon={Crown}
+            title="Achievement & Recognition System"
+            description="Comprehensive achievement tracking with performance milestones and rewards"
+            icon={Trophy}
             features={[
-              "Elite achievement badges",
-              "Performance milestones",
-              "Reward system",
-              "Leaderboards"
+              "Performance achievement badges",
+              "Milestone tracking system",
+              "Digital certificate generation",
+              "Global player rankings"
             ]}
             estimatedRelease="Q1 2024"
             priority="high"
@@ -1151,14 +981,14 @@ const MainDashboard = () => {
 
         <TabsContent value="group">
           <ComingSoon 
-            title="Elite Group Training"
-            description="Team coordination and group training management system"
+            title="Team Management Platform"
+            description="Advanced team coordination and group training management system"
             icon={Shield}
             features={[
-              "Team management",
-              "Group challenges",
-              "Coach dashboard",
-              "Team analytics"
+              "Multi-player team management",
+              "Group training coordination",
+              "Coach dashboard interface",
+              "Team performance analytics"
             ]}
             estimatedRelease="Q2 2024"
             priority="medium"
@@ -1167,14 +997,14 @@ const MainDashboard = () => {
 
         <TabsContent value="highlights">
           <ComingSoon 
-            title="Elite Player Highlights"
-            description="AI-powered performance highlights and video analysis"
-            icon={Camera}
+            title="Performance Analytics Dashboard"
+            description="Advanced analytics and performance visualization for data-driven improvement"
+            icon={BarChart3}
             features={[
-              "Performance video analysis",
-              "Skill highlight reels",
-              "Improvement suggestions",
-              "Share achievements"
+              "Advanced performance analytics",
+              "Video analysis integration",
+              "Performance highlight generation",
+              "Comparative analysis tools"
             ]}
             estimatedRelease="Q3 2024"
             priority="low"
@@ -1183,14 +1013,14 @@ const MainDashboard = () => {
 
         <TabsContent value="body">
           <ComingSoon 
-            title="Elite Body & Fitness Tracker"
-            description="Comprehensive fitness monitoring and body composition analysis"
+            title="Physical Performance Monitor"
+            description="Comprehensive fitness tracking and body composition analysis system"
             icon={Activity}
             features={[
               "Body composition tracking",
-              "Fitness goal setting",
-              "Nutrition planning",
-              "Recovery monitoring"
+              "Fitness goal management",
+              "Nutrition planning integration",
+              "Recovery monitoring system"
             ]}
             estimatedRelease="Q1 2024"
             priority="high"
