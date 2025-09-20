@@ -264,6 +264,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Assessment Report System"
     - "Enhanced Training Program System"
     - "Performance Highlights & Body Monitor"
     - "Enhanced Training Programs with Periodization"
