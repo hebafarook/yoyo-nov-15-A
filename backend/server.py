@@ -26,34 +26,28 @@ app = FastAPI()
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
-# Models
+# Models - Updated for Youth Handbook Standards
 class PlayerAssessment(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     player_name: str
     age: int
     position: str
-    # Speed metrics
-    sprint_40m: float  # seconds
-    sprint_100m: float  # seconds
-    # Agility metrics
-    cone_drill: float  # seconds
-    ladder_drill: float  # seconds
-    shuttle_run: float  # seconds
-    # Flexibility metrics
-    sit_reach: float  # cm
-    shoulder_flexibility: float  # degrees
-    hip_flexibility: float  # degrees
-    # Ball handling metrics
-    juggling_count: int
-    dribbling_time: float  # seconds
-    passing_accuracy: float  # percentage
-    shooting_accuracy: float  # percentage
-    # Body composition and fitness metrics
-    bmi: Optional[float] = None  # Body Mass Index
-    body_fat: Optional[float] = None  # Body fat percentage
-    muscle_mass: Optional[float] = None  # Muscle mass percentage
-    resting_heart_rate: Optional[int] = None  # BPM
-    vo2_max: Optional[float] = None  # ml/kg/min
+    # Physical performance metrics (from Youth Handbook)
+    sprint_30m: float  # seconds - 30m sprint test
+    yo_yo_test: int  # meters - Yo-Yo Intermittent Recovery Test  
+    vo2_max: float  # ml/kg/min - Aerobic capacity
+    vertical_jump: int  # cm - Vertical jump test
+    body_fat: float  # percentage - Body fat percentage
+    # Technical skills metrics (from Youth Handbook)
+    ball_control: int  # 1-5 scale - Overall ball control assessment
+    passing_accuracy: float  # percentage - Passing accuracy under pressure
+    dribbling_success: float  # percentage - 1v1 dribbling success rate
+    shooting_accuracy: float  # percentage - Shooting accuracy test
+    defensive_duels: float  # percentage - Defensive duels won
+    # Assessment metadata
+    assessment_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    retest_scheduled: Optional[datetime] = None
+    previous_assessment_id: Optional[str] = None  # For tracking progress between retests
     # Gamification
     total_coins: int = Field(default=0)
     level: int = Field(default=1)
@@ -63,18 +57,18 @@ class AssessmentCreate(BaseModel):
     player_name: str
     age: int
     position: str
-    sprint_40m: float
-    sprint_100m: float
-    cone_drill: float
-    ladder_drill: float
-    shuttle_run: float
-    sit_reach: float
-    shoulder_flexibility: float
-    hip_flexibility: float
-    juggling_count: int
-    dribbling_time: float
+    # Physical metrics
+    sprint_30m: float
+    yo_yo_test: int
+    vo2_max: float
+    vertical_jump: int
+    body_fat: float
+    # Technical metrics
+    ball_control: int
     passing_accuracy: float
+    dribbling_success: float
     shooting_accuracy: float
+    defensive_duels: float
 
 class TrainingProgram(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
