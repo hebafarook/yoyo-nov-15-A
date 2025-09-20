@@ -202,7 +202,173 @@ class NotificationCreate(BaseModel):
     spotify_link: Optional[str] = None
     scheduled_at: Optional[datetime] = None
 
-# Helper function to prepare data for MongoDB
+# Youth Handbook Assessment Standards and Evaluation
+YOUTH_HANDBOOK_STANDARDS = {
+    "12-14": {
+        "sprint_30m": {"excellent": 4.5, "good": 4.7, "average": 4.9, "poor": 5.0},
+        "yo_yo_test": {"excellent": 1200, "good": 1000, "average": 900, "poor": 800},
+        "vo2_max": {"excellent": 52, "good": 50, "average": 49, "poor": 48},
+        "vertical_jump": {"excellent": 40, "good": 35, "average": 32, "poor": 30},
+        "body_fat": {"excellent": 12, "good": 15, "average": 16, "poor": 18},
+        "ball_control": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "passing_accuracy": {"excellent": 75, "good": 70, "average": 65, "poor": 60},
+        "dribbling_success": {"excellent": 55, "good": 50, "average": 45, "poor": 40},
+        "shooting_accuracy": {"excellent": 60, "good": 55, "average": 50, "poor": 45},
+        "defensive_duels": {"excellent": 70, "good": 65, "average": 60, "poor": 55},
+        "game_intelligence": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "positioning": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "decision_making": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "coachability": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "mental_toughness": {"excellent": 5, "good": 4, "average": 3, "poor": 2}
+    },
+    "15-16": {
+        "sprint_30m": {"excellent": 4.2, "good": 4.4, "average": 4.6, "poor": 4.7},
+        "yo_yo_test": {"excellent": 1600, "good": 1400, "average": 1300, "poor": 1200},
+        "vo2_max": {"excellent": 56, "good": 54, "average": 53, "poor": 52},
+        "vertical_jump": {"excellent": 50, "good": 45, "average": 42, "poor": 40},
+        "body_fat": {"excellent": 10, "good": 12, "average": 14, "poor": 15},
+        "ball_control": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "passing_accuracy": {"excellent": 85, "good": 80, "average": 75, "poor": 70},
+        "dribbling_success": {"excellent": 65, "good": 60, "average": 55, "poor": 50},
+        "shooting_accuracy": {"excellent": 70, "good": 65, "average": 60, "poor": 55},
+        "defensive_duels": {"excellent": 75, "good": 70, "average": 65, "poor": 60},
+        "game_intelligence": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "positioning": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "decision_making": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "coachability": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "mental_toughness": {"excellent": 5, "good": 4, "average": 3, "poor": 2}
+    },
+    "17-18": {
+        "sprint_30m": {"excellent": 4.0, "good": 4.2, "average": 4.4, "poor": 4.5},
+        "yo_yo_test": {"excellent": 2000, "good": 1800, "average": 1700, "poor": 1600},
+        "vo2_max": {"excellent": 60, "good": 58, "average": 57, "poor": 56},
+        "vertical_jump": {"excellent": 60, "good": 55, "average": 52, "poor": 50},
+        "body_fat": {"excellent": 8, "good": 10, "average": 11, "poor": 12},
+        "ball_control": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "passing_accuracy": {"excellent": 90, "good": 85, "average": 80, "poor": 75},
+        "dribbling_success": {"excellent": 70, "good": 65, "average": 60, "poor": 55},
+        "shooting_accuracy": {"excellent": 75, "good": 70, "average": 65, "poor": 60},
+        "defensive_duels": {"excellent": 80, "good": 75, "average": 70, "poor": 65},
+        "game_intelligence": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "positioning": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "decision_making": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "coachability": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "mental_toughness": {"excellent": 5, "good": 4, "average": 3, "poor": 2}
+    },
+    "elite": {
+        "sprint_30m": {"excellent": 3.8, "good": 3.9, "average": 4.0, "poor": 4.1},
+        "yo_yo_test": {"excellent": 2400, "good": 2300, "average": 2200, "poor": 2100},
+        "vo2_max": {"excellent": 65, "good": 62, "average": 60, "poor": 58},
+        "vertical_jump": {"excellent": 70, "good": 65, "average": 60, "poor": 55},
+        "body_fat": {"excellent": 6, "good": 8, "average": 9, "poor": 10},
+        "ball_control": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "passing_accuracy": {"excellent": 95, "good": 90, "average": 85, "poor": 80},
+        "dribbling_success": {"excellent": 75, "good": 70, "average": 65, "poor": 60},
+        "shooting_accuracy": {"excellent": 85, "good": 80, "average": 75, "poor": 70},
+        "defensive_duels": {"excellent": 85, "good": 80, "average": 75, "poor": 70},
+        "game_intelligence": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "positioning": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "decision_making": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "coachability": {"excellent": 5, "good": 4, "average": 3, "poor": 2},
+        "mental_toughness": {"excellent": 5, "good": 4, "average": 3, "poor": 2}
+    }
+}
+
+ASSESSMENT_WEIGHTS = {
+    "technical": 0.40,     # 40%
+    "tactical": 0.30,      # 30%
+    "physical": 0.20,      # 20%
+    "psychological": 0.10  # 10%
+}
+
+def get_age_category(age: int) -> str:
+    """Get age category based on Youth Handbook standards"""
+    if age >= 12 and age <= 14:
+        return "12-14"
+    elif age >= 15 and age <= 16:
+        return "15-16"
+    elif age >= 17 and age <= 18:
+        return "17-18"
+    else:
+        return "elite"
+
+def evaluate_performance(value: float, metric: str, age_category: str) -> str:
+    """Evaluate performance level based on handbook standards"""
+    standards = YOUTH_HANDBOOK_STANDARDS.get(age_category, {}).get(metric)
+    if not standards:
+        return "average"
+    
+    excellent, good, average, poor = standards["excellent"], standards["good"], standards["average"], standards["poor"]
+    
+    # Lower is better for these metrics
+    lower_is_better = ["sprint_30m", "body_fat"]
+    
+    if metric in lower_is_better:
+        if value <= excellent:
+            return "excellent"
+        elif value <= good:
+            return "good"
+        elif value <= average:
+            return "average"
+        else:
+            return "poor"
+    else:
+        # Higher is better for all other metrics
+        if value >= excellent:
+            return "excellent"
+        elif value >= good:
+            return "good"
+        elif value >= average:
+            return "average"
+        else:
+            return "poor"
+
+def calculate_assessment_scores(assessment_data: dict, age: int) -> dict:
+    """Calculate comprehensive assessment scores based on Youth Handbook weighting"""
+    age_category = get_age_category(age)
+    
+    # Define metric categories
+    physical_metrics = ["sprint_30m", "yo_yo_test", "vo2_max", "vertical_jump", "body_fat"]
+    technical_metrics = ["ball_control", "passing_accuracy", "dribbling_success", "shooting_accuracy", "defensive_duels"]
+    tactical_metrics = ["game_intelligence", "positioning", "decision_making"]
+    psychological_metrics = ["coachability", "mental_toughness"]
+    
+    score_map = {"excellent": 5, "good": 4, "average": 3, "poor": 2}
+    
+    def calculate_category_score(metrics):
+        total_score = 0
+        valid_metrics = 0
+        
+        for metric in metrics:
+            value = assessment_data.get(metric)
+            if value is not None:
+                performance = evaluate_performance(value, metric, age_category)
+                total_score += score_map.get(performance, 3)
+                valid_metrics += 1
+        
+        return total_score / valid_metrics if valid_metrics > 0 else 3
+    
+    # Calculate category scores
+    physical_score = calculate_category_score(physical_metrics)
+    technical_score = calculate_category_score(technical_metrics)
+    tactical_score = calculate_category_score(tactical_metrics)
+    psychological_score = calculate_category_score(psychological_metrics)
+    
+    # Calculate weighted overall score
+    overall_score = (
+        physical_score * ASSESSMENT_WEIGHTS["physical"] +
+        technical_score * ASSESSMENT_WEIGHTS["technical"] +
+        tactical_score * ASSESSMENT_WEIGHTS["tactical"] +
+        psychological_score * ASSESSMENT_WEIGHTS["psychological"]
+    )
+    
+    return {
+        "overall": round(overall_score, 2),
+        "physical": round(physical_score, 2),
+        "technical": round(technical_score, 2),
+        "tactical": round(tactical_score, 2),
+        "psychological": round(psychological_score, 2)
+    }
 def prepare_for_mongo(data):
     if isinstance(data, dict):
         for key, value in data.items():
