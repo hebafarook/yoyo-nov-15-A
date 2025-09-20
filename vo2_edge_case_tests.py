@@ -115,7 +115,8 @@ class VO2EdgeCaseTester:
             "Save VO2 Benchmark - Invalid VO2 Value",
             "POST",
             "vo2-benchmarks",
-            200  # API might accept it, but we should note this
+            200,  # API might accept it, but we should note this
+            data=invalid_data
         )
 
     def test_extreme_vo2_values(self):
