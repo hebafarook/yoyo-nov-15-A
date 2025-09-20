@@ -20,6 +20,7 @@ import VO2MaxCalculator from "./components/VO2MaxCalculator";
 import TrainingDashboard from "./components/TrainingDashboard";
 import PerformanceHighlights from "./components/PerformanceHighlights";
 import PhysicalPerformanceMonitor from "./components/PhysicalPerformanceMonitor";
+import AssessmentReport from "./components/AssessmentReport";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
