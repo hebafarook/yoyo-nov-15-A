@@ -526,6 +526,17 @@ async def root():
 async def create_assessment(assessment: AssessmentCreate):
     try:
         assessment_dict = assessment.dict()
+        
+        # Calculate comprehensive scores based on Youth Handbook standards
+        scores = calculate_assessment_scores(assessment_dict, assessment.age)
+        assessment_dict["overall_score"] = scores["overall"]
+        assessment_dict["category_scores"] = {
+            "physical": scores["physical"],
+            "technical": scores["technical"],
+            "tactical": scores["tactical"],
+            "psychological": scores["psychological"]
+        }
+        
         assessment_obj = PlayerAssessment(**assessment_dict)
         assessment_data = prepare_for_mongo(assessment_obj.dict())
         await db.assessments.insert_one(assessment_data)
