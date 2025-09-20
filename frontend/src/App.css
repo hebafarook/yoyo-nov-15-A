@@ -1,17 +1,14 @@
-/* Professional Light Theme - White and Black Only */
+/* Professional Light Theme - White and Black with Gray Hierarchy */
 :root {
   --primary-black: #000000;
-  --secondary-gray: #666666;
+  --text-black: #1a1a1a;
+  --text-gray-dark: #333333;
+  --text-gray-medium: #666666;
+  --text-gray-light: #999999;
   --light-gray: #f5f5f5;
   --medium-gray: #e5e5e5;
   --white: #ffffff;
-  --text-primary: #000000;
-  --text-secondary: #333333;
-  --text-muted: #666666;
   --border-color: #d1d5db;
-  --success: #000000;
-  --warning: #666666;
-  --error: #000000;
 }
 
 /* Global Professional Styles */
@@ -21,7 +18,7 @@
 
 body {
   background-color: var(--white);
-  color: var(--text-primary);
+  color: var(--text-black);
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   line-height: 1.6;
@@ -37,7 +34,7 @@ h1 {
   font-weight: 700;
   line-height: 1.2;
   margin: 0 0 1rem 0;
-  color: var(--text-primary);
+  color: var(--primary-black);
 }
 
 h2 {
@@ -45,7 +42,7 @@ h2 {
   font-weight: 600;
   line-height: 1.3;
   margin: 0 0 0.75rem 0;
-  color: var(--text-primary);
+  color: var(--text-black);
 }
 
 h3 {
@@ -53,7 +50,7 @@ h3 {
   font-weight: 600;
   line-height: 1.4;
   margin: 0 0 0.5rem 0;
-  color: var(--text-primary);
+  color: var(--text-black);
 }
 
 h4 {
@@ -61,7 +58,7 @@ h4 {
   font-weight: 500;
   line-height: 1.4;
   margin: 0 0 0.5rem 0;
-  color: var(--text-primary);
+  color: var(--text-gray-dark);
 }
 
 p {
@@ -69,22 +66,25 @@ p {
   font-weight: 400;
   line-height: 1.6;
   margin: 0 0 1rem 0;
-  color: var(--text-secondary);
+  color: var(--text-gray-dark);
 }
 
 .text-large {
   font-size: 1.125rem;
   font-weight: 500;
+  color: var(--text-black);
 }
 
 .text-small {
   font-size: 0.875rem;
   font-weight: 400;
+  color: var(--text-gray-medium);
 }
 
 .text-xs {
   font-size: 0.75rem;
   font-weight: 400;
+  color: var(--text-gray-light);
 }
 
 /* Professional Card Styles */
@@ -98,7 +98,7 @@ p {
 }
 
 .professional-card:hover {
-  border-color: var(--primary-black);
+  border-color: var(--text-gray-dark);
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -120,15 +120,15 @@ p {
 }
 
 .btn-primary:hover {
-  background-color: var(--secondary-gray);
-  border-color: var(--secondary-gray);
+  background-color: var(--text-gray-dark);
+  border-color: var(--text-gray-dark);
   transform: translateY(-1px);
 }
 
 .btn-secondary {
   background-color: var(--white);
-  color: var(--primary-black);
-  border: 1px solid var(--primary-black);
+  color: var(--text-black);
+  border: 1px solid var(--text-gray-dark);
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-size: 1rem;
@@ -142,7 +142,7 @@ p {
 }
 
 .btn-secondary:hover {
-  background-color: var(--primary-black);
+  background-color: var(--text-gray-dark);
   color: var(--white);
 }
 
@@ -153,7 +153,7 @@ p {
   border-radius: 8px;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  color: var(--text-primary);
+  color: var(--text-black);
   width: 100%;
   transition: all 0.2s ease;
 }
@@ -165,7 +165,7 @@ p {
 }
 
 .input-field::placeholder {
-  color: var(--text-muted);
+  color: var(--text-gray-light);
 }
 
 /* Professional Tab Styles */
@@ -181,7 +181,7 @@ p {
 
 .tab-trigger {
   background-color: transparent;
-  color: var(--text-secondary);
+  color: var(--text-gray-medium);
   border: none;
   padding: 0.75rem 1rem;
   border-radius: 8px;
@@ -198,7 +198,7 @@ p {
 
 .tab-trigger:hover {
   background-color: var(--medium-gray);
-  color: var(--text-primary);
+  color: var(--text-black);
 }
 
 .tab-trigger.active {
@@ -217,7 +217,7 @@ p {
 }
 
 .badge-good {
-  background-color: var(--secondary-gray);
+  background-color: var(--text-gray-dark);
   color: var(--white);
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
@@ -226,8 +226,8 @@ p {
 }
 
 .badge-average {
-  background-color: var(--medium-gray);
-  color: var(--primary-black);
+  background-color: var(--text-gray-medium);
+  color: var(--white);
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -236,8 +236,8 @@ p {
 
 .badge-poor {
   background-color: var(--white);
-  color: var(--primary-black);
-  border: 1px solid var(--primary-black);
+  color: var(--text-black);
+  border: 1px solid var(--text-gray-dark);
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -272,7 +272,7 @@ p {
   font-weight: 600;
   font-size: 1.125rem;
   border: 3px solid var(--white);
-  box-shadow: 0 0 0 1px var(--primary-black);
+  box-shadow: 0 0 0 1px var(--text-gray-dark);
 }
 
 /* Professional Tables */
@@ -284,7 +284,7 @@ p {
 
 .data-table th {
   background-color: var(--light-gray);
-  color: var(--text-primary);
+  color: var(--text-black);
   font-weight: 600;
   font-size: 0.875rem;
   padding: 1rem;
@@ -295,7 +295,7 @@ p {
 .data-table td {
   padding: 1rem;
   border-bottom: 1px solid var(--border-color);
-  color: var(--text-secondary);
+  color: var(--text-gray-dark);
   font-size: 0.875rem;
 }
 
@@ -315,7 +315,7 @@ p {
 }
 
 .coming-soon-icon {
-  color: var(--text-muted);
+  color: var(--text-gray-medium);
   opacity: 0.7;
   animation: pulse 2s infinite;
 }
@@ -338,21 +338,21 @@ p {
 .app-title {
   font-size: 3rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--primary-black);
   margin-bottom: 0.5rem;
   line-height: 1.1;
 }
 
 .app-subtitle {
   font-size: 1.25rem;
-  color: var(--text-secondary);
+  color: var(--text-gray-dark);
   font-weight: 500;
   margin-bottom: 0.75rem;
 }
 
 .app-description {
   font-size: 1rem;
-  color: var(--text-muted);
+  color: var(--text-gray-medium);
   font-weight: 400;
   max-width: 600px;
   margin: 0 auto;
@@ -365,7 +365,7 @@ p {
   right: 0;
   background-color: var(--white);
   border: 1px solid var(--border-color);
-  color: var(--text-secondary);
+  color: var(--text-gray-medium);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -374,8 +374,8 @@ p {
 }
 
 .language-toggle:hover {
-  border-color: var(--primary-black);
-  color: var(--text-primary);
+  border-color: var(--text-gray-dark);
+  color: var(--text-black);
 }
 
 /* Assessment Sections */
@@ -388,7 +388,7 @@ p {
 }
 
 .assessment-section h3 {
-  color: var(--primary-black);
+  color: var(--text-black);
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -404,24 +404,43 @@ p {
   font-weight: 600;
 }
 
+/* Label Styles */
+.form-label {
+  color: var(--text-black);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* Description Text */
+.description-text {
+  color: var(--text-gray-medium);
+  font-size: 0.875rem;
+}
+
+/* Muted Text */
+.muted-text {
+  color: var(--text-gray-light);
+  font-size: 0.75rem;
+}
+
 /* Field Validation Colors */
 .input-field.border-excellent {
-  border-color: var(--primary-black);
+  border-color: var(--text-black);
   background-color: var(--light-gray);
 }
 
 .input-field.border-good {
-  border-color: var(--secondary-gray);
+  border-color: var(--text-gray-dark);
   background-color: var(--light-gray);
 }
 
 .input-field.border-average {
-  border-color: var(--border-color);
+  border-color: var(--text-gray-medium);
   background-color: var(--white);
 }
 
 .input-field.border-poor {
-  border-color: var(--primary-black);
+  border-color: var(--text-gray-light);
   background-color: var(--white);
 }
 
@@ -473,14 +492,14 @@ p {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-black);
+  background: var(--text-gray-dark);
 }
 
 /* Focus and Accessibility */
 button:focus,
 input:focus,
 select:focus {
-  outline: 2px solid var(--primary-black);
+  outline: 2px solid var(--text-gray-dark);
   outline-offset: 2px;
 }
 
@@ -498,7 +517,7 @@ select:focus {
   width: 20px;
   height: 20px;
   margin: -10px 0 0 -10px;
-  border: 2px solid var(--primary-black);
+  border: 2px solid var(--text-gray-dark);
   border-radius: 50%;
   border-top-color: transparent;
   animation: spin 1s linear infinite;
@@ -507,13 +526,3 @@ select:focus {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-
-/* Remove color references in components */
-.text-primary-blue { color: var(--primary-black); }
-.text-secondary-gold { color: var(--text-muted); }
-.text-success { color: var(--primary-black); }
-.text-error { color: var(--primary-black); }
-.border-primary-blue { border-color: var(--primary-black); }
-.border-secondary-gold { border-color: var(--text-muted); }
-.bg-primary-blue { background-color: var(--primary-black); }
-.bg-secondary-gold { background-color: var(--text-muted); }
