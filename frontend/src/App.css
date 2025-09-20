@@ -628,3 +628,74 @@ select:focus {
 .vo2-calculator-card .text-blue-600 {
   color: var(--navy-primary) !important;
 }
+
+/* Assessment Report Print Styles */
+.assessment-report {
+  background: white;
+}
+
+@media print {
+  /* Hide everything except the assessment report */
+  body * {
+    visibility: hidden;
+  }
+  
+  .assessment-report, .assessment-report * {
+    visibility: visible;
+  }
+  
+  .assessment-report {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white;
+    color: black;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  /* Print-specific adjustments */
+  .print\\:hidden {
+    display: none !important;
+  }
+  
+  .print\\:space-y-4 > * + * {
+    margin-top: 1rem !important;
+  }
+  
+  .print\\:shadow-none {
+    box-shadow: none !important;
+  }
+  
+  /* Ensure proper page breaks */
+  .professional-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+  
+  /* Adjust colors for print */
+  .bg-blue-50 { background-color: #f8f9ff !important; }
+  .bg-green-50 { background-color: #f0fdf4 !important; }
+  .bg-red-50 { background-color: #fef2f2 !important; }
+  .bg-yellow-50 { background-color: #fffbeb !important; }
+  .bg-purple-50 { background-color: #faf5ff !important; }
+  
+  .text-blue-600 { color: #2563eb !important; }
+  .text-green-600 { color: #059669 !important; }
+  .text-red-600 { color: #dc2626 !important; }
+  .text-yellow-600 { color: #d97706 !important; }
+  .text-purple-600 { color: #9333ea !important; }
+  
+  /* Font size adjustments for readability */
+  h1 { font-size: 18pt !important; }
+  h2 { font-size: 16pt !important; }
+  h3 { font-size: 14pt !important; }
+  h4 { font-size: 12pt !important; }
+  
+  /* Ensure proper margins */
+  @page {
+    margin: 1in;
+  }
+}
