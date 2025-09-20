@@ -64,23 +64,30 @@ class SoccerTrainingAPITester:
         return self.run_test("Root API Endpoint", "GET", "", 200)
 
     def test_create_assessment(self):
-        """Test creating a player assessment"""
+        """Test creating a player assessment with Youth Handbook fields"""
         assessment_data = {
             "player_name": "Cristiano Silva",
-            "age": 22,
+            "age": 20,
             "position": "forward",
-            "sprint_40m": 4.8,
-            "sprint_100m": 11.2,
-            "cone_drill": 6.5,
-            "ladder_drill": 8.2,
-            "shuttle_run": 9.1,
-            "sit_reach": 35.0,
-            "shoulder_flexibility": 180.0,
-            "hip_flexibility": 120.0,
-            "juggling_count": 150,
-            "dribbling_time": 12.5,
+            # Physical metrics (20%)
+            "sprint_30m": 4.2,
+            "yo_yo_test": 1800,
+            "vo2_max": 58.5,
+            "vertical_jump": 55,
+            "body_fat": 10.0,
+            # Technical metrics (40%)
+            "ball_control": 4,
             "passing_accuracy": 85.0,
-            "shooting_accuracy": 78.0
+            "dribbling_success": 70.0,
+            "shooting_accuracy": 75.0,
+            "defensive_duels": 80.0,
+            # Tactical metrics (30%)
+            "game_intelligence": 4,
+            "positioning": 4,
+            "decision_making": 4,
+            # Psychological metrics (10%)
+            "coachability": 5,
+            "mental_toughness": 4
         }
         
         success, response = self.run_test(
