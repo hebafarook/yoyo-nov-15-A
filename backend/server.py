@@ -451,6 +451,176 @@ async def check_and_award_achievements(player_id: str, progress_entry: ProgressE
     
     return trophies_awarded
 
+# Enhanced Weekly Progress Tracking
+class WeeklyProgress(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    player_id: str
+    week_number: int  # 1-4 in the cycle
+    program_id: str
+    completed_exercises: List[str] = Field(default_factory=list)
+    performance_notes: str = ""
+    intensity_rating: int = Field(ge=1, le=5)  # 1-5 scale
+    fatigue_level: int = Field(ge=1, le=5)  # 1-5 scale
+    improvement_areas: List[str] = Field(default_factory=list)
+    week_completed: bool = Field(default=False)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class WeeklyProgressCreate(BaseModel):
+    player_id: str
+    week_number: int
+    program_id: str
+    completed_exercises: List[str] = Field(default_factory=list)
+    performance_notes: str = ""
+    intensity_rating: int = Field(ge=1, le=5)
+    fatigue_level: int = Field(ge=1, le=5)
+    improvement_areas: List[str] = Field(default_factory=list)
+    week_completed: bool = Field(default=False)
+
+# Dynamic Exercise Adjustment System
+def adjust_exercises_based_on_progress(player_assessment: dict, weekly_progress_history: List[dict]) -> dict:
+    """Dynamically adjust exercises based on player progress and performance"""
+    
+    # Base exercise library
+    base_exercises = {
+        "speed": {
+            "beginner": ["10x30m sprints", "Hill runs (15 min)", "Acceleration drills"],
+            "intermediate": ["8x50m sprints", "Hill runs (20 min)", "Resistance sprints"],
+            "advanced": ["6x100m sprints", "Hill runs (25 min)", "Parachute sprints"]
+        },
+        "technical": {
+            "beginner": ["Basic juggling (100 touches)", "Cone dribbling", "Wall passes"],
+            "intermediate": ["Advanced juggling (300 touches)", "1v1 dribbling", "Shooting drills"],
+            "advanced": ["Elite juggling (500+ touches)", "Competition 1v1", "Precision shooting"]
+        },
+        "tactical": {
+            "beginner": ["Position awareness drills", "Basic passing patterns", "Small-sided games"],
+            "intermediate": ["Advanced positioning", "Complex passing", "Tactical scenarios"],
+            "advanced": ["Elite game reading", "Advanced tactics", "Match simulation"]
+        }
+    }
+    
+    # Analyze progress to determine appropriate level
+    if not weekly_progress_history:
+        return base_exercises
+    
+    # Calculate average performance metrics
+    avg_intensity = sum([p.get("intensity_rating", 3) for p in weekly_progress_history]) / len(weekly_progress_history)
+    avg_fatigue = sum([p.get("fatigue_level", 3) for p in weekly_progress_history]) / len(weekly_progress_history)
+    completion_rate = sum([1 for p in weekly_progress_history if p.get("week_completed", False)]) / len(weekly_progress_history)
+    
+    # Determine player level based on assessment and progress
+    overall_score = player_assessment.get("overall_score", 3.0)
+    
+    if overall_score >= 4.5 and completion_rate >= 0.8 and avg_intensity >= 4:
+        level = "advanced"
+    elif overall_score >= 3.5 and completion_rate >= 0.6 and avg_intensity >= 3:
+        level = "intermediate"
+    else:
+        level = "beginner"
+    
+    # Adjust based on fatigue levels
+    if avg_fatigue >= 4:
+        # High fatigue - reduce intensity
+        if level == "advanced":
+            level = "intermediate"
+        elif level == "intermediate":
+            level = "beginner"
+    
+    # Return adjusted exercises
+    adjusted_exercises = {}
+    for category in base_exercises:
+        adjusted_exercises[category] = base_exercises[category][level]
+    
+    return {
+        "level": level,
+        "exercises": adjusted_exercises,
+        "reasoning": f"Based on overall score: {overall_score}, completion rate: {completion_rate:.1%}, avg intensity: {avg_intensity}/5, avg fatigue: {avg_fatigue}/5"
+    }
+
+# Enhanced AI Training Program Generator with Weekly Adaptation
+async def generate_adaptive_training_program(assessment: PlayerAssessment, week_number: int = 1, progress_history: List[dict] = None) -> str:
+    """Generate training program that adapts based on weekly progress"""
+    try:
+        # Get dynamic exercise adjustments
+        exercise_adjustment = adjust_exercises_based_on_progress(assessment.dict(), progress_history or [])
+        
+        # Initialize LLM Chat
+        chat = LlmChat(
+            api_key=os.environ.get('EMERGENT_LLM_KEY'),
+            session_id=f"training_{assessment.id}_week_{week_number}",
+            system_message="أنت مدرب يويو الفتى الناري النخبوي، خبير تدريب كرة قدم محترف ومتقدم. أنشئ برامج تدريبية نخبوية قابلة للتكيف حسب التقدم الأسبوعي. يجب أن تجيب باللغة العربية فقط مع طاقة عالية وحماس نخبوي."
+        ).with_model("openai", "gpt-4o")
+
+        # Create comprehensive assessment summary
+        assessment_text = f"""
+        بيانات تقييم يويو الفتى الناري النخبوي:
+        الاسم: {assessment.player_name}
+        العمر: {assessment.age} سنة
+        المركز: {assessment.position}
+        المستوى: {assessment.level}
+        النتيجة الإجمالية: {assessment.overall_score}/5.0
+        
+        الأسبوع الحالي: {week_number}/4
+        مستوى التمارين المُحدد: {exercise_adjustment['level']}
+        
+        المقاييس البدنية (20%):
+        - عدو 30 متر: {assessment.sprint_30m} ثانية
+        - اختبار يو-يو: {assessment.yo_yo_test} متر
+        - الحد الأقصى لاستهلاك الأكسجين: {assessment.vo2_max} مل/كغ/دقيقة
+        - القفز العمودي: {assessment.vertical_jump} سم
+        - نسبة الدهون: {assessment.body_fat}%
+        
+        المهارات التقنية (40%):
+        - التحكم بالكرة: {assessment.ball_control}/5
+        - دقة التمرير: {assessment.passing_accuracy}%
+        - نجاح المراوغة: {assessment.dribbling_success}%
+        - دقة التسديد: {assessment.shooting_accuracy}%
+        - المبارزات الدفاعية: {assessment.defensive_duels}%
+        
+        الوعي التكتيكي (30%):
+        - ذكاء اللعب: {assessment.game_intelligence}/5
+        - تحديد المواقع: {assessment.positioning}/5
+        - اتخاذ القرار: {assessment.decision_making}/5
+        
+        الصفات النفسية (10%):
+        - قابلية التدريب: {assessment.coachability}/5
+        - الصلابة الذهنية: {assessment.mental_toughness}/5
+        
+        تمارين مُخصصة للأسبوع {week_number}:
+        السرعة: {', '.join(exercise_adjustment['exercises']['speed'])}
+        التقنية: {', '.join(exercise_adjustment['exercises']['technical'])}
+        التكتيك: {', '.join(exercise_adjustment['exercises']['tactical'])}
+        
+        سبب اختيار المستوى: {exercise_adjustment['reasoning']}
+        """
+
+        prompt = f"""
+        أنشئ برنامج تدريبي نخبوي متقدم وقابل للتكيف لـ يويو الفتى الناري للأسبوع {week_number}! 🔥👑
+
+        {assessment_text}
+
+        يرجى إنشاء برنامج نخبوي مليء بالطاقة والحماس يتضمن:
+        1. تحليل متقدم لنقاط القوة والضعف مع خطة تطوير نخبوية
+        2. برنامج تدريبي يومي مفصل للأسبوع {week_number} مع التمارين المُخصصة
+        3. أهداف أسبوعية قابلة للقياس مع مؤشرات الأداء
+        4. تعديلات على التمارين بناءً على مستوى اللاعب الحالي
+        5. نصائح من نجوم كرة القدم النخبة
+        6. مؤشرات التقدم المتوقع والإطار الزمني
+        7. تحديات نخبوية للأسبوع القادم
+
+        اجعل البرنامج نخبوياً ومليئاً بالتحفيز الملكي! استخدم الرموز التعبيرية والكلمات المحفزة النخبوية.
+        
+        يجب أن يكون الرد باللغة العربية فقط ومناسب ليويو الفتى الناري النخبوي!
+        """
+
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        return response
+
+    except Exception as e:
+        logging.error(f"خطأ في إنشاء البرنامج التدريبي التكيفي: {e}")
+        return "خطأ في إنشاء البرنامج التدريبي النخبوي. يرجى المحاولة مرة أخرى."
+
 # AI Training Program Generator in Arabic
 async def generate_ai_training_program(assessment: PlayerAssessment) -> str:
     try:
