@@ -921,9 +921,34 @@ const MainDashboard = () => {
   const [previousAssessments, setPreviousAssessments] = useState([]);
   const [isStartupReport, setIsStartupReport] = useState(false);
 
-  const handleAssessmentCreated = (assessment) => {
+  const handleAssessmentCreated = async (assessment) => {
+    // Load previous assessments for comparison
+    await loadPreviousAssessments(assessment.player_name);
+    
     setCurrentPlayer(assessment);
-    setActiveTab("training");
+    setIsStartupReport(false);
+    setShowAssessmentReport(true);
+    
+    // Auto-hide report after 30 seconds and switch to training tab
+    setTimeout(() => {
+      setShowAssessmentReport(false);
+      setActiveTab("training");
+    }, 30000);
+  };
+
+  const loadPreviousAssessments = async (playerName) => {
+    try {
+      const response = await axios.get(`${API}/assessments`);
+      const playerAssessments = response.data
+        .filter(assessment => assessment.player_name === playerName)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(1); // Exclude the current (latest) assessment
+      
+      setPreviousAssessments(playerAssessments);
+    } catch (error) {
+      console.error('Error loading previous assessments:', error);
+      setPreviousAssessments([]);
+    }
   };
 
   return (
