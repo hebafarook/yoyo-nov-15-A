@@ -664,6 +664,19 @@ def main():
     test_results.append(tester.test_weekly_progress_tracking())
     test_results.append(tester.test_get_weekly_progress())
     
+    # NEW PERIODIZED TRAINING PROGRAM TESTS (HIGH PRIORITY)
+    print("\n🔥 Testing NEW Enhanced Training Program System...")
+    test_results.append(tester.test_create_periodized_program())
+    test_results.append(tester.test_get_player_program())
+    test_results.append(tester.test_get_current_routine())
+    test_results.append(tester.test_log_daily_progress())
+    test_results.append(tester.test_get_daily_progress())
+    test_results.append(tester.test_get_performance_metrics())
+    
+    # Edge case testing
+    print("\n⚠️  Testing Edge Cases and Error Handling...")
+    test_results.append(tester.test_periodized_program_edge_cases())
+    
     # Print final results
     print("\n" + "=" * 60)
     print("📊 FINAL TEST RESULTS")
