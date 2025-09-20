@@ -976,6 +976,11 @@ const MainDashboard = () => {
     setIsStartupReport(false);
     setShowAssessmentReport(true);
     
+    // Auto-print milestone report after 2 seconds
+    setTimeout(() => {
+      printAssessmentReport();
+    }, 2000);
+    
     // Auto-hide report after 30 seconds and switch to training tab
     setTimeout(() => {
       setShowAssessmentReport(false);
