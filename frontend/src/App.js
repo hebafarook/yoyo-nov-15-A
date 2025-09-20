@@ -1028,13 +1028,30 @@ const MainDashboard = () => {
 
       {/* Professional Header */}
       <div className="app-header">
-        <button
-          onClick={toggleLanguage}
-          className="language-toggle"
-        >
-          <Languages className="w-4 h-4 mr-2" />
-          {direction === 'rtl' ? 'English' : 'العربية'}
-        </button>
+        <div className="flex justify-between items-start w-full">
+          <button
+            onClick={toggleLanguage}
+            className="language-toggle"
+          >
+            <Languages className="w-4 h-4 mr-2" />
+            {direction === 'rtl' ? 'English' : 'العربية'}
+          </button>
+          
+          {currentPlayer && (
+            <Button
+              onClick={() => {
+                setIsStartupReport(false);
+                setShowAssessmentReport(true);
+              }}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <FileText className="w-4 h-4" />
+              View Assessment Report
+            </Button>
+          )}
+        </div>
         
         <h1 className="app-title">
           {t('app.title')}
