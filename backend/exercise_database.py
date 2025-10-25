@@ -294,7 +294,7 @@ PERIODIZATION_TEMPLATES = {
     }
 }
 
-def generate_daily_routine(phase, week_number, day_number, player_weaknesses):
+def generate_daily_routine(phase: str, week_number: int, day_number: int, player_weaknesses: List[str]) -> Dict[str, Any]:
     """Generate a daily routine based on phase, week, day, and player needs"""
     template = PERIODIZATION_TEMPLATES.get(phase, PERIODIZATION_TEMPLATES["foundation_building"])
     intensity = template["intensity_progression"][week_number - 1] if week_number <= len(template["intensity_progression"]) else 75
@@ -324,17 +324,22 @@ def generate_daily_routine(phase, week_number, day_number, player_weaknesses):
         "exercises": exercises,
         "total_duration": sum(ex["duration"] for ex in exercises),
         "intensity_rating": get_intensity_rating(intensity),
-        "focus_areas": get_focus_areas(phase, player_weaknesses)
+        "focus_areas": get_focus_areas(phase, player_weaknesses),
+        "objectives": template["objectives"]
     }
 
-def get_intensity_rating(intensity_percentage):
+def get_intensity_rating(intensity_percentage: float) -> str:
     """Convert intensity percentage to rating"""
-    if intensity_percentage >= 90: return "maximum"
-    elif intensity_percentage >= 75: return "high" 
-    elif intensity_percentage >= 60: return "medium"
-    else: return "low"
+    if intensity_percentage >= 90: 
+        return "maximum"
+    elif intensity_percentage >= 75: 
+        return "high" 
+    elif intensity_percentage >= 60: 
+        return "medium"
+    else: 
+        return "low"
 
-def get_focus_areas(phase, weaknesses):
+def get_focus_areas(phase: str, weaknesses: List[str]) -> List[str]:
     """Get focus areas based on phase and player weaknesses"""
     base_focus = {
         "foundation_building": ["technique", "fitness_base", "fundamentals"],
