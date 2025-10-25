@@ -1,6 +1,8 @@
 # Comprehensive Soccer Exercise Database with Detailed Instructions
 # Each exercise includes: instructions, purpose, expected outcomes, and progression
 
+from typing import Dict, Any, List
+
 EXERCISE_DATABASE = {
     # ========== SPEED & AGILITY EXERCISES ==========
     "sprint_intervals_30m": {
