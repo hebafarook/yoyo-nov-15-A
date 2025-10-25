@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from typing import List, Optional
 import logging
 from models import PlayerAssessment, AssessmentCreate
-from utils.database import prepare_for_mongo, parse_from_mongo, get_database
+from utils.database import prepare_for_mongo, parse_from_mongo, db
 from utils.assessment_calculator import (
     calculate_overall_score, 
     get_performance_level,
