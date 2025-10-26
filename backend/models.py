@@ -289,11 +289,87 @@ class SavedReportCreate(BaseModel):
     title: Optional[str] = None
     notes: Optional[str] = None
 
+# ============ ASSESSMENT BENCHMARK MODELS ============
+class AssessmentBenchmark(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    player_name: str
+    assessment_id: str
+    
+    # Complete assessment data
+    age: int
+    position: str
+    
+    # Physical Performance (20%)
+    sprint_30m: float
+    yo_yo_test: int
+    vo2_max: float
+    vertical_jump: int
+    body_fat: float
+    
+    # Technical Skills (40%)
+    ball_control: int
+    passing_accuracy: float
+    dribbling_success: float
+    shooting_accuracy: float
+    defensive_duels: float
+    
+    # Tactical Awareness (30%)
+    game_intelligence: int
+    positioning: int
+    decision_making: int
+    
+    # Psychological (10%)
+    coachability: int
+    mental_toughness: int
+    
+    # Calculated metrics
+    overall_score: float
+    performance_level: str
+    
+    # Benchmark metadata
+    benchmark_type: str = "regular"  # "baseline", "regular", "milestone"
+    is_baseline: bool = False
+    benchmark_date: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    notes: Optional[str] = None
+    
+    # Progress tracking
+    improvement_from_baseline: Optional[Dict[str, float]] = None
+    previous_benchmark_id: Optional[str] = None
+
+class AssessmentBenchmarkCreate(BaseModel):
+    user_id: str
+    player_name: str
+    assessment_id: str
+    age: int
+    position: str
+    sprint_30m: float
+    yo_yo_test: int
+    vo2_max: float
+    vertical_jump: int
+    body_fat: float
+    ball_control: int
+    passing_accuracy: float
+    dribbling_success: float
+    shooting_accuracy: float
+    defensive_duels: float
+    game_intelligence: int
+    positioning: int
+    decision_making: int
+    coachability: int
+    mental_toughness: int
+    overall_score: float
+    performance_level: str
+    benchmark_type: str = "regular"
+    notes: Optional[str] = None
+
 class UserProfile(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     user_id: str
     players_managed: List[str] = Field(default_factory=list)  # List of player names
     saved_reports: List[str] = Field(default_factory=list)  # List of saved report IDs
+    benchmarks: List[str] = Field(default_factory=list)  # List of benchmark IDs
+    baseline_benchmark_id: Optional[str] = None  # First benchmark as baseline
     preferences: Dict[str, Any] = Field(default_factory=dict)
     coaching_level: Optional[str] = None
     organization: Optional[str] = None
