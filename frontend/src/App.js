@@ -1043,20 +1043,63 @@ const MainDashboard = () => {
             {direction === 'rtl' ? 'English' : 'العربية'}
           </button>
           
-          {currentPlayer && (
-            <Button
-              onClick={() => {
-                setIsStartupReport(false);
-                setShowAssessmentReport(true);
-              }}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <FileText className="w-4 h-4" />
-              View Assessment Report
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {currentPlayer && (
+              <Button
+                onClick={() => {
+                  setIsStartupReport(false);
+                  setShowAssessmentReport(true);
+                }}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <FileText className="w-4 h-4" />
+                View Assessment Report
+              </Button>
+            )}
+            
+            {!isAuthenticated ? (
+              <>
+                <Button
+                  onClick={() => {
+                    setAuthMode('login');
+                    setShowAuthModal(true);
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Login
+                </Button>
+                <Button
+                  onClick={() => {
+                    setAuthMode('register');
+                    setShowAuthModal(true);
+                  }}
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  Register
+                </Button>
+              </>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium">Welcome, {user?.full_name}</span>
+                <Button
+                  onClick={logout}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
         
         <h1 className="app-title">
