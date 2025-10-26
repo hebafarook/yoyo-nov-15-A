@@ -287,6 +287,45 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
     URL.revokeObjectURL(url);
   };
 
+  const saveToProfile = async () => {
+    if (!reportData || !playerData) return;
+
+    try {
+      // Import useAuth hook
+      const { useAuth } = await import('../contexts/AuthContext');
+      const { saveReport, isAuthenticated } = useAuth();
+
+      if (!isAuthenticated) {
+        alert('Please login to save reports to your profile');
+        return;
+      }
+
+      const saveData = {
+        player_name: reportData.playerInfo.name,
+        assessment_id: playerData.id || 'unknown',
+        report_data: {
+          playerData,
+          previousAssessments,
+          reportData,
+          comparisonData
+        },
+        report_type: isStartupReport ? 'startup' : 'milestone',
+        title: `Assessment Report - ${reportData.playerInfo.name} (${reportData.playerInfo.assessmentDate})`,
+        notes: `Overall Score: ${reportData.scores.overall}/100 - ${reportData.performanceLevel.level}`
+      };
+
+      const result = await saveReport(saveData);
+      if (result.success) {
+        alert('Report saved to your profile successfully!');
+      } else {
+        alert('Failed to save report: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error saving report:', error);
+      alert('Failed to save report. Please try again.');
+    }
+  };
+
   const generateTextReport = (report, comparison) => {
     let text = `
 SOCCER PLAYER ASSESSMENT REPORT
