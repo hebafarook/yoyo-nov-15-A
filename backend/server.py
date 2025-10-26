@@ -1836,6 +1836,14 @@ def get_next_assessment_date(player_id: str):
     # For now, return a default 4 weeks from now
     return datetime.now(timezone.utc) + timedelta(weeks=4)
 
+# Import auth routes
+try:
+    from routes.auth_routes import router as auth_router
+    api_router.include_router(auth_router, prefix="/auth", tags=["authentication"])
+    logging.info("Auth routes loaded successfully")
+except ImportError as e:
+    logging.warning(f"Could not import auth routes: {e}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
