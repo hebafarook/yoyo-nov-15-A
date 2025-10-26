@@ -326,6 +326,68 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
     }
   };
 
+  const saveBenchmarkToProfile = async () => {
+    if (!reportData || !playerData) return;
+
+    try {
+      // Import useAuth hook
+      const { useAuth } = await import('../contexts/AuthContext');
+      const { saveBenchmark, isAuthenticated, user } = useAuth();
+
+      if (!isAuthenticated || !user) {
+        alert('Please login to save benchmarks to your profile');
+        return;
+      }
+
+      const benchmarkData = {
+        user_id: user.id,
+        player_name: reportData.playerInfo.name,
+        assessment_id: playerData.id || 'unknown',
+        age: playerData.age,
+        position: playerData.position,
+        // Physical metrics
+        sprint_30m: playerData.sprint_30m,
+        yo_yo_test: playerData.yo_yo_test,
+        vo2_max: playerData.vo2_max,
+        vertical_jump: playerData.vertical_jump,
+        body_fat: playerData.body_fat,
+        // Technical metrics
+        ball_control: playerData.ball_control,
+        passing_accuracy: playerData.passing_accuracy,
+        dribbling_success: playerData.dribbling_success,
+        shooting_accuracy: playerData.shooting_accuracy,
+        defensive_duels: playerData.defensive_duels,
+        // Tactical metrics
+        game_intelligence: playerData.game_intelligence,
+        positioning: playerData.positioning,
+        decision_making: playerData.decision_making,
+        // Psychological metrics
+        coachability: playerData.coachability,
+        mental_toughness: playerData.mental_toughness,
+        // Calculated metrics
+        overall_score: reportData.scores.overall,
+        performance_level: reportData.performanceLevel.level,
+        benchmark_type: 'regular',
+        notes: `Assessment benchmark - ${reportData.playerInfo.assessmentDate}`
+      };
+
+      const result = await saveBenchmark(benchmarkData);
+      if (result.success) {
+        const benchmark = result.benchmark;
+        if (benchmark.is_baseline) {
+          alert('Baseline benchmark saved successfully! This is your first benchmark and will be used as a reference for future progress tracking.');
+        } else {
+          alert('Benchmark saved successfully! You can view your progress in the Saved Reports section.');
+        }
+      } else {
+        alert('Failed to save benchmark: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error saving benchmark:', error);
+      alert('Failed to save benchmark. Please try again.');
+    }
+  };
+
   const generateTextReport = (report, comparison) => {
     let text = `
 SOCCER PLAYER ASSESSMENT REPORT
