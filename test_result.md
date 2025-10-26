@@ -105,6 +105,18 @@
 user_problem_statement: "Fix the tabs and add what is coming soon, change the color scheme to elite elegant royal colors blue black and red and gold, use visual indicators for tracking progress with numbers to show we are here and want to train to reach this in this timeframe, keep the program updated with input and change the exercise weekly accordingly"
 
 backend:
+  - task: "Training Session Save Issue Fix"
+    implemented: true
+    working: false
+    file: "TrainingDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Fixed training session saving issue. Problem identified: ExerciseCompletion was missing required 'player_id' field when saving completed exercises. Added player_id to completion object. Also added 'notes' field for better data consistency. Improved error handling in submitDailyProgress with validation checks for routine and completed exercises, plus detailed error messages from backend. Ready for backend testing."
+
   - task: "Assessment Benchmark System"
     implemented: true
     working: true
