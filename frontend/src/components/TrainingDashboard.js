@@ -105,6 +105,16 @@ const TrainingDashboard = ({ playerId }) => {
 
   const submitDailyProgress = async () => {
     try {
+      if (!currentRoutine || !currentRoutine.routine) {
+        alert('No training routine found. Please reload the page.');
+        return;
+      }
+
+      if (completedExercises.length === 0) {
+        alert('Please complete at least one exercise before saving.');
+        return;
+      }
+
       const progressData = {
         player_id: playerId,
         routine_id: currentRoutine.routine.id,
@@ -116,7 +126,11 @@ const TrainingDashboard = ({ playerId }) => {
         total_time_spent: completedExercises.reduce((total, ex) => total + (ex.time_taken || 0), 0)
       };
       
-      await axios.post(`${API}/daily-progress`, progressData);
+      console.log('Saving daily progress:', progressData);
+      
+      const response = await axios.post(`${API}/daily-progress`, progressData);
+      
+      console.log('Daily progress saved successfully:', response.data);
       
       // Reload data
       await loadDashboardData();
@@ -126,7 +140,8 @@ const TrainingDashboard = ({ playerId }) => {
       
     } catch (error) {
       console.error('Error saving daily progress:', error);
-      alert('Error saving progress. Please try again.');
+      const errorMessage = error.response?.data?.detail || error.message || 'Unknown error occurred';
+      alert(`Error saving progress: ${errorMessage}`);
     }
   };
 
