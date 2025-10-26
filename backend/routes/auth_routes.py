@@ -32,7 +32,8 @@ def create_access_token(user_id: str, username: str) -> str:
         'user_id': user_id,
         'username': username,
         'exp': datetime.utcnow() + timedelta(hours=JWT_EXPIRATION_HOURS)
-    }\n    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    }
+    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
     \"\"\"Verify JWT token and return user info\"\"\"\n    try:\n        token = credentials.credentials\n        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])\n        return payload\n    except jwt.ExpiredSignatureError:\n        raise HTTPException(\n            status_code=status.HTTP_401_UNAUTHORIZED,\n            detail=\"Token has expired\"\n        )\n    except jwt.JWTError:\n        raise HTTPException(\n            status_code=status.HTTP_401_UNAUTHORIZED,\n            detail=\"Invalid token\"\n        )
