@@ -347,4 +347,4 @@ async def delete_saved_report(report_id: str, current_user: dict = Depends(verif
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete report"
-        )"
+        )
