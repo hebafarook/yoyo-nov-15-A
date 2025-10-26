@@ -937,20 +937,14 @@ const MainDashboard = () => {
           
           setCurrentPlayer(latestAssessment);
           
-          // Show startup report for 15 seconds
+          // Show startup report for 10 seconds (no auto-print)
           setIsStartupReport(true);
           setShowAssessmentReport(true);
-          
-          // Auto-print startup report after 2 seconds
-          setTimeout(() => {
-            console.log('🖨️ Auto-printing startup assessment report...');
-            window.print();
-          }, 2000);
           
           setTimeout(() => {
             setShowAssessmentReport(false);
             setIsStartupReport(false);
-          }, 15000);
+          }, 10000);
         }
       } catch (error) {
         console.error('Error checking for existing player:', error);
@@ -959,14 +953,6 @@ const MainDashboard = () => {
 
     checkForExistingPlayer();
   }, []);
-
-  const printAssessmentReport = () => {
-    console.log('🖨️ Printing assessment milestone report...');
-    // Add a small delay to ensure the modal is fully rendered
-    setTimeout(() => {
-      window.print();
-    }, 500);
-  };
 
   const handleAssessmentCreated = async (assessment) => {
     // Load previous assessments for comparison
