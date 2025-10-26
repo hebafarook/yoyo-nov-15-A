@@ -376,11 +376,11 @@ async def save_assessment_benchmark(
         # Get previous benchmark for comparison
         previous_benchmark = None
         if not is_baseline:
-            prev_doc = await db.assessment_benchmarks.find_one(
+            prev_doc = await db.assessment_benchmarks.find(
                 {"user_id": current_user["user_id"], "player_name": benchmark_data.player_name}
-            ).sort("benchmark_date", -1)
+            ).sort("benchmark_date", -1).limit(1).to_list(1)
             if prev_doc:
-                previous_benchmark = AssessmentBenchmark(**parse_from_mongo(prev_doc))
+                previous_benchmark = AssessmentBenchmark(**parse_from_mongo(prev_doc[0]))
         
         # Calculate improvement from baseline if not the first benchmark
         improvement_from_baseline = None
