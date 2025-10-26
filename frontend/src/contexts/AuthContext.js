@@ -1,1 +1,227 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';\nimport axios from 'axios';\n\nconst AuthContext = createContext();\n\nconst BACKEND_URL = process.env.REACT_APP_BACKEND_URL;\nconst API = `${BACKEND_URL}/api`;\n\nexport const useAuth = () => {\n  const context = useContext(AuthContext);\n  if (!context) {\n    throw new Error('useAuth must be used within an AuthProvider');\n  }\n  return context;\n};\n\nexport const AuthProvider = ({ children }) => {\n  const [user, setUser] = useState(null);\n  const [token, setToken] = useState(localStorage.getItem('auth_token'));\n  const [loading, setLoading] = useState(true);\n  const [isAuthenticated, setIsAuthenticated] = useState(false);\n\n  // Set up axios interceptor for authentication\n  useEffect(() => {\n    const interceptor = axios.interceptors.request.use(\n      (config) => {\n        if (token) {\n          config.headers.Authorization = `Bearer ${token}`;\n        }\n        return config;\n      },\n      (error) => {\n        return Promise.reject(error);\n      }\n    );\n\n    return () => {\n      axios.interceptors.request.eject(interceptor);\n    };\n  }, [token]);\n\n  // Check if user is authenticated on mount\n  useEffect(() => {\n    const checkAuth = async () => {\n      if (token) {\n        try {\n          const response = await axios.get(`${API}/auth/profile`);\n          setUser(response.data.user);\n          setIsAuthenticated(true);\n        } catch (error) {\n          console.error('Token verification failed:', error);\n          logout();\n        }\n      }\n      setLoading(false);\n    };\n\n    checkAuth();\n  }, [token]);\n\n  const login = async (username, password) => {\n    try {\n      const response = await axios.post(`${API}/auth/login`, {\n        username,\n        password\n      });\n\n      const { access_token, user } = response.data;\n      \n      setToken(access_token);\n      setUser(user);\n      setIsAuthenticated(true);\n      localStorage.setItem('auth_token', access_token);\n      \n      return { success: true, user };\n    } catch (error) {\n      console.error('Login failed:', error);\n      return {\n        success: false,\n        error: error.response?.data?.detail || 'Login failed'\n      };\n    }\n  };\n\n  const register = async (userData) => {\n    try {\n      const response = await axios.post(`${API}/auth/register`, userData);\n      \n      const { access_token, user } = response.data;\n      \n      setToken(access_token);\n      setUser(user);\n      setIsAuthenticated(true);\n      localStorage.setItem('auth_token', access_token);\n      \n      return { success: true, user };\n    } catch (error) {\n      console.error('Registration failed:', error);\n      return {\n        success: false,\n        error: error.response?.data?.detail || 'Registration failed'\n      };\n    }\n  };\n\n  const logout = () => {\n    setToken(null);\n    setUser(null);\n    setIsAuthenticated(false);\n    localStorage.removeItem('auth_token');\n  };\n\n  const saveReport = async (reportData) => {\n    try {\n      const response = await axios.post(`${API}/auth/save-report`, reportData);\n      return { success: true, report: response.data };\n    } catch (error) {\n      console.error('Failed to save report:', error);\n      return {\n        success: false,\n        error: error.response?.data?.detail || 'Failed to save report'\n      };\n    }\n  };\n\n  const getSavedReports = async () => {\n    try {\n      const response = await axios.get(`${API}/auth/saved-reports`);\n      return { success: true, reports: response.data };\n    } catch (error) {\n      console.error('Failed to fetch saved reports:', error);\n      return {\n        success: false,\n        error: error.response?.data?.detail || 'Failed to fetch saved reports'\n      };\n    }\n  };\n\n  const deleteSavedReport = async (reportId) => {\n    try {\n      await axios.delete(`${API}/auth/saved-reports/${reportId}`);\n      return { success: true };\n    } catch (error) {\n      console.error('Failed to delete report:', error);\n      return {\n        success: false,\n        error: error.response?.data?.detail || 'Failed to delete report'\n      };\n    }\n  };\n\n  const value = {\n    user,\n    token,\n    isAuthenticated,\n    loading,\n    login,\n    register,\n    logout,\n    saveReport,\n    getSavedReports,\n    deleteSavedReport\n  };\n\n  return (\n    <AuthContext.Provider value={value}>\n      {children}\n    </AuthContext.Provider>\n  );\n};"
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import axios from 'axios';
+
+const AuthContext = createContext();
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('auth_token'));
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Set up axios interceptor for authentication
+  useEffect(() => {
+    const interceptor = axios.interceptors.request.use(
+      (config) => {
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axios.interceptors.request.eject(interceptor);
+    };
+  }, [token]);
+
+  // Check if user is authenticated on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (token) {
+        try {
+          const response = await axios.get(`${API}/auth/profile`);
+          setUser(response.data.user);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error('Token verification failed:', error);
+          logout();
+        }
+      }
+      setLoading(false);
+    };
+
+    checkAuth();
+  }, [token]);
+
+  const login = async (username, password) => {
+    try {
+      const response = await axios.post(`${API}/auth/login`, {
+        username,
+        password
+      });
+
+      const { access_token, user } = response.data;
+      
+      setToken(access_token);
+      setUser(user);
+      setIsAuthenticated(true);
+      localStorage.setItem('auth_token', access_token);
+      
+      return { success: true, user };
+    } catch (error) {
+      console.error('Login failed:', error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || 'Login failed'
+      };
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      const response = await axios.post(`${API}/auth/register`, userData);
+      
+      const { access_token, user } = response.data;
+      
+      setToken(access_token);
+      setUser(user);
+      setIsAuthenticated(true);
+      localStorage.setItem('auth_token', access_token);
+      
+      return { success: true, user };
+    } catch (error) {
+      console.error('Registration failed:', error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || 'Registration failed'
+      };
+    }
+  };
+
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('auth_token');
+  };
+
+  const saveReport = async (reportData) => {
+    try {
+      const response = await axios.post(`${API}/auth/save-report`, reportData);
+      return { success: true, report: response.data };
+    } catch (error) {
+      console.error('Failed to save report:', error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || 'Failed to save report'
+      };
+    }
+  };
+
+  const getSavedReports = async () => {
+    try {
+      const response = await axios.get(`${API}/auth/saved-reports`);
+      return { success: true, reports: response.data };
+    } catch (error) {
+      console.error('Failed to fetch saved reports:', error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || 'Failed to fetch saved reports'
+      };
+    }
+  };
+
+  const deleteSavedReport = async (reportId) => {
+    try {
+      await axios.delete(`${API}/auth/saved-reports/${reportId}`);
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to delete report:', error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || 'Failed to delete report'
+      };
+    }
+  };
+
+  const saveBenchmark = async (benchmarkData) => {
+    try {
+      const response = await axios.post(`${API}/auth/save-benchmark`, benchmarkData);
+      return { success: true, benchmark: response.data };
+    } catch (error) {
+      console.error('Failed to save benchmark:', error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || 'Failed to save benchmark'
+      };
+    }
+  };
+
+  const getBenchmarks = async (playerName = null) => {
+    try {
+      const params = playerName ? { player_name: playerName } : {};
+      const response = await axios.get(`${API}/auth/benchmarks`, { params });
+      return { success: true, benchmarks: response.data };
+    } catch (error) {
+      console.error('Failed to fetch benchmarks:', error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || 'Failed to fetch benchmarks'
+      };
+    }
+  };
+
+  const getPlayerProgress = async (playerName) => {
+    try {
+      const response = await axios.get(`${API}/auth/benchmarks/progress/${playerName}`);
+      return { success: true, progress: response.data };
+    } catch (error) {
+      console.error('Failed to fetch player progress:', error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || 'Failed to fetch player progress'
+      };
+    }
+  };
+
+  const deleteBenchmark = async (benchmarkId) => {
+    try {
+      await axios.delete(`${API}/auth/benchmarks/${benchmarkId}`);
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to delete benchmark:', error);
+      return {
+        success: false,
+        error: error.response?.data?.detail || 'Failed to delete benchmark'
+      };
+    }
+  };
+
+  const value = {
+    user,
+    token,
+    isAuthenticated,
+    loading,
+    login,
+    register,
+    logout,
+    saveReport,
+    getSavedReports,
+    deleteSavedReport,
+    saveBenchmark,
+    getBenchmarks,
+    getPlayerProgress,
+    deleteBenchmark
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
