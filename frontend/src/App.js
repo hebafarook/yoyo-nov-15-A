@@ -962,16 +962,11 @@ const MainDashboard = () => {
     setIsStartupReport(false);
     setShowAssessmentReport(true);
     
-    // Auto-print milestone report after 2 seconds
-    setTimeout(() => {
-      printAssessmentReport();
-    }, 2000);
-    
-    // Auto-hide report after 30 seconds and switch to training tab
+    // Auto-hide report after 20 seconds and switch to training tab (no auto-print)
     setTimeout(() => {
       setShowAssessmentReport(false);
       setActiveTab("training");
-    }, 30000);
+    }, 20000);
   };
 
   const loadPreviousAssessments = async (playerName) => {
