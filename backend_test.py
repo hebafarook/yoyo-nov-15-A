@@ -13,6 +13,12 @@ class SoccerTrainingAPITester:
         self.assessment_data = None
         self.benchmark_id = None
         self.program_id = None
+        # Assessment Benchmark System variables
+        self.access_token = None
+        self.user_id = None
+        self.first_benchmark_id = None
+        self.second_benchmark_id = None
+        self.third_benchmark_id = None
 
     def run_test(self, name, method, endpoint, expected_status, data=None, params=None):
         """Run a single API test"""
