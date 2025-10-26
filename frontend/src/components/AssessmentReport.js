@@ -6,7 +6,7 @@ import { Progress } from './ui/progress';
 import { 
   FileText, Printer, Download, TrendingUp, TrendingDown, 
   Minus, Target, Calendar, User, Award, BarChart3,
-  Clock, Zap, Brain, Eye, Activity, Trophy
+  Clock, Zap, Brain, Eye, Activity, Trophy, Bookmark
 } from 'lucide-react';
 import { YOUTH_HANDBOOK_STANDARDS, evaluatePerformance, getAgeCategory, calculateOverallScore } from '../AssessmentStandards';
 
