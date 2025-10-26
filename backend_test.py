@@ -631,9 +631,11 @@ class SoccerTrainingAPITester:
     
     def test_user_registration(self):
         """Test user registration for authentication"""
+        import time
+        timestamp = str(int(time.time()))
         user_data = {
-            "username": "testcoach_benchmark",
-            "email": "testcoach@benchmark.com",
+            "username": f"testcoach_benchmark_{timestamp}",
+            "email": f"testcoach_{timestamp}@benchmark.com",
             "full_name": "Test Coach Benchmark",
             "password": "securepassword123",
             "is_coach": True
