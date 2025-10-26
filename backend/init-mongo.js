@@ -44,4 +44,20 @@ db.createCollection('training_programs');
 db.training_programs.createIndex({ "player_id": 1 });
 db.training_programs.createIndex({ "created_at": -1 });
 
+// Users collection
+db.createCollection('users');
+db.users.createIndex({ "username": 1 }, { unique: true });
+db.users.createIndex({ "email": 1 }, { unique: true });
+db.users.createIndex({ "created_at": -1 });
+
+// User Profiles collection
+db.createCollection('user_profiles');
+db.user_profiles.createIndex({ "user_id": 1 }, { unique: true });
+
+// Saved Reports collection
+db.createCollection('saved_reports');
+db.saved_reports.createIndex({ "user_id": 1 });
+db.saved_reports.createIndex({ "saved_at": -1 });
+db.saved_reports.createIndex({ "user_id": 1, "player_name": 1 });
+
 print('MongoDB initialization completed successfully!');
