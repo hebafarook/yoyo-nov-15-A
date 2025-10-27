@@ -13,6 +13,8 @@ import { YOUTH_HANDBOOK_STANDARDS, evaluatePerformance, getAgeCategory, calculat
 const AssessmentReport = ({ playerData, previousAssessments = [], showComparison = true, isStartupReport = false }) => {
   const [reportData, setReportData] = useState(null);
   const [comparisonData, setComparisonData] = useState(null);
+  const [selectedTrainingFrequency, setSelectedTrainingFrequency] = useState(null);
+  const [isGeneratingProgram, setIsGeneratingProgram] = useState(false);
 
   useEffect(() => {
     if (playerData) {
