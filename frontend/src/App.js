@@ -920,7 +920,7 @@ const MainDashboard = () => {
   const { t, direction, toggleLanguage } = useLanguage();
   const { isAuthenticated, user, logout } = useAuth();
   const [currentPlayer, setCurrentPlayer] = useState(null);
-  const [activeTab, setActiveTab] = useState("assessment");
+  const [activeTab, setActiveTab] = useState("home");
   const [showAssessmentReport, setShowAssessmentReport] = useState(false);
   const [previousAssessments, setPreviousAssessments] = useState([]);
   const [isStartupReport, setIsStartupReport] = useState(false);
@@ -943,14 +943,7 @@ const MainDashboard = () => {
           
           setCurrentPlayer(latestAssessment);
           
-          // Show startup report for 10 seconds (no auto-print)
-          setIsStartupReport(true);
-          setShowAssessmentReport(true);
-          
-          setTimeout(() => {
-            setShowAssessmentReport(false);
-            setIsStartupReport(false);
-          }, 10000);
+          // Don't auto-show report on homepage load
         }
       } catch (error) {
         console.error('Error checking for existing player:', error);
@@ -968,10 +961,9 @@ const MainDashboard = () => {
     setIsStartupReport(false);
     setShowAssessmentReport(true);
     
-    // Auto-hide report after 20 seconds and switch to training tab (no auto-print)
+    // Auto-hide report after 20 seconds (no auto-print)
     setTimeout(() => {
       setShowAssessmentReport(false);
-      setActiveTab("training");
     }, 20000);
   };
 
@@ -988,6 +980,11 @@ const MainDashboard = () => {
       console.error('Error loading previous assessments:', error);
       setPreviousAssessments([]);
     }
+  };
+
+  const handleNavigate = (tab) => {
+    setActiveTab(tab);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
