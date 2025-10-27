@@ -104,7 +104,7 @@ async def register_user(user_data: UserCreate):
         # Create access token
         access_token = create_access_token(user.id, user.username)
         
-        logger.info(f"User registered: {user.username}")
+        logger.info(f"User registered: {user.username} (role: {user.role})")
         return {
             "message": "User registered successfully",
             "access_token": access_token,
