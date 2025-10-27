@@ -74,12 +74,22 @@ async def register_user(user_data: UserCreate):
         
         # Create new user
         hashed_password = hash_password(user_data.password)
+        
+        # For player role, set player_id to username or generate unique ID
+        player_id = None
+        if user_data.role == "player":
+            player_id = user_data.username  # Use username as player identifier
+        
         user = User(
             username=user_data.username,
             email=user_data.email,
             full_name=user_data.full_name,
             hashed_password=hashed_password,
-            is_coach=user_data.is_coach or False
+            role=user_data.role,
+            is_coach=user_data.is_coach or (user_data.role == "coach"),
+            player_id=player_id,
+            age=user_data.age,
+            position=user_data.position
         )
         
         # Save user to database
