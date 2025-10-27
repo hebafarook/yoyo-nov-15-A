@@ -16,17 +16,24 @@ const SavedReports = () => {
   const [loading, setLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState(null);
   const [showReportModal, setShowReportModal] = useState(false);
-  const { getSavedReports, deleteSavedReport, user } = useAuth();
+  const { getSavedReports, deleteSavedReport, user, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    loadSavedReports();
-  }, []);
+    if (isAuthenticated) {
+      loadSavedReports();
+    } else {
+      setLoading(false);
+    }
+  }, [isAuthenticated]);
 
   const loadSavedReports = async () => {
     setLoading(true);
     const result = await getSavedReports();
     if (result.success) {
-      setSavedReports(result.reports);
+      // Ensure we only show reports belonging to the current user
+      const userReports = result.reports.filter(report => report.user_id === user?.id);
+      setSavedReports(userReports);
+      console.log(`Loaded ${userReports.length} reports for user: ${user?.username}`);
     } else {
       console.error('Failed to load saved reports:', result.error);
     }
