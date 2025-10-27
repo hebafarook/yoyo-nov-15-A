@@ -248,6 +248,7 @@ const FieldExplanation = ({ fieldName, isVisible, onToggle }) => {
 // Enhanced Assessment Component
 const AssessmentForm = ({ onAssessmentCreated }) => {
   const { t, direction } = useLanguage();
+  const { user, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     player_name: "",
     age: "",
@@ -280,7 +281,13 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post(`${API}/assessments`, formData);
+      // Add user_id if authenticated
+      const assessmentData = {
+        ...formData,
+        user_id: isAuthenticated && user ? user.id : null
+      };
+      
+      const response = await axios.post(`${API}/assessments`, assessmentData);
       onAssessmentCreated(response.data);
       
       // Create periodized training program for the player
@@ -309,6 +316,7 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
       });
     } catch (error) {
       console.error("Error creating assessment:", error);
+      alert("Error creating assessment. Please try again.");
     }
     setIsLoading(false);
   };
