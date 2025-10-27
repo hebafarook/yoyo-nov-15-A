@@ -3,7 +3,8 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { UserPlus, LogIn, X, Eye, EyeOff } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { UserPlus, LogIn, X, Eye, EyeOff, Shield, Users, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }) => {
@@ -17,6 +18,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }) => {
     full_name: '',
     password: '',
     confirmPassword: '',
+    role: 'parent',
+    age: '',
+    position: '',
     is_coach: false
   });
 
@@ -27,6 +31,15 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }) => {
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
+    }));
+    setError('');
+  };
+
+  const handleRoleChange = (value) => {
+    setFormData(prev => ({
+      ...prev,
+      role: value,
+      is_coach: value === 'coach'
     }));
     setError('');
   };
@@ -56,13 +69,31 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }) => {
           return;
         }
 
-        const result = await register({
+        // Validate player-specific fields
+        if (formData.role === 'player') {
+          if (!formData.age || !formData.position) {
+            setError('Age and position are required for player accounts');
+            setLoading(false);
+            return;
+          }
+        }
+
+        const registrationData = {
           username: formData.username,
           email: formData.email,
           full_name: formData.full_name,
           password: formData.password,
+          role: formData.role,
           is_coach: formData.is_coach
-        });
+        };
+
+        // Add player-specific fields if role is player
+        if (formData.role === 'player') {
+          registrationData.age = parseInt(formData.age);
+          registrationData.position = formData.position;
+        }
+
+        const result = await register(registrationData);
 
         if (result.success) {
           onClose();
