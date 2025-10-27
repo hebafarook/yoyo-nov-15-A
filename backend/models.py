@@ -255,7 +255,14 @@ class User(BaseModel):
     full_name: str
     hashed_password: str
     is_active: bool = True
-    is_coach: bool = False
+    role: str = "parent"  # "coach", "parent", "player"
+    is_coach: bool = False  # Deprecated - use role instead
+    # Player-specific fields (when role="player")
+    player_id: Optional[str] = None  # Links to player_name in assessments
+    age: Optional[int] = None
+    position: Optional[str] = None
+    # Coach/Parent management
+    managed_players: List[str] = Field(default_factory=list)  # List of player_names or player_ids they can access
     profile_picture: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_login: Optional[datetime] = None
@@ -265,7 +272,11 @@ class UserCreate(BaseModel):
     email: str
     full_name: str
     password: str
-    is_coach: Optional[bool] = False
+    role: str = "parent"  # "coach", "parent", "player"
+    is_coach: Optional[bool] = False  # Deprecated
+    # Player-specific fields (optional, for when role="player")
+    age: Optional[int] = None
+    position: Optional[str] = None
 
 class UserLogin(BaseModel):
     username: str
