@@ -4,7 +4,7 @@ import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { 
   FileText, Calendar, Trash2, Eye, Download, 
-  User, Trophy, BarChart3, RefreshCw, Target
+  User, Trophy, BarChart3, RefreshCw, Target, AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import AssessmentReport from './AssessmentReport';
