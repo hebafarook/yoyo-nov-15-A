@@ -929,30 +929,50 @@ const MainDashboard = () => {
   const { t, direction, toggleLanguage } = useLanguage();
   const { isAuthenticated, user, logout } = useAuth();
   const [currentPlayer, setCurrentPlayer] = useState(null);
-  const [activeTab, setActiveTab] = useState("home");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [showAssessmentReport, setShowAssessmentReport] = useState(false);
   const [previousAssessments, setPreviousAssessments] = useState([]);
   const [isStartupReport, setIsStartupReport] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
 
-  // Check for existing player on startup and show report
+  // Redirect to assessment page after login
+  useEffect(() => {
+    if (isAuthenticated && activeTab === 'dashboard') {
+      setActiveTab('assessment');
+    }
+  }, [isAuthenticated]);
+
+  // Check for existing player on startup - ONLY load user's own assessments
   useEffect(() => {
     const checkForExistingPlayer = async () => {
+      if (!isAuthenticated || !user) return;
+      
       try {
-        const response = await axios.get(`${API}/assessments`);
-        if (response.data && response.data.length > 0) {
-          // Get the most recent assessment
-          const latestAssessment = response.data.sort((a, b) => 
-            new Date(b.created_at) - new Date(a.created_at)
-          )[0];
+        // For player role, load their own assessment
+        if (user.role === 'player' && user.player_id) {
+          const response = await axios.get(`${API}/assessments?user_id=${user.id}`);
+          const playerAssessments = response.data.filter(a => a.player_name === user.player_id);
           
-          // Load previous assessments for the player
-          await loadPreviousAssessments(latestAssessment.player_name);
-          
-          setCurrentPlayer(latestAssessment);
-          
-          // Don't auto-show report on homepage load
+          if (playerAssessments && playerAssessments.length > 0) {
+            const latestAssessment = playerAssessments.sort((a, b) => 
+              new Date(b.created_at) - new Date(a.created_at)
+            )[0];
+            
+            await loadPreviousAssessments(latestAssessment.player_name);
+            setCurrentPlayer(latestAssessment);
+          }
+        } else {
+          // For coaches/parents, load assessments they created
+          const response = await axios.get(`${API}/assessments?user_id=${user.id}`);
+          if (response.data && response.data.length > 0) {
+            const latestAssessment = response.data.sort((a, b) => 
+              new Date(b.created_at) - new Date(a.created_at)
+            )[0];
+            
+            await loadPreviousAssessments(latestAssessment.player_name);
+            setCurrentPlayer(latestAssessment);
+          }
         }
       } catch (error) {
         console.error('Error checking for existing player:', error);
@@ -960,7 +980,7 @@ const MainDashboard = () => {
     };
 
     checkForExistingPlayer();
-  }, []);
+  }, [isAuthenticated, user]);
 
   const handleAssessmentCreated = async (assessment) => {
     // Load previous assessments for comparison
@@ -977,8 +997,11 @@ const MainDashboard = () => {
   };
 
   const loadPreviousAssessments = async (playerName) => {
+    if (!isAuthenticated || !user) return;
+    
     try {
-      const response = await axios.get(`${API}/assessments`);
+      // ONLY load assessments created by this user
+      const response = await axios.get(`${API}/assessments?user_id=${user.id}`);
       const playerAssessments = response.data
         .filter(assessment => assessment.player_name === playerName)
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
