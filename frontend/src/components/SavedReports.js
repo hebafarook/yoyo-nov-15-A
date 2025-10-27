@@ -148,7 +148,7 @@ const SavedReports = () => {
             }`}
           >
             <FileText className="w-4 h-4" />
-            Saved Reports
+            My Saved Reports
             <Badge variant="secondary">{savedReports.length}</Badge>
           </button>
           <button
@@ -160,7 +160,7 @@ const SavedReports = () => {
             }`}
           >
             <Target className="w-4 h-4" />
-            Assessment Benchmarks
+            My Assessment Benchmarks
           </button>
         </nav>
       </div>
