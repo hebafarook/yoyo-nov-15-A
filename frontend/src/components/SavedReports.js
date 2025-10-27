@@ -172,9 +172,12 @@ const SavedReports = () => {
           <Card className="professional-card text-center p-12">
             <CardContent>
               <FileText className="w-16 h-16 mx-auto mb-4 text-[--text-muted]" />
-              <h3 className="text-2xl font-semibold mb-2">No Saved Reports</h3>
-              <p className="text-[--text-muted]">
-                Complete player assessments and save reports to see them here.
+              <h3 className="text-2xl font-semibold mb-2">No Personal Reports Yet</h3>
+              <p className="text-[--text-muted] mb-2">
+                You haven't saved any assessment reports to your profile yet.
+              </p>
+              <p className="text-sm text-gray-500">
+                Complete player assessments and click "Save to Profile" to see them here.
               </p>
             </CardContent>
           </Card>
