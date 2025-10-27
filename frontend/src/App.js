@@ -1111,10 +1111,17 @@ const MainDashboard = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="tab-list">
           <button 
+            onClick={() => setActiveTab("home")}
+            className={`tab-trigger ${activeTab === "home" ? "active" : ""}`}
+          >
+            <Target className="w-4 h-4" />
+            Home
+          </button>
+          <button 
             onClick={() => setActiveTab("assessment")}
             className={`tab-trigger ${activeTab === "assessment" ? "active" : ""}`}
           >
-            <Target className="w-4 h-4" />
+            <BarChart3 className="w-4 h-4" />
             {t('nav.assessment')}
           </button>
           <button 
@@ -1132,39 +1139,18 @@ const MainDashboard = () => {
             {t('nav.progress')}
           </button>
           <button 
-            onClick={() => setActiveTab("voice")}
-            className={`tab-trigger ${activeTab === "voice" ? "active" : ""}`}
-          >
-            <Mic className="w-4 h-4" />
-            {t('nav.voice')}
-          </button>
-          <button 
-            onClick={() => setActiveTab("trophies")}
-            className={`tab-trigger ${activeTab === "trophies" ? "active" : ""}`}
-          >
-            <Trophy className="w-4 h-4" />
-            {t('nav.trophies')}
-          </button>
-          <button 
-            onClick={() => setActiveTab("group")}
-            className={`tab-trigger ${activeTab === "group" ? "active" : ""}`}
-          >
-            <Users className="w-4 h-4" />
-            {t('nav.group')}
-          </button>
-          <button 
             onClick={() => setActiveTab("highlights")}
             className={`tab-trigger ${activeTab === "highlights" ? "active" : ""}`}
           >
-            <BarChart3 className="w-4 h-4" />
-            {t('nav.highlights')}
+            <Award className="w-4 h-4" />
+            Highlights
           </button>
           <button 
             onClick={() => setActiveTab("body")}
             className={`tab-trigger ${activeTab === "body" ? "active" : ""}`}
           >
             <Activity className="w-4 h-4" />
-            {t('nav.body')}
+            Body Monitor
           </button>
           {isAuthenticated && (
             <button 
@@ -1176,6 +1162,10 @@ const MainDashboard = () => {
             </button>
           )}
         </div>
+
+        <TabsContent value="home">
+          <HomePage onNavigate={handleNavigate} />
+        </TabsContent>
 
         <TabsContent value="assessment">
           <AssessmentForm onAssessmentCreated={handleAssessmentCreated} />
