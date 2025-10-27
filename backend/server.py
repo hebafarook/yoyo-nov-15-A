@@ -930,9 +930,13 @@ async def create_assessment(assessment: AssessmentCreate):
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/assessments", response_model=List[PlayerAssessment])
-async def get_assessments():
+async def get_assessments(user_id: Optional[str] = None):
     try:
-        assessments = await db.assessments.find().to_list(1000)
+        query = {}
+        if user_id:
+            query["user_id"] = user_id
+            
+        assessments = await db.assessments.find(query).to_list(1000)
         valid_assessments = []
         
         for assessment in assessments:
