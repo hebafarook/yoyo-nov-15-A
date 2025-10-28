@@ -1264,11 +1264,11 @@ const MainDashboard = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="tab-list">
           <button 
-            onClick={() => setActiveTab("dashboard")}
-            className={`tab-trigger ${activeTab === "dashboard" ? "active" : ""}`}
+            onClick={() => setActiveTab("home")}
+            className={`tab-trigger ${activeTab === "home" ? "active" : ""}`}
           >
             <Target className="w-4 h-4" />
-            Dashboard
+            {t('nav.home')}
           </button>
           <button 
             onClick={() => setActiveTab("assessment")}
@@ -1292,6 +1292,27 @@ const MainDashboard = () => {
             {t('nav.progress')}
           </button>
           <button 
+            onClick={() => setActiveTab("voice")}
+            className={`tab-trigger ${activeTab === "voice" ? "active" : ""}`}
+          >
+            <Mic className="w-4 h-4" />
+            {t('nav.voice')}
+          </button>
+          <button 
+            onClick={() => setActiveTab("trophies")}
+            className={`tab-trigger ${activeTab === "trophies" ? "active" : ""}`}
+          >
+            <Trophy className="w-4 h-4" />
+            {t('nav.trophies')}
+          </button>
+          <button 
+            onClick={() => setActiveTab("group")}
+            className={`tab-trigger ${activeTab === "group" ? "active" : ""}`}
+          >
+            <Users className="w-4 h-4" />
+            {t('nav.group')}
+          </button>
+          <button 
             onClick={() => setActiveTab("highlights")}
             className={`tab-trigger ${activeTab === "highlights" ? "active" : ""}`}
           >
@@ -1303,7 +1324,7 @@ const MainDashboard = () => {
             className={`tab-trigger ${activeTab === "body" ? "active" : ""}`}
           >
             <Activity className="w-4 h-4" />
-            Body Monitor
+            Body
           </button>
           {isAuthenticated && (
             <button 
@@ -1316,7 +1337,7 @@ const MainDashboard = () => {
           )}
         </div>
 
-        <TabsContent value="dashboard">
+        <TabsContent value="home">
           <HomePage onNavigate={handleNavigate} />
         </TabsContent>
 
