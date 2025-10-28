@@ -520,12 +520,6 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
     try {
       setIsGeneratingProgram(true);
       
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-      const API = `${BACKEND_URL}/api`;
-      
-      // Import axios
-      const axios = (await import('axios')).default;
-      
       const programData = {
         player_id: playerData.player_name,
         age: playerData.age,
