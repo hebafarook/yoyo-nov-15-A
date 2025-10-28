@@ -1051,7 +1051,7 @@ const MainDashboard = () => {
   const { t, direction, toggleLanguage } = useLanguage();
   const { isAuthenticated, user, logout } = useAuth();
   const [currentPlayer, setCurrentPlayer] = useState(null);
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("home");
   const [showAssessmentReport, setShowAssessmentReport] = useState(false);
   const [previousAssessments, setPreviousAssessments] = useState([]);
   const [isStartupReport, setIsStartupReport] = useState(false);
@@ -1060,7 +1060,7 @@ const MainDashboard = () => {
 
   // Redirect to assessment page after login
   useEffect(() => {
-    if (isAuthenticated && activeTab === 'dashboard') {
+    if (isAuthenticated && activeTab === 'home') {
       setActiveTab('assessment');
     }
   }, [isAuthenticated]);
