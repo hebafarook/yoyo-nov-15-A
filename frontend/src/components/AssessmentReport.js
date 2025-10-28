@@ -9,6 +9,11 @@ import {
   Clock, Zap, Brain, Eye, Activity, Trophy, Bookmark
 } from 'lucide-react';
 import { YOUTH_HANDBOOK_STANDARDS, evaluatePerformance, getAgeCategory, calculateOverallScore } from '../AssessmentStandards';
+import { useAuth } from '../contexts/AuthContext';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const AssessmentReport = ({ playerData, previousAssessments = [], showComparison = true, isStartupReport = false }) => {
   const [reportData, setReportData] = useState(null);
