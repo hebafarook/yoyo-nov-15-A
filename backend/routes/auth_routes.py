@@ -215,7 +215,11 @@ async def get_user_profile(current_user: dict = Depends(verify_token)):
                 "username": user.username,
                 "email": user.email,
                 "full_name": user.full_name,
+                "role": user.role,
                 "is_coach": user.is_coach,
+                "player_id": user.player_id,
+                "age": user.age,
+                "position": user.position,
                 "profile_picture": user.profile_picture,
                 "created_at": user.created_at,
                 "last_login": user.last_login
@@ -223,6 +227,7 @@ async def get_user_profile(current_user: dict = Depends(verify_token)):
             "profile": {
                 "players_managed": profile.players_managed,
                 "saved_reports_count": len(profile.saved_reports),
+                "benchmarks_count": len(profile.benchmarks) if hasattr(profile, 'benchmarks') else 0,
                 "coaching_level": profile.coaching_level,
                 "organization": profile.organization,
                 "preferences": profile.preferences
