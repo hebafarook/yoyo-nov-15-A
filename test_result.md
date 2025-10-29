@@ -321,11 +321,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Assessment Benchmark System"
-    - "Assessment Report System"
-    - "Enhanced Training Program System"
-    - "Performance Highlights & Body Monitor"
+    - "All Tabs Functionality Verification"
     - "Enhanced Training Programs with Periodization"
+    - "Assessment Report System"
+    - "Performance Highlights & Body Monitor"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
