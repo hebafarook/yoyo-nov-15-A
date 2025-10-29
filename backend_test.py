@@ -328,7 +328,11 @@ class AuthenticationTester:
                 f"{BACKEND_URL}/auth/profile",
                 headers=headers
             ) as response:
-                response_data = await response.json()
+                # Handle both JSON and non-JSON responses
+                try:
+                    response_data = await response.json()
+                except:
+                    response_data = await response.text()
                 
                 if response.status == 401:
                     self.log_result(test_name, True, "Correctly returned 401 for invalid token")
