@@ -38,23 +38,27 @@ const HomePage = ({ onNavigate }) => {
         return;
       }
       
-      // Load user's assessments
-      const assessmentsRes = await axios.get(`${API}/assessments?user_id=${user.id}`);
-      const userAssessments = assessmentsRes.data || [];
-      
-      // Get unique players
-      const uniquePlayers = [...new Set(userAssessments.map(a => a.player_name))];
-      
-      // Load saved reports and benchmarks using auth context
-      const authContext = await import('../contexts/AuthContext');
-      const { useAuth: getAuthContext } = authContext;
-      
-      setStats({
-        totalReports: 0, // Will be loaded from auth context
-        totalBenchmarks: 0, // Will be loaded from auth context
-        recentAssessments: userAssessments.slice(0, 5),
-        activePlayers: uniquePlayers.length
-      });
+      // Load user's saved reports and benchmarks
+      try {
+        const reportsRes = await axios.get(`${API}/auth/saved-reports`);
+        const benchmarksRes = await axios.get(`${API}/auth/benchmarks`);
+        
+        setStats({
+          totalReports: reportsRes.data?.length || 0,
+          totalBenchmarks: benchmarksRes.data?.length || 0,
+          recentAssessments: benchmarksRes.data?.slice(0, 5) || [],
+          activePlayers: [...new Set((benchmarksRes.data || []).map(b => b.player_name))].length
+        });
+      } catch (authError) {
+        console.error('Error loading auth data:', authError);
+        // Set default empty stats if auth endpoints fail
+        setStats({
+          totalReports: 0,
+          totalBenchmarks: 0,
+          recentAssessments: [],
+          activePlayers: 0
+        });
+      }
       
     } catch (error) {
       console.error('Error loading dashboard stats:', error);
