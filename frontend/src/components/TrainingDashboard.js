@@ -48,7 +48,7 @@ const TrainingDashboard = ({ playerId }) => {
       setIsLoading(true);
       
       // Load player's most recent assessment
-      const assessmentResponse = await axios.get(`${API}/assessments/${playerId}`);
+      const assessmentResponse = await axios.get(`${API}/assessments/player/${playerId}`);
       if (assessmentResponse.data && assessmentResponse.data.length > 0) {
         const latestAssessment = assessmentResponse.data[0];
         setAssessmentData(latestAssessment);
@@ -58,15 +58,25 @@ const TrainingDashboard = ({ playerId }) => {
         setProgramRecommendation(recommendation);
       }
       
-      // Load periodized program
-      const programResponse = await axios.get(`${API}/periodized-programs/${playerId}`);
-      if (programResponse.data) {
-        setPeriodizedProgram(programResponse.data);
+      // Load periodized program if exists
+      try {
+        const programResponse = await axios.get(`${API}/training/periodized-programs/${playerId}`);
+        if (programResponse.data) {
+          setPeriodizedProgram(programResponse.data);
+        }
+      } catch (progError) {
+        // Program might not exist yet, that's okay
+        console.log('No existing program found:', progError.message);
       }
       
       // Load daily progress
-      const progressResponse = await axios.get(`${API}/daily-progress/${playerId}`);
-      setDailyProgress(progressResponse.data || []);
+      try {
+        const progressResponse = await axios.get(`${API}/progress/daily-progress/${playerId}`);
+        setDailyProgress(progressResponse.data || []);
+      } catch (progError) {
+        // Progress might not exist yet
+        console.log('No progress data found:', progError.message);
+      }
       
     } catch (error) {
       console.error('Error loading dashboard data:', error);
