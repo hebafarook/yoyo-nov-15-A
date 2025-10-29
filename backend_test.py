@@ -1,24 +1,25 @@
-import requests
-import sys
-import json
-from datetime import datetime
+#!/usr/bin/env python3
+"""
+Comprehensive Backend Testing for User Authentication System
+Testing the 401 login error fix as requested in the review.
+"""
 
-class SoccerTrainingAPITester:
-    def __init__(self, base_url="https://soccer-ai-coach-5.preview.emergentagent.com"):
-        self.base_url = base_url
-        self.api_url = f"{base_url}/api"
-        self.tests_run = 0
-        self.tests_passed = 0
-        self.player_id = None
-        self.assessment_data = None
-        self.benchmark_id = None
-        self.program_id = None
-        # Assessment Benchmark System variables
-        self.access_token = None
-        self.user_id = None
-        self.first_benchmark_id = None
-        self.second_benchmark_id = None
-        self.third_benchmark_id = None
+import asyncio
+import aiohttp
+import json
+import uuid
+from datetime import datetime
+import sys
+import os
+
+# Backend URL from environment
+BACKEND_URL = "https://soccer-ai-coach-5.preview.emergentagent.com/api"
+
+class AuthenticationTester:
+    def __init__(self):
+        self.session = None
+        self.test_results = []
+        self.test_users = []
 
     def run_test(self, name, method, endpoint, expected_status, data=None, params=None):
         """Run a single API test"""
