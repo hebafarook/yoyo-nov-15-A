@@ -1067,36 +1067,49 @@ const MainDashboard = () => {
     }
   }, [isAuthenticated]);
 
-  // Check for existing player on startup - ONLY load user's own assessments
+  // Check for existing player on startup - Load user's benchmarks
   useEffect(() => {
     const checkForExistingPlayer = async () => {
       if (!isAuthenticated || !user) return;
       
       try {
-        // For player role, load their own assessment
-        if (user.role === 'player' && user.player_id) {
-          const response = await axios.get(`${API}/assessments?user_id=${user.id}`);
-          const playerAssessments = response.data.filter(a => a.player_name === user.player_id);
+        // Load user's benchmarks (which are properly linked to user_id)
+        const benchmarksRes = await axios.get(`${API}/auth/benchmarks`);
+        const benchmarks = benchmarksRes.data || [];
+        
+        if (benchmarks.length > 0) {
+          // Get the most recent benchmark
+          const latestBenchmark = benchmarks[0]; // Already sorted by date desc from backend
           
-          if (playerAssessments && playerAssessments.length > 0) {
-            const latestAssessment = playerAssessments.sort((a, b) => 
-              new Date(b.created_at) - new Date(a.created_at)
-            )[0];
-            
-            await loadPreviousAssessments(latestAssessment.player_name);
-            setCurrentPlayer(latestAssessment);
-          }
-        } else {
-          // For coaches/parents, load assessments they created
-          const response = await axios.get(`${API}/assessments?user_id=${user.id}`);
-          if (response.data && response.data.length > 0) {
-            const latestAssessment = response.data.sort((a, b) => 
-              new Date(b.created_at) - new Date(a.created_at)
-            )[0];
-            
-            await loadPreviousAssessments(latestAssessment.player_name);
-            setCurrentPlayer(latestAssessment);
-          }
+          // Convert benchmark to assessment format for current player
+          const assessmentData = {
+            id: latestBenchmark.assessment_id,
+            player_name: latestBenchmark.player_name,
+            age: latestBenchmark.age,
+            position: latestBenchmark.position,
+            sprint_30m: latestBenchmark.sprint_30m,
+            yo_yo_test: latestBenchmark.yo_yo_test,
+            vo2_max: latestBenchmark.vo2_max,
+            vertical_jump: latestBenchmark.vertical_jump,
+            body_fat: latestBenchmark.body_fat,
+            ball_control: latestBenchmark.ball_control,
+            passing_accuracy: latestBenchmark.passing_accuracy,
+            dribbling_success: latestBenchmark.dribbling_success,
+            shooting_accuracy: latestBenchmark.shooting_accuracy,
+            defensive_duels: latestBenchmark.defensive_duels,
+            game_intelligence: latestBenchmark.game_intelligence,
+            positioning: latestBenchmark.positioning,
+            decision_making: latestBenchmark.decision_making,
+            coachability: latestBenchmark.coachability,
+            mental_toughness: latestBenchmark.mental_toughness,
+            overall_score: latestBenchmark.overall_score,
+            performance_level: latestBenchmark.performance_level,
+            created_at: latestBenchmark.benchmark_date,
+            user_id: user.id
+          };
+          
+          await loadPreviousAssessments(assessmentData.player_name);
+          setCurrentPlayer(assessmentData);
         }
       } catch (error) {
         console.error('Error checking for existing player:', error);
