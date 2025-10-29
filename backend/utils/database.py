@@ -39,7 +39,8 @@ def parse_from_mongo(data: Dict[str, Any]) -> Dict[str, Any]:
         result = {}
         for key, value in data.items():
             if key in ['created_at', 'updated_at', 'test_date', 'completion_date', 'measurement_date', 
-                      'start_date', 'end_date', 'assessment_date', 'program_start_date', 'next_assessment_date', 'retest_date', 'date']:
+                      'start_date', 'end_date', 'assessment_date', 'program_start_date', 'next_assessment_date', 
+                      'retest_date', 'date', 'last_login', 'saved_at', 'benchmark_date']:
                 if isinstance(value, str):
                     try:
                         # Handle ISO format with timezone
