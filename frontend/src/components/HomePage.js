@@ -106,8 +106,22 @@ const HomePage = ({ onNavigate }) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <Card>
+          <CardContent className="p-12 text-center">
+            <h2 className="text-2xl font-bold mb-4">Welcome to Yo-Yo Elite Soccer AI Coach</h2>
+            <p className="text-gray-600 mb-6">Please log in to access your personalized dashboard</p>
+            <Button onClick={() => window.location.reload()}>Get Started</Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
