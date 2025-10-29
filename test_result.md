@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix the tabs and add what is coming soon, change the color scheme to elite elegant royal colors blue black and red and gold, use visual indicators for tracking progress with numbers to show we are here and want to train to reach this in this timeframe, keep the program updated with input and change the exercise weekly accordingly"
+user_problem_statement: "Fix 401 login error after user registration. Users cannot login after registering."
 
 backend:
   - task: "Training Session Save Issue Fix"
