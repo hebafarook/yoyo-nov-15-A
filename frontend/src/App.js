@@ -101,6 +101,7 @@ const LanguageProvider = ({ children }) => {
       'app.title': 'Yo-Yo Elite Soccer Player AI Coach',
       'app.subtitle': 'Professional Training & Assessment Platform',
       'app.description': 'Advanced AI-powered coaching system for developing elite soccer players through comprehensive assessment, personalized training programs, and performance tracking.',
+      'nav.home': 'Home',
       'nav.assessment': 'Assessment',
       'nav.training': 'Training Programs',
       'nav.progress': 'Progress Tracking',
