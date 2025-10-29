@@ -26,6 +26,9 @@ const HomePage = ({ onNavigate }) => {
   useEffect(() => {
     if (isAuthenticated) {
       loadDashboardStats();
+    } else {
+      // User not authenticated, stop loading immediately
+      setLoading(false);
     }
   }, [isAuthenticated]);
 
