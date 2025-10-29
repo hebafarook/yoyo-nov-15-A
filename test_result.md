@@ -105,6 +105,18 @@
 user_problem_statement: "Fix 401 login error after user registration. Users cannot login after registering."
 
 backend:
+  - task: "User Authentication System - Login 401 Fix"
+    implemented: true
+    working: false
+    file: "routes/auth_routes.py, utils/database.py, models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "main"
+          comment: "Fixing 401 error during user login after registration. Changes made: 1) Added JWT_SECRET to backend .env file for proper token generation, 2) Updated utils/database.py parse_from_mongo function to handle 'last_login', 'saved_at', and 'benchmark_date' datetime fields, 3) Verified User model has proper default values for role and other fields for backward compatibility. The authentication flow: register creates user with hashed password and returns token, login should verify password and return token. Ready for backend testing to verify registration and login endpoints work correctly."
+
   - task: "Training Session Save Issue Fix"
     implemented: true
     working: true
