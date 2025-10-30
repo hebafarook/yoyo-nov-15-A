@@ -30,46 +30,29 @@ const HomePage = ({ onNavigate }) => {
   }, [isAuthenticated, user]);
 
   const loadDashboardStats = async () => {
+    if (!user || !user.id) {
+      return;
+    }
+    
     try {
-      setLoading(true);
-      
-      if (!user || !user.id) {
-        setLoading(false);
-        return;
-      }
-      
       // Load user's saved reports and benchmarks
-      try {
-        const reportsRes = await axios.get(`${API}/auth/saved-reports`);
-        const benchmarksRes = await axios.get(`${API}/auth/benchmarks`);
-        
-        setStats({
-          totalReports: reportsRes.data?.length || 0,
-          totalBenchmarks: benchmarksRes.data?.length || 0,
-          recentAssessments: benchmarksRes.data?.slice(0, 5) || [],
-          activePlayers: [...new Set((benchmarksRes.data || []).map(b => b.player_name))].length
-        });
-      } catch (authError) {
-        console.error('Error loading auth data:', authError);
-        // Set default empty stats if auth endpoints fail
-        setStats({
-          totalReports: 0,
-          totalBenchmarks: 0,
-          recentAssessments: [],
-          activePlayers: 0
-        });
-      }
+      const [reportsRes, benchmarksRes] = await Promise.allSettled([
+        axios.get(`${API}/auth/saved-reports`),
+        axios.get(`${API}/auth/benchmarks`)
+      ]);
       
+      const reports = reportsRes.status === 'fulfilled' ? reportsRes.value.data : [];
+      const benchmarks = benchmarksRes.status === 'fulfilled' ? benchmarksRes.value.data : [];
+      
+      setStats({
+        totalReports: reports?.length || 0,
+        totalBenchmarks: benchmarks?.length || 0,
+        recentAssessments: benchmarks?.slice(0, 5) || [],
+        activePlayers: [...new Set((benchmarks || []).map(b => b.player_name))].length
+      });
     } catch (error) {
       console.error('Error loading dashboard stats:', error);
-      setStats({
-        totalReports: 0,
-        totalBenchmarks: 0,
-        recentAssessments: [],
-        activePlayers: 0
-      });
-    } finally {
-      setLoading(false);
+      // Keep default empty stats
     }
   };
 
