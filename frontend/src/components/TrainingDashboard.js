@@ -383,6 +383,31 @@ const TrainingDashboard = ({ playerId }) => {
                   ))}
                 </div>
               </div>
+              
+              {!periodizedProgram && (
+                <div className="mt-6 text-center">
+                  <Button 
+                    onClick={generateProgram}
+                    disabled={isLoading}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3"
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Generating Your Program...
+                      </>
+                    ) : (
+                      <>
+                        <PlayCircle className="w-5 h-5 mr-2" />
+                        Generate My Training Program
+                      </>
+                    )}
+                  </Button>
+                  <p className="text-sm text-gray-600 mt-2">
+                    Click to create your personalized {programRecommendation.totalWeeks}-week training program
+                  </p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
