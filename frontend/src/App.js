@@ -1069,12 +1069,20 @@ const MainDashboard = () => {
 
   // Clear all player-specific state when user changes or logs out
   useEffect(() => {
+    console.log('=== USER STATE CHANGED ===');
+    console.log('isAuthenticated:', isAuthenticated);
+    console.log('user:', user);
+    console.log('user.id:', user?.id);
+    
     if (!isAuthenticated || !user) {
       // User logged out or not authenticated - clear everything
+      console.log('Clearing all player state (user logged out)');
       setCurrentPlayer(null);
       setPreviousAssessments([]);
       setShowAssessmentReport(false);
       setActiveTab('home');
+    } else {
+      console.log('User authenticated, will load their data');
     }
   }, [user?.id, isAuthenticated]);
 
