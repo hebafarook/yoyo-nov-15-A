@@ -953,6 +953,25 @@ async def get_assessments(user_id: Optional[str] = None):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.get("/assessments/player/{player_name}", response_model=List[PlayerAssessment])
+async def get_assessments_by_player(player_name: str):
+    """Get all assessments for a specific player by player name"""
+    try:
+        assessments = await db.assessments.find({"player_name": player_name}).sort("created_at", -1).to_list(1000)
+        valid_assessments = []
+        
+        for assessment in assessments:
+            try:
+                parsed_assessment = parse_from_mongo(assessment)
+                if all(field in parsed_assessment for field in ['sprint_30m', 'yo_yo_test', 'vo2_max', 'ball_control', 'game_intelligence', 'coachability']):
+                    valid_assessments.append(PlayerAssessment(**parsed_assessment))
+            except Exception as e:
+                continue
+                
+        return valid_assessments
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.get("/assessments/{player_id}", response_model=PlayerAssessment)
 async def get_assessment(player_id: str):
     try:
