@@ -60,7 +60,7 @@ const TrainingDashboard = ({ playerId }) => {
       
       // Load periodized program if exists
       try {
-        const programResponse = await axios.get(`${API}/training/periodized-programs/${playerId}`);
+        const programResponse = await axios.get(`${API}/periodized-programs/${playerId}`);
         if (programResponse.data) {
           setPeriodizedProgram(programResponse.data);
         }
