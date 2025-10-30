@@ -219,7 +219,24 @@ const TrainingDashboard = ({ playerId }) => {
       
     } catch (error) {
       console.error('Error generating program:', error);
-      alert('Error generating training program: ' + (error.response?.data?.detail || error.message));
+      console.error('Full error response:', error.response);
+      
+      let errorMessage = 'Error generating training program';
+      if (error.response?.data?.detail) {
+        if (Array.isArray(error.response.data.detail)) {
+          errorMessage += ':\n' + error.response.data.detail.map(err => 
+            typeof err === 'object' ? `${err.loc?.join('.')} - ${err.msg}` : err
+          ).join('\n');
+        } else if (typeof error.response.data.detail === 'string') {
+          errorMessage += ': ' + error.response.data.detail;
+        } else {
+          errorMessage += ': ' + JSON.stringify(error.response.data.detail);
+        }
+      } else if (error.message) {
+        errorMessage += ': ' + error.message;
+      }
+      
+      alert(errorMessage);
     } finally {
       setIsLoading(false);
     }
