@@ -21,16 +21,13 @@ const HomePage = ({ onNavigate }) => {
     recentAssessments: [],
     activePlayers: 0
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Changed to false - load in background
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && user) {
       loadDashboardStats();
-    } else {
-      // User not authenticated, stop loading immediately
-      setLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
   const loadDashboardStats = async () => {
     try {
