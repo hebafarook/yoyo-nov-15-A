@@ -47,21 +47,31 @@ const TrainingDashboard = ({ playerId }) => {
     try {
       setIsLoading(true);
       
+      console.log('=== LOADING DASHBOARD DATA ===');
+      console.log('playerId:', playerId);
+      
       // Load player's most recent assessment
       const assessmentResponse = await axios.get(`${API}/assessments/player/${playerId}`);
+      console.log('Assessment response:', assessmentResponse.data);
+      
       if (assessmentResponse.data && assessmentResponse.data.length > 0) {
         const latestAssessment = assessmentResponse.data[0];
+        console.log('Latest assessment:', latestAssessment);
         setAssessmentData(latestAssessment);
         
         // Calculate program recommendation based on assessment
         const recommendation = calculateProgramRecommendation(latestAssessment);
+        console.log('Program recommendation:', recommendation);
         setProgramRecommendation(recommendation);
+      } else {
+        console.log('No assessments found for player:', playerId);
       }
       
       // Load periodized program if exists
       try {
         const programResponse = await axios.get(`${API}/periodized-programs/${playerId}`);
         if (programResponse.data) {
+          console.log('Existing program found:', programResponse.data);
           setPeriodizedProgram(programResponse.data);
         }
       } catch (progError) {
@@ -72,6 +82,7 @@ const TrainingDashboard = ({ playerId }) => {
       // Load daily progress
       try {
         const progressResponse = await axios.get(`${API}/progress/daily-progress/${playerId}`);
+        console.log('Daily progress:', progressResponse.data);
         setDailyProgress(progressResponse.data || []);
       } catch (progError) {
         // Progress might not exist yet
