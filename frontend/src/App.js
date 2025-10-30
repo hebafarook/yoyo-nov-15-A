@@ -1067,6 +1067,17 @@ const MainDashboard = () => {
     }
   }, [isAuthenticated]);
 
+  // Clear all player-specific state when user changes or logs out
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      // User logged out or not authenticated - clear everything
+      setCurrentPlayer(null);
+      setPreviousAssessments([]);
+      setShowAssessmentReport(false);
+      setActiveTab('home');
+    }
+  }, [user?.id, isAuthenticated]);
+
   // Check for existing player on startup - Load user's benchmarks
   useEffect(() => {
     const checkForExistingPlayer = async () => {
