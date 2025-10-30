@@ -190,8 +190,18 @@ const TrainingDashboard = ({ playerId }) => {
     try {
       setIsLoading(true);
       
+      console.log('=== GENERATE PROGRAM DEBUG ===');
+      console.log('assessmentData:', assessmentData);
+      console.log('programRecommendation:', programRecommendation);
+      console.log('playerId:', playerId);
+      
       if (!assessmentData || !programRecommendation) {
-        alert('Please complete an assessment first');
+        alert('Please complete an assessment first. Assessment data is missing.');
+        return;
+      }
+      
+      if (!playerId) {
+        alert('Player ID is missing. Please ensure you have completed an assessment.');
         return;
       }
       
@@ -209,8 +219,9 @@ const TrainingDashboard = ({ playerId }) => {
         assessment_interval_weeks: 4
       };
       
-      console.log('Generating program with data:', programData);
+      console.log('Sending program data to backend:', programData);
       const response = await axios.post(`${API}/periodized-programs`, programData);
+      console.log('Backend response:', response.data);
       
       if (response.data) {
         setPeriodizedProgram(response.data);
