@@ -251,13 +251,16 @@ frontend:
     implemented: true
     working: false
     file: "App.js, VO2MaxCalculator.js, App.css"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
           agent: "main"
           comment: "Created VO2MaxCalculator component with ACSM formulas, integrated into assessment form, added benchmark saving functionality"
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL ISSUE IDENTIFIED: Assessment form submission is not working properly. User can login successfully and fill the assessment form, but the assessment data is not being saved to the backend. This prevents the training program generation from working. Key findings: 1) LOGIN SYSTEM WORKING ✅ - User authentication is functional, users can login with credentials (flowtest123/testpass123), welcome message displays correctly, all tabs are accessible. 2) ASSESSMENT FORM UI WORKING ✅ - Assessment form loads correctly with all sections (Physical 20%, Technical 40%, Tactical 30%, Psychological 10%), all input fields are accessible and can be filled, Performance Standards Guide displays properly. 3) ASSESSMENT SUBMISSION FAILING ❌ - Assessment form submission does not save data to backend, no success confirmation after form submission, Training Programs tab still shows 'Complete your assessment' message after submission. 4) TRAINING PROGRAM GENERATION BLOCKED ❌ - Cannot test program generation because assessment data is not saved, 'Generate My Training Program' button not available, shows placeholder 'Elite Training Dashboard' instead of program recommendation. 5) PROGRESS TRACKING ACCESSIBLE ✅ - Progress Tracking tab loads correctly, shows 'Coming soon' content as expected. ROOT CAUSE: Assessment form submission is not properly saving data to the backend, which blocks the entire training program generation workflow. This is a critical blocker for the main user flow."
 
   - task: "Assessment Report System"
     implemented: true
