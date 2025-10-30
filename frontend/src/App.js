@@ -1081,7 +1081,14 @@ const MainDashboard = () => {
   // Check for existing player on startup - Load user's benchmarks
   useEffect(() => {
     const checkForExistingPlayer = async () => {
-      if (!isAuthenticated || !user) return;
+      if (!isAuthenticated || !user) {
+        // Clear player data if not authenticated
+        setCurrentPlayer(null);
+        return;
+      }
+      
+      // Clear current player first to ensure fresh data load
+      setCurrentPlayer(null);
       
       try {
         // Load user's benchmarks (which are properly linked to user_id)
@@ -1124,11 +1131,12 @@ const MainDashboard = () => {
         }
       } catch (error) {
         console.error('Error checking for existing player:', error);
+        setCurrentPlayer(null); // Ensure it's cleared on error
       }
     };
 
     checkForExistingPlayer();
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user?.id]); // Added user?.id to dependencies
 
   const handleAssessmentCreated = async (assessment) => {
     // Load previous assessments for comparison
