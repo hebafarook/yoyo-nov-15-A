@@ -210,7 +210,7 @@ const TrainingDashboard = ({ playerId }) => {
       };
       
       console.log('Generating program with data:', programData);
-      const response = await axios.post(`${API}/training/periodized-programs`, programData);
+      const response = await axios.post(`${API}/periodized-programs`, programData);
       
       if (response.data) {
         setPeriodizedProgram(response.data);
