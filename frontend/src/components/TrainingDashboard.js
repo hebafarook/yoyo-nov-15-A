@@ -186,6 +186,45 @@ const TrainingDashboard = ({ playerId }) => {
     return 'Elite → Professional';
   };
 
+  const generateProgram = async () => {
+    try {
+      setIsLoading(true);
+      
+      if (!assessmentData || !programRecommendation) {
+        alert('Please complete an assessment first');
+        return;
+      }
+      
+      // Create the program using the backend endpoint
+      const programData = {
+        player_id: playerId,
+        program_name: `${playerId}'s Elite Training Program`,
+        total_duration_weeks: programRecommendation.totalWeeks,
+        program_objectives: [
+          `Improve from ${assessmentData.performance_level} to ${programRecommendation.targetLevel}`,
+          `Focus on ${programRecommendation.weakestAreas.join(' and ')}`,
+          'Build comprehensive soccer skills',
+          'Peak performance preparation'
+        ],
+        assessment_interval_weeks: 4
+      };
+      
+      console.log('Generating program with data:', programData);
+      const response = await axios.post(`${API}/training/periodized-programs`, programData);
+      
+      if (response.data) {
+        setPeriodizedProgram(response.data);
+        alert('✅ Training program generated successfully!\n\nYour personalized ' + programRecommendation.totalWeeks + '-week program is ready.');
+      }
+      
+    } catch (error) {
+      console.error('Error generating program:', error);
+      alert('Error generating training program: ' + (error.response?.data?.detail || error.message));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const startExercise = (exercise) => {
     setActiveExercise(exercise);
     setExerciseTimer(0);
