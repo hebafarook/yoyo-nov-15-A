@@ -24,6 +24,7 @@ import AssessmentReport from "./components/AssessmentReport";
 import AuthModal from "./components/AuthModal";
 import SavedReports from "./components/SavedReports";
 import HomePage from "./components/HomePage";
+import AdminDashboard from "./components/AdminDashboard";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
