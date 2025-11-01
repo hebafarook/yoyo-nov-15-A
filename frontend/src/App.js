@@ -1471,19 +1471,7 @@ const MainDashboard = () => {
         </TabsContent>
 
         <TabsContent value="trophies">
-          <ComingSoon 
-            title="Achievement & Recognition System"
-            description="Comprehensive achievement tracking with performance milestones and rewards"
-            icon={Trophy}
-            features={[
-              "Performance achievement badges",
-              "Milestone tracking system",
-              "Digital certificate generation",
-              "Global player rankings"
-            ]}
-            estimatedRelease="Q1 2024"
-            priority="high"
-          />
+          <AchievementsDisplay user={user} />
         </TabsContent>
 
         <TabsContent value="group">
