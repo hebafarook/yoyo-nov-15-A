@@ -676,3 +676,119 @@ async def get_player_progress(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to calculate player progress"
         )
+
+
+# ============ ADMIN ENDPOINTS ============
+
+@router.get("/admin/users", response_model=List[User])
+async def get_all_users_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Admin endpoint to get all users"""
+    try:
+        # Verify admin token
+        user_info = verify_token(credentials)
+        user_id = user_info['user_id']
+        
+        # Get requesting user
+        requesting_user = await db.users.find_one({"id": user_id})
+        if not requesting_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Check if user is admin
+        if requesting_user.get('role') != 'admin':
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Get all users
+        users = await db.users.find({}).to_list(1000)
+        parsed_users = []
+        
+        for user_doc in users:
+            try:
+                parsed_user = parse_from_mongo(user_doc)
+                # Remove sensitive data
+                if 'hashed_password' in parsed_user:
+                    del parsed_user['hashed_password']
+                parsed_users.append(User(**parsed_user))
+            except Exception as e:
+                logger.error(f"Error parsing user: {e}")
+                continue
+        
+        return parsed_users
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting all users: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+@router.get("/admin/user/{user_id}/assessments")
+async def get_user_assessments_admin(
+    user_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Admin endpoint to get any user's assessments"""
+    try:
+        # Verify admin token
+        user_info = verify_token(credentials)
+        admin_id = user_info['user_id']
+        
+        # Get requesting user
+        requesting_user = await db.users.find_one({"id": admin_id})
+        if not requesting_user or requesting_user.get('role') != 'admin':
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Get target user's assessments
+        assessments = await db.assessments.find({"user_id": user_id}).to_list(100)
+        return assessments
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting user assessments: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/admin/user/{user_id}/programs")
+async def get_user_programs_admin(
+    user_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Admin endpoint to get any user's training programs"""
+    try:
+        # Verify admin token
+        user_info = verify_token(credentials)
+        admin_id = user_info['user_id']
+        
+        # Get requesting user
+        requesting_user = await db.users.find_one({"id": admin_id})
+        if not requesting_user or requesting_user.get('role') != 'admin':
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Get target user
+        target_user = await db.users.find_one({"id": user_id})
+        if not target_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Get their programs (by player_name)
+        player_name = target_user.get('username') or target_user.get('player_id')
+        if player_name:
+            programs = await db.periodized_programs.find({"player_id": player_name}).to_list(100)
+            return programs
+        
+        return []
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting user programs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
