@@ -1512,6 +1512,10 @@ const MainDashboard = () => {
         <TabsContent value="reports">
           <SavedReports />
         </TabsContent>
+
+        <TabsContent value="admin">
+          <AdminDashboard />
+        </TabsContent>
       </Tabs>
       
       {/* Authentication Modal */}
