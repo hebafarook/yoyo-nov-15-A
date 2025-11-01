@@ -1378,6 +1378,16 @@ const MainDashboard = () => {
               My Reports
             </button>
           )}
+          {user && user.role === 'admin' && (
+            <button 
+              onClick={() => setActiveTab("admin")}
+              className={`tab-trigger ${activeTab === "admin" ? "active" : ""}`}
+              style={{ backgroundColor: activeTab === "admin" ? "#dc2626" : "", color: activeTab === "admin" ? "white" : "" }}
+            >
+              <Users className="w-4 h-4" />
+              Admin
+            </button>
+          )}
         </div>
 
         <TabsContent value="home">
