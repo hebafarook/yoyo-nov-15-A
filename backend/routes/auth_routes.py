@@ -159,7 +159,7 @@ async def login_user(login_data: UserLogin):
         )
         
         # Create access token
-        access_token = create_access_token(user.id, user.username)
+        access_token = create_access_token(user.id, user.username, user.role)
         
         logger.info(f"User logged in: {user.username} (role: {user.role})")
         return {
