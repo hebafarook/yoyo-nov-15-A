@@ -26,11 +26,12 @@ def verify_password(password: str, hashed_password: str) -> bool:
     """Verify password against hash"""
     return hashlib.sha256(password.encode()).hexdigest() == hashed_password
 
-def create_access_token(user_id: str, username: str) -> str:
+def create_access_token(user_id: str, username: str, role: str = "player") -> str:
     """Create JWT access token"""
     payload = {
         'user_id': user_id,
         'username': username,
+        'role': role,
         'exp': datetime.utcnow() + timedelta(hours=JWT_EXPIRATION_HOURS)
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
