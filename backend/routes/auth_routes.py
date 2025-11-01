@@ -103,7 +103,7 @@ async def register_user(user_data: UserCreate):
         await db.user_profiles.insert_one(profile_data)
         
         # Create access token
-        access_token = create_access_token(user.id, user.username)
+        access_token = create_access_token(user.id, user.username, user.role)
         
         logger.info(f"User registered: {user.username} (role: {user.role})")
         return {
