@@ -548,6 +548,45 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* Success Message */}
+          {assessmentSuccess && (
+            <div className="mb-6 p-6 bg-green-50 border-2 border-green-500 rounded-lg">
+              <div className="flex items-start gap-3">
+                <div className="text-green-600 text-3xl">✅</div>
+                <div className="flex-1">
+                  <h4 className="text-xl font-bold text-green-800 mb-2">Success!</h4>
+                  <p className="text-green-700 whitespace-pre-line">{assessmentMessage}</p>
+                  <div className="mt-4 flex gap-3">
+                    <button
+                      onClick={() => {
+                        setAssessmentSuccess(false);
+                        setActiveTab('training');
+                      }}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      Generate Training Program →
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAssessmentSuccess(false);
+                        setActiveTab('reports');
+                      }}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      View My Reports
+                    </button>
+                    <button
+                      onClick={() => setAssessmentSuccess(false)}
+                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                    >
+                      Create Another Assessment
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
