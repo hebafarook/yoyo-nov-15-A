@@ -152,105 +152,27 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
         </CardHeader>
         
         <CardContent>
-          <form onSubmit={mode === 'forgot' ? handleForgotPassword : mode === 'reset' ? handleResetPassword : handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
                 {error}
               </div>
             )}
 
-            {success && (
-              <div className="p-3 text-sm text-green-600 bg-green-50 border border-green-200 rounded-md">
-                {success}
-              </div>
-            )}
+            <div>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                required
+                value={formData.username}
+                onChange={handleInputChange}
+                placeholder="Enter your username"
+              />
+            </div>
 
-            {/* Forgot Password Mode - Only Email */}
-            {mode === 'forgot' && (
-              <div>
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter your email address"
-                />
-                <p className="text-xs text-gray-600 mt-2">
-                  Enter your email to receive a password reset token
-                </p>
-              </div>
-            )}
-
-            {/* Reset Password Mode - Token and New Password */}
-            {mode === 'reset' && (
-              <>
-                <div>
-                  <Label htmlFor="resetToken">Reset Token</Label>
-                  <Input
-                    id="resetToken"
-                    type="text"
-                    required
-                    value={resetToken}
-                    onChange={(e) => setResetToken(e.target.value)}
-                    placeholder="Enter your reset token"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="password">New Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      placeholder="Enter new password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showPassword ? 'text' : 'password'}
-                    required
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    placeholder="Confirm new password"
-                  />
-                </div>
-              </>
-            )}
-
-            {/* Login and Register Modes */}
-            {(mode === 'login' || mode === 'register') && (
-              <>
-                <div>
-                  <Label htmlFor="username">Username</Label>
-                  <Input
-                    id="username"
-                    name="username"
-                    type="text"
-                    required
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    placeholder="Enter your username"
-                  />
-                </div>
-
-                {mode === 'register' && (
+            {mode === 'register' && (
               <>
                 <div>
                   <Label htmlFor="email">Email</Label>
