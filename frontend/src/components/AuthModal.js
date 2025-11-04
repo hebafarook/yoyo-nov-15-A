@@ -137,28 +137,15 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
             <X className="w-5 h-5" />
           </button>
           <CardTitle className="flex items-center gap-2">
-            {mode === 'login' && (
+            {mode === 'login' ? (
               <>
                 <LogIn className="w-5 h-5" />
                 Login to Your Account
               </>
-            )}
-            {mode === 'register' && (
+            ) : (
               <>
                 <UserPlus className="w-5 h-5" />
                 Create New Account
-              </>
-            )}
-            {mode === 'forgot' && (
-              <>
-                <Shield className="w-5 h-5" />
-                Reset Your Password
-              </>
-            )}
-            {mode === 'reset' && (
-              <>
-                <Shield className="w-5 h-5" />
-                Create New Password
               </>
             )}
           </CardTitle>
