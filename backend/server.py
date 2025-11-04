@@ -275,6 +275,7 @@ class PeriodizedProgramCreate(BaseModel):
     total_duration_weeks: int
     program_objectives: List[str]
     assessment_interval_weeks: int = 4  # Default 4 weeks
+    training_frequency: int = 5  # Default 5 days/week (3, 4, or 5)
 
 class ExerciseCompletionCreate(BaseModel):
     player_id: str
