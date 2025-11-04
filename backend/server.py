@@ -1782,17 +1782,124 @@ async def analyze_player_assessment(player_name: str):
             analysis["weaknesses"].append({"area": "Positioning", "current": f"{positioning}/5", "target": "4/5", "priority": "Moderate"})
             analysis["recommendations"]["focus_areas"].append("Tactical Awareness")
         
+        # CALCULATE DYNAMIC PROGRAM DURATION based on gaps and training frequency
+        # Improvement rates per month based on training science
+        IMPROVEMENT_RATES = {
+            "sprint_30m": 0.08,  # seconds per month (with 5 days/week)
+            "yo_yo_test": 80,    # meters per month
+            "ball_control": 0.4,  # points per month (1-5 scale)
+            "passing_accuracy": 4,  # percentage points per month
+            "shooting_accuracy": 3.5,  # percentage points per month
+            "positioning": 0.4   # points per month (1-5 scale)
+        }
+        
+        # Calculate required months for each weakness
+        months_needed = []
+        for weakness in analysis["weaknesses"]:
+            area = weakness["area"]
+            
+            if area == "Speed":
+                current = assessment.get("sprint_30m", 5.0)
+                target = STANDARDS["sprint_30m"]["good"]
+                gap = current - target  # e.g., 5.0 - 4.3 = 0.7s
+                months = gap / IMPROVEMENT_RATES["sprint_30m"]  # 0.7 / 0.08 = 8.75 months
+                months_needed.append(months)
+                weakness["estimated_months"] = round(months, 1)
+                
+            elif area == "Endurance":
+                current = assessment.get("yo_yo_test", 1000)
+                target = STANDARDS["yo_yo_test"]["good"]
+                gap = target - current  # e.g., 1700 - 1200 = 500m
+                months = gap / IMPROVEMENT_RATES["yo_yo_test"]  # 500 / 80 = 6.25 months
+                months_needed.append(months)
+                weakness["estimated_months"] = round(months, 1)
+                
+            elif area == "Ball Control":
+                current = assessment.get("ball_control", 2)
+                target = STANDARDS["ball_control"]["good"]
+                gap = target - current
+                months = gap / IMPROVEMENT_RATES["ball_control"]
+                months_needed.append(months)
+                weakness["estimated_months"] = round(months, 1)
+                
+            elif area == "Passing":
+                current = assessment.get("passing_accuracy", 50)
+                target = STANDARDS["passing_accuracy"]["good"]
+                gap = target - current
+                months = gap / IMPROVEMENT_RATES["passing_accuracy"]
+                months_needed.append(months)
+                weakness["estimated_months"] = round(months, 1)
+                
+            elif area == "Shooting":
+                current = assessment.get("shooting_accuracy", 45)
+                target = STANDARDS["shooting_accuracy"]["good"]
+                gap = target - current
+                months = gap / IMPROVEMENT_RATES["shooting_accuracy"]
+                months_needed.append(months)
+                weakness["estimated_months"] = round(months, 1)
+                
+            elif area == "Positioning":
+                current = assessment.get("positioning", 2)
+                target = STANDARDS["positioning"]["good"]
+                gap = target - current
+                months = gap / IMPROVEMENT_RATES["positioning"]
+                months_needed.append(months)
+                weakness["estimated_months"] = round(months, 1)
+        
+        # Calculate base program duration (months)
+        if months_needed:
+            # Use the longest time needed (can't rush weakest area)
+            base_months = max(months_needed)
+            # Add buffer for consolidation and multiple weaknesses
+            if len(months_needed) > 3:
+                base_months = base_months * 1.2  # 20% longer for multiple weaknesses
+        else:
+            base_months = 3  # Default 3 months for maintenance
+        
+        # Adjust based on training frequency (5 days is baseline)
+        # 3 days/week = 60% volume → takes ~67% longer
+        # 4 days/week = 80% volume → takes ~25% longer
+        # 5 days/week = 100% volume → baseline
+        
+        # This will be applied when user selects frequency
+        frequency_multipliers = {3: 1.67, 4: 1.25, 5: 1.0}
+        
+        # Store durations for each frequency option
+        analysis["recommendations"]["program_duration_options"] = {
+            "3_days": {
+                "weeks": int(base_months * frequency_multipliers[3] * 4.33),  # months to weeks
+                "months": round(base_months * frequency_multipliers[3], 1),
+                "description": "Slower progress - Good for beginners or busy schedules"
+            },
+            "4_days": {
+                "weeks": int(base_months * frequency_multipliers[4] * 4.33),
+                "months": round(base_months * frequency_multipliers[4], 1),
+                "description": "Balanced progress - Recommended for most players"
+            },
+            "5_days": {
+                "weeks": int(base_months * frequency_multipliers[5] * 4.33),
+                "months": round(base_months * frequency_multipliers[5], 1),
+                "description": "Fastest progress - For dedicated athletes"
+            }
+        }
+        
         # Determine suggested training frequency based on weaknesses
         weakness_count = len(analysis["weaknesses"])
         if weakness_count >= 5:
             analysis["recommendations"]["suggested_frequency"] = 5
             analysis["recommendations"]["intensity"] = "High - Multiple areas need development"
+            analysis["recommendations"]["program_duration"] = analysis["recommendations"]["program_duration_options"]["5_days"]["weeks"]
         elif weakness_count >= 3:
             analysis["recommendations"]["suggested_frequency"] = 4
             analysis["recommendations"]["intensity"] = "Moderate - Several areas to improve"
+            analysis["recommendations"]["program_duration"] = analysis["recommendations"]["program_duration_options"]["4_days"]["weeks"]
         else:
             analysis["recommendations"]["suggested_frequency"] = 3
             analysis["recommendations"]["intensity"] = "Standard - Maintenance and refinement"
+            analysis["recommendations"]["program_duration"] = analysis["recommendations"]["program_duration_options"]["3_days"]["weeks"]
+        
+        # Add summary message
+        analysis["recommendations"]["duration_explanation"] = f"Based on your current performance and {weakness_count} areas for improvement, you need approximately {analysis['recommendations']['program_duration']} weeks with {analysis['recommendations']['suggested_frequency']} days/week training to reach your target goals."
         
         return analysis
         
