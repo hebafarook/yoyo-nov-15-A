@@ -437,6 +437,122 @@ const TrainingDashboard = ({ playerId }) => {
               </div>
             </div>
 
+            {/* Assessment Analysis - NEW */}
+            {assessmentAnalysis && showAnalysis && (
+              <div className="bg-white p-6 rounded-lg border-2 border-green-300 shadow-lg">
+                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-green-700">
+                  <BarChart3 className="w-6 h-6" />
+                  Your Performance Analysis
+                </h3>
+                
+                {/* Strengths Section */}
+                {assessmentAnalysis.strengths && assessmentAnalysis.strengths.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-green-600 mb-2 flex items-center gap-2">
+                      <Trophy className="w-5 h-5" />
+                      Your Strengths
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {assessmentAnalysis.strengths.map((strength, idx) => (
+                        <div key={idx} className="bg-green-50 p-3 rounded-lg border border-green-200">
+                          <div className="font-medium text-sm">{strength.area}</div>
+                          <Badge className="mt-1 bg-green-100 text-green-800 text-xs">{strength.level}</Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Weaknesses Section */}
+                {assessmentAnalysis.weaknesses && assessmentAnalysis.weaknesses.length > 0 && (
+                  <div className="mb-4">
+                    <h4 className="font-semibold text-orange-600 mb-2 flex items-center gap-2">
+                      <AlertCircle className="w-5 h-5" />
+                      Areas for Improvement
+                    </h4>
+                    <div className="space-y-2">
+                      {assessmentAnalysis.weaknesses.map((weakness, idx) => (
+                        <div key={idx} className="bg-orange-50 p-3 rounded-lg border border-orange-200">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="font-medium">{weakness.area}</div>
+                              <div className="text-sm text-gray-600">
+                                Current: <span className="font-semibold">{weakness.current}</span> → 
+                                Target: <span className="font-semibold text-green-600">{weakness.target}</span>
+                              </div>
+                            </div>
+                            <Badge className={
+                              weakness.priority === 'Critical' ? 'bg-red-100 text-red-800' :
+                              weakness.priority === 'High' ? 'bg-orange-100 text-orange-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }>
+                              {weakness.priority}
+                            </Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Training Recommendations */}
+                {assessmentAnalysis.recommendations && (
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <h4 className="font-semibold text-blue-700 mb-3">Training Recommendations</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <div className="text-sm text-gray-600 mb-1">Focus Areas</div>
+                        <div className="flex flex-wrap gap-2">
+                          {assessmentAnalysis.recommendations.focus_areas.map((area, idx) => (
+                            <Badge key={idx} className="bg-blue-100 text-blue-800">{area}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-gray-600 mb-1">Intensity Level</div>
+                        <div className="font-semibold text-blue-700">
+                          {assessmentAnalysis.recommendations.intensity}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Training Frequency Selector - NEW */}
+                    <div className="border-t border-blue-200 pt-4 mt-4">
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">
+                        Select Your Training Frequency
+                      </label>
+                      <div className="grid grid-cols-3 gap-3">
+                        {[3, 4, 5].map((freq) => (
+                          <button
+                            key={freq}
+                            onClick={() => setSelectedFrequency(freq)}
+                            className={`p-4 rounded-lg border-2 transition-all ${
+                              selectedFrequency === freq
+                                ? 'border-blue-600 bg-blue-600 text-white shadow-lg'
+                                : 'border-gray-300 bg-white hover:border-blue-400'
+                            }`}
+                          >
+                            <div className="text-2xl font-bold">{freq}</div>
+                            <div className="text-sm">days/week</div>
+                            {freq === assessmentAnalysis.recommendations.suggested_frequency && (
+                              <Badge className="mt-2 bg-green-100 text-green-800 text-xs">
+                                Recommended
+                              </Badge>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-600 mt-3 text-center">
+                        {selectedFrequency === 3 && "Ideal for beginners or those with limited time"}
+                        {selectedFrequency === 4 && "Balanced approach for steady improvement"}
+                        {selectedFrequency === 5 && "Intensive training for rapid development"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Program Recommendation */}
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border-2 border-blue-300">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
