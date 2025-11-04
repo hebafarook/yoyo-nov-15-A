@@ -1528,57 +1528,100 @@ async def delete_vo2_benchmark(benchmark_id: str):
 # Enhanced Training Program Endpoints with Periodization
 @api_router.post("/periodized-programs", response_model=PeriodizedProgram)
 async def create_periodized_program(program: PeriodizedProgramCreate):
-    """Create a comprehensive periodized training program"""
+    """Create a comprehensive personalized training program based on player assessment"""
     try:
         from exercise_database import PERIODIZATION_TEMPLATES, generate_daily_routine
         
-        # Determine player weaknesses based on latest assessment
+        # Get the latest assessment for this player
         assessment = await db.assessments.find_one(
             {"player_name": program.player_id}, 
             sort=[("created_at", -1)]
         )
         
-        weaknesses = []
-        if assessment:
-            # COMPREHENSIVE weakness analysis for CUSTOMIZED programs
-            
-            # Physical weaknesses
-            if assessment.get("sprint_30m", 10) > 4.5:
-                weaknesses.append("speed")
-            if assessment.get("yo_yo_test", 2000) < 1600:
-                weaknesses.append("endurance")
-            if assessment.get("vertical_jump", 60) < 55:
-                weaknesses.append("power")
-            
-            # Technical weaknesses (scaled properly)
-            if assessment.get("ball_control", 5) < 6:
-                weaknesses.append("ball_control")
-            if assessment.get("passing_accuracy", 80) < 75:
-                weaknesses.append("passing_accuracy")
-            if assessment.get("dribbling_success", 80) < 70:
-                weaknesses.append("dribbling")
-            if assessment.get("shooting_accuracy", 80) < 70:
-                weaknesses.append("shooting_accuracy")
-            if assessment.get("defensive_duels", 80) < 65:
-                weaknesses.append("defending")
-            
-            # Tactical weaknesses
-            if assessment.get("game_intelligence", 5) < 6:
-                weaknesses.append("tactical")
-            if assessment.get("positioning", 5) < 6:
-                weaknesses.append("positioning")
-            if assessment.get("decision_making", 5) < 6:
-                weaknesses.append("decision_making")
-            
-            # Psychological (if low, add specific focus)
-            if assessment.get("mental_toughness", 5) < 6:
-                weaknesses.append("mental_strength")
+        if not assessment:
+            raise HTTPException(status_code=404, detail="No assessment found for this player. Please complete an assessment first.")
         
-        # Ensure at least some weaknesses for variety
+        # ENHANCED YOUTH HANDBOOK STANDARDS-BASED WEAKNESS ANALYSIS
+        age = assessment.get("age", 17)
+        position = assessment.get("position", "Midfielder")
+        
+        # Age-based standards (simplified - using 15-16 age group as baseline)
+        STANDARDS = {
+            "sprint_30m": {"excellent": 4.0, "good": 4.3, "average": 4.6, "needs_improvement": 5.0},
+            "yo_yo_test": {"excellent": 2000, "good": 1700, "average": 1400, "needs_improvement": 1000},
+            "vo2_max": {"excellent": 58, "good": 54, "average": 50, "needs_improvement": 45},
+            "vertical_jump": {"excellent": 60, "good": 55, "average": 50, "needs_improvement": 45},
+            "body_fat": {"excellent": 10, "good": 12, "average": 14, "needs_improvement": 16},
+            "ball_control": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "passing_accuracy": {"excellent": 85, "good": 75, "average": 65, "needs_improvement": 55},
+            "dribbling_success": {"excellent": 80, "good": 70, "average": 60, "needs_improvement": 50},
+            "shooting_accuracy": {"excellent": 75, "good": 65, "average": 55, "needs_improvement": 45},
+            "defensive_duels": {"excellent": 75, "good": 65, "average": 55, "needs_improvement": 45},
+            "game_intelligence": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "positioning": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "decision_making": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "mental_toughness": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "coachability": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2}
+        }
+        
+        # Analyze weaknesses with priority scoring
+        weakness_analysis = {
+            "critical": [],  # Needs immediate attention
+            "moderate": [],  # Should be improved
+            "minor": []      # Can be refined
+        }
+        
+        # Physical Analysis (20% weight)
+        if assessment.get("sprint_30m", 5.0) > STANDARDS["sprint_30m"]["average"]:
+            weakness_analysis["critical" if assessment["sprint_30m"] > STANDARDS["sprint_30m"]["needs_improvement"] else "moderate"].append("speed")
+        
+        if assessment.get("yo_yo_test", 1000) < STANDARDS["yo_yo_test"]["average"]:
+            weakness_analysis["critical" if assessment["yo_yo_test"] < STANDARDS["yo_yo_test"]["needs_improvement"] else "moderate"].append("endurance")
+        
+        if assessment.get("vertical_jump", 45) < STANDARDS["vertical_jump"]["average"]:
+            weakness_analysis["critical" if assessment["vertical_jump"] < STANDARDS["vertical_jump"]["needs_improvement"] else "moderate"].append("power")
+        
+        if assessment.get("vo2_max", 45) < STANDARDS["vo2_max"]["average"]:
+            weakness_analysis["moderate"].append("aerobic_capacity")
+        
+        # Technical Analysis (40% weight - highest priority)
+        if assessment.get("ball_control", 2) < STANDARDS["ball_control"]["average"]:
+            weakness_analysis["critical" if assessment["ball_control"] < STANDARDS["ball_control"]["needs_improvement"] else "moderate"].append("ball_control")
+        
+        if assessment.get("passing_accuracy", 50) < STANDARDS["passing_accuracy"]["average"]:
+            weakness_analysis["critical" if assessment["passing_accuracy"] < STANDARDS["passing_accuracy"]["needs_improvement"] else "moderate"].append("passing")
+        
+        if assessment.get("dribbling_success", 50) < STANDARDS["dribbling_success"]["average"]:
+            weakness_analysis["moderate"].append("dribbling")
+        
+        if assessment.get("shooting_accuracy", 45) < STANDARDS["shooting_accuracy"]["average"]:
+            weakness_analysis["critical" if assessment["shooting_accuracy"] < STANDARDS["shooting_accuracy"]["needs_improvement"] else "moderate"].append("shooting")
+        
+        if assessment.get("defensive_duels", 45) < STANDARDS["defensive_duels"]["average"]:
+            weakness_analysis["moderate"].append("defending")
+        
+        # Tactical Analysis (30% weight)
+        if assessment.get("game_intelligence", 2) < STANDARDS["game_intelligence"]["average"]:
+            weakness_analysis["moderate"].append("tactical_awareness")
+        
+        if assessment.get("positioning", 2) < STANDARDS["positioning"]["average"]:
+            weakness_analysis["critical" if assessment["positioning"] < STANDARDS["positioning"]["needs_improvement"] else "moderate"].append("positioning")
+        
+        if assessment.get("decision_making", 2) < STANDARDS["decision_making"]["average"]:
+            weakness_analysis["moderate"].append("decision_making")
+        
+        # Psychological Analysis (10% weight)
+        if assessment.get("mental_toughness", 2) < STANDARDS["mental_toughness"]["average"]:
+            weakness_analysis["minor"].append("mental_strength")
+        
+        # Flatten weaknesses with priority order
+        weaknesses = weakness_analysis["critical"] + weakness_analysis["moderate"] + weakness_analysis["minor"]
+        
+        # Ensure variety if player is already strong
         if not weaknesses:
-            weaknesses = ["general_development", "tactical", "technical_refinement"]
+            weaknesses = ["technical_refinement", "tactical_mastery", "physical_conditioning"]
         
-        logger.info(f"Player {program.player_id} weaknesses detected: {weaknesses}")
+        logger.info(f"Player {program.player_id} weakness analysis: Critical={weakness_analysis['critical']}, Moderate={weakness_analysis['moderate']}, Minor={weakness_analysis['minor']}")
         
         # Create macro cycles
         macro_cycles = []
