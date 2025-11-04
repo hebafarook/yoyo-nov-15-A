@@ -22,6 +22,7 @@ import PerformanceHighlights from "./components/PerformanceHighlights";
 import PhysicalPerformanceMonitor from "./components/PhysicalPerformanceMonitor";
 import AssessmentReport from "./components/AssessmentReport";
 import AuthModal from "./components/AuthModal";
+import ForgotPasswordModal from "./components/ForgotPasswordModal";
 import SavedReports from "./components/SavedReports";
 import HomePage from "./components/HomePage";
 import AdminDashboard from "./components/AdminDashboard";
