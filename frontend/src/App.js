@@ -1434,7 +1434,7 @@ const MainDashboard = () => {
         </TabsContent>
 
         <TabsContent value="assessment">
-          <AssessmentForm onAssessmentCreated={handleAssessmentCreated} />
+          <AssessmentForm onAssessmentCreated={handleAssessmentCreated} setActiveTab={setActiveTab} />
         </TabsContent>
 
         <TabsContent value="training">
