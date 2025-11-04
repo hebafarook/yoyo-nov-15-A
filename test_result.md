@@ -374,7 +374,8 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Get Started Button Smart Routing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
