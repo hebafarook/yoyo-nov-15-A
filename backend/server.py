@@ -1638,9 +1638,10 @@ async def create_periodized_program(program: PeriodizedProgramCreate):
             # Create micro cycles (weeks) for this phase
             micro_cycles = []
             for week in range(1, phase_weeks + 1):
-                # Create daily routines for this week
+                # Create daily routines for this week based on training frequency
                 daily_routines = []
-                for day in range(1, 6):  # 5 training days per week
+                training_days = program.training_frequency  # 3, 4, or 5 days per week
+                for day in range(1, training_days + 1):
                     routine_data = generate_daily_routine(phase, week, day, weaknesses)
                     daily_routine = DailyRoutine(**routine_data)
                     daily_routines.append(daily_routine)
