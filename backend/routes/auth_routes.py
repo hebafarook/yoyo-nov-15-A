@@ -5,6 +5,7 @@ import logging
 import hashlib
 import jwt
 import os
+import uuid
 from datetime import datetime, timezone, timedelta
 from models import User, UserCreate, UserLogin, SavedReport, SavedReportCreate, UserProfile, AssessmentBenchmark, AssessmentBenchmarkCreate
 from utils.database import prepare_for_mongo, parse_from_mongo, db
