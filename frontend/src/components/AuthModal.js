@@ -108,88 +108,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
     }
   };
 
-  const handleForgotPassword = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${BACKEND_URL}/api/auth/forgot-password?email=${encodeURIComponent(formData.email)}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setResetToken(data.reset_token || '');
-        setSuccess(`Reset token generated! Token: ${data.reset_token} (Valid for ${data.expires_in})`);
-        setMode('reset');
-      } else {
-        setError(data.detail || 'Failed to generate reset token');
-      }
-    } catch (err) {
-      setError('Failed to request password reset');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${BACKEND_URL}/api/auth/reset-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          reset_token: resetToken,
-          new_password: formData.password
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess('Password reset successful! You can now login with your new password.');
-        setTimeout(() => {
-          setMode('login');
-          setSuccess('');
-          setResetToken('');
-        }, 2000);
-      } else {
-        setError(data.detail || 'Failed to reset password');
-      }
-    } catch (err) {
-      setError('Failed to reset password');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const switchMode = () => {
     setMode(mode === 'login' ? 'register' : 'login');
     setError('');
-    setSuccess('');
-    setResetToken('');
     setFormData({
       username: '',
       email: '',
