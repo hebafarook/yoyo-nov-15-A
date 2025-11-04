@@ -145,8 +145,12 @@ const HomePage = ({ onNavigate }) => {
         <Card>
           <CardContent className="p-12 text-center">
             <h2 className="text-2xl font-bold mb-4">Welcome to Yo-Yo Elite Soccer AI Coach</h2>
-            <p className="text-gray-600 mb-6">Please log in to access your personalized dashboard</p>
-            <Button onClick={() => window.location.reload()}>Get Started</Button>
+            <p className="text-gray-600 mb-6">Please log in or register to start your player assessment and training journey</p>
+            <div className="flex gap-4 justify-center">
+              <Button onClick={() => onNavigate('assessment')} size="lg">
+                Get Started
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
