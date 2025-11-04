@@ -105,7 +105,7 @@ class ForgotPasswordTester:
         
         try:
             # Use query parameter as shown in the review request
-            url = f"{BACKEND_URL}/auth/forgot-password?email=forgottest001@test.com"
+            url = f"{BACKEND_URL}/auth/forgot-password?email={self.test_email}"
             
             async with self.session.post(url) as response:
                 response_data = await response.json()
