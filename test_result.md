@@ -410,7 +410,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Forgot Password Feature"
+    - "Complete E2E Testing - 3 Players with Dynamic Program Duration"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
