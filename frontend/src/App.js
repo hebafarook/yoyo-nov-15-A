@@ -348,14 +348,16 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
         console.log('Benchmark saved:', benchmarkResponse.data);
         
         if (benchmarkResponse.data.is_baseline) {
-          alert('✅ Assessment saved successfully!\n\n🎯 This is your BASELINE benchmark - all future progress will be compared to this assessment.\n\nYour data is securely saved and ready for training program generation.');
+          setAssessmentMessage('🎯 BASELINE ASSESSMENT SAVED!\n\nThis is your baseline benchmark - all future progress will be compared to this assessment. Your data is securely saved and ready for training program generation.');
         } else {
-          alert('✅ Assessment saved successfully!\n\n📊 Saved as benchmark for progress tracking.\n\nYour data is securely saved and you can view your progress in the Reports tab.');
+          setAssessmentMessage('📊 ASSESSMENT SAVED AS BENCHMARK!\n\nSaved for progress tracking. Your data is securely saved and you can view your progress in the Reports tab.');
         }
+        setAssessmentSuccess(true);
       } catch (benchmarkError) {
         console.error('Error saving benchmark:', benchmarkError);
         // Still notify success even if benchmark fails
-        alert('✅ Assessment saved successfully!\n\nNote: Benchmark save had an issue, but your assessment data is safe.');
+        setAssessmentMessage('✅ ASSESSMENT SAVED!\n\nNote: Benchmark save had an issue, but your assessment data is safe.');
+        setAssessmentSuccess(true);
       }
       
       // Notify parent component
