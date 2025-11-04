@@ -266,6 +266,9 @@ class User(BaseModel):
     profile_picture: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     last_login: Optional[datetime] = None
+    # Password reset fields
+    reset_token: Optional[str] = None
+    reset_token_expiry: Optional[datetime] = None
 
 class UserCreate(BaseModel):
     username: str
