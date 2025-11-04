@@ -1540,15 +1540,45 @@ async def create_periodized_program(program: PeriodizedProgramCreate):
         
         weaknesses = []
         if assessment:
-            # Analyze assessment to identify weak areas
+            # COMPREHENSIVE weakness analysis for CUSTOMIZED programs
+            
+            # Physical weaknesses
             if assessment.get("sprint_30m", 10) > 4.5:
                 weaknesses.append("speed")
-            if assessment.get("ball_control", 3) < 4:
+            if assessment.get("yo_yo_test", 2000) < 1600:
+                weaknesses.append("endurance")
+            if assessment.get("vertical_jump", 60) < 55:
+                weaknesses.append("power")
+            
+            # Technical weaknesses (scaled properly)
+            if assessment.get("ball_control", 5) < 6:
                 weaknesses.append("ball_control")
             if assessment.get("passing_accuracy", 80) < 75:
-                weaknesses.append("passing")
-            if assessment.get("game_intelligence", 3) < 4:
+                weaknesses.append("passing_accuracy")
+            if assessment.get("dribbling_success", 80) < 70:
+                weaknesses.append("dribbling")
+            if assessment.get("shooting_accuracy", 80) < 70:
+                weaknesses.append("shooting_accuracy")
+            if assessment.get("defensive_duels", 80) < 65:
+                weaknesses.append("defending")
+            
+            # Tactical weaknesses
+            if assessment.get("game_intelligence", 5) < 6:
                 weaknesses.append("tactical")
+            if assessment.get("positioning", 5) < 6:
+                weaknesses.append("positioning")
+            if assessment.get("decision_making", 5) < 6:
+                weaknesses.append("decision_making")
+            
+            # Psychological (if low, add specific focus)
+            if assessment.get("mental_toughness", 5) < 6:
+                weaknesses.append("mental_strength")
+        
+        # Ensure at least some weaknesses for variety
+        if not weaknesses:
+            weaknesses = ["general_development", "tactical", "technical_refinement"]
+        
+        logger.info(f"Player {program.player_id} weaknesses detected: {weaknesses}")
         
         # Create macro cycles
         macro_cycles = []
