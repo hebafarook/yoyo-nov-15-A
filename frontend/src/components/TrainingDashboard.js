@@ -234,7 +234,7 @@ const TrainingDashboard = ({ playerId }) => {
         return;
       }
       
-      // Create the program using the backend endpoint
+      // Create the program using the backend endpoint with selected training frequency
       const programData = {
         player_id: playerId,
         program_name: `${playerId}'s Elite Training Program`,
@@ -245,7 +245,8 @@ const TrainingDashboard = ({ playerId }) => {
           'Build comprehensive soccer skills',
           'Peak performance preparation'
         ],
-        assessment_interval_weeks: 4
+        assessment_interval_weeks: 4,
+        training_frequency: selectedFrequency  // 3, 4, or 5 days per week
       };
       
       console.log('Sending program data to backend:', programData);
