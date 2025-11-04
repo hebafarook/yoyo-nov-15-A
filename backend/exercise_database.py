@@ -304,12 +304,12 @@ def generate_daily_routine(phase: str, week_number: int, day_number: int, player
     # Select exercises based on player weaknesses, phase, and day for VARIETY
     exercises = []
     
-    # PHYSICAL CONDITIONING - Vary by day
+    # PHYSICAL CONDITIONING - Vary by day (use actual exercise names from database)
     physical_options = [
         EXERCISE_DATABASE["sprint_intervals_30m"],
-        EXERCISE_DATABASE["yo_yo_endurance_intervals"],
-        EXERCISE_DATABASE["agility_ladder_sequences"],
-        EXERCISE_DATABASE["plyometric_box_jumps"]
+        EXERCISE_DATABASE["ladder_agility_drill"],
+        EXERCISE_DATABASE["cone_sprint_change_direction"],
+        EXERCISE_DATABASE["plyometric_box_jump"]
     ]
     exercises.append(physical_options[day_number % len(physical_options)])
     
@@ -324,7 +324,7 @@ def generate_daily_routine(phase: str, week_number: int, day_number: int, player
     if "passing" in player_weaknesses or "passing_accuracy" in player_weaknesses:
         passing_options = [
             EXERCISE_DATABASE["passing_accuracy_gates"],
-            EXERCISE_DATABASE["one_touch_passing_triangles"]
+            EXERCISE_DATABASE["triangle_passing_rhythm"]
         ]
         exercises.append(passing_options[day_number % len(passing_options)])
     
@@ -343,7 +343,7 @@ def generate_daily_routine(phase: str, week_number: int, day_number: int, player
         exercises.append(speed_options[day_number % len(speed_options)])
     
     if "endurance" in player_weaknesses:
-        exercises.append(EXERCISE_DATABASE["yo_yo_endurance_intervals"])
+        exercises.append(EXERCISE_DATABASE["yo_yo_intermittent_recovery"])
     
     # TACTICAL WORK - Increases in later phases
     if phase in ["development_phase", "peak_performance"]:
