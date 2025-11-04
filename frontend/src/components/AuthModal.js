@@ -12,6 +12,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [resetToken, setResetToken] = useState('');
   const [formData, setFormData] = useState({
     username: '',
     email: '',
