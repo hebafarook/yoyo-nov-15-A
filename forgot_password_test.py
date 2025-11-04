@@ -21,6 +21,8 @@ class ForgotPasswordTester:
         self.test_results = []
         self.test_user = None
         self.reset_token = None
+        self.test_username = None
+        self.test_email = None
         
     async def setup(self):
         """Setup test session"""
