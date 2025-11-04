@@ -1063,6 +1063,8 @@ const MainDashboard = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
+  const [assessmentSuccess, setAssessmentSuccess] = useState(false);
+  const [assessmentMessage, setAssessmentMessage] = useState('');
 
   // Redirect to assessment page after login
   useEffect(() => {
