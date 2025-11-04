@@ -363,37 +363,28 @@ const AssessmentForm = ({ onAssessmentCreated }) => {
       // Notify parent component
       onAssessmentCreated(createdAssessment);
       
-      // Create periodized training program for the player
-      await createPeriodizedProgram(formData.player_name);
-      
-      // Reset form
-      setFormData({
-        player_name: "",
-        age: "",
-        position: "",
-        sprint_30m: "",
-        yo_yo_test: "",
-        vo2_max: "",
-        vertical_jump: "",
-        body_fat: "",
-        ball_control: "",
-        passing_accuracy: "",
-        dribbling_success: "",
-        shooting_accuracy: "",
-        defensive_duels: "",
-        game_intelligence: "",
-        positioning: "",
-        decision_making: "",
-        coachability: "",
-        mental_toughness: ""
-      });
+      // Scroll to top to show success message
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       
     } catch (error) {
       console.error("Error creating assessment:", error);
-      const errorMessage = error.response?.data?.detail || error.message || 'Unknown error';
-      alert(`❌ Error saving assessment: ${errorMessage}\n\nPlease make sure you're logged in and all fields are filled correctly.`);
+      
+      // Show detailed error message
+      let errorMessage = "Failed to save assessment. Please try again.";
+      if (error.response) {
+        if (error.response.status === 401) {
+          errorMessage = "Session expired. Please login again.";
+        } else if (error.response.data && error.response.data.detail) {
+          errorMessage = `Error: ${error.response.data.detail}`;
+        }
+      }
+      
+      setAssessmentMessage(`❌ ERROR\n\n${errorMessage}`);
+      setAssessmentSuccess(false);
+      alert(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   // Helper function to calculate overall score
