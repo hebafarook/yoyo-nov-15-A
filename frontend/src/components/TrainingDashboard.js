@@ -234,11 +234,25 @@ const TrainingDashboard = ({ playerId }) => {
         return;
       }
       
-      // Create the program using the backend endpoint with selected training frequency
+      // Calculate dynamic duration based on selected training frequency
+      let calculatedDuration = programRecommendation.totalWeeks; // default
+      
+      if (assessmentAnalysis?.recommendations?.program_duration_options) {
+        const durationOptions = assessmentAnalysis.recommendations.program_duration_options;
+        if (selectedFrequency === 3) {
+          calculatedDuration = durationOptions["3_days"].weeks;
+        } else if (selectedFrequency === 4) {
+          calculatedDuration = durationOptions["4_days"].weeks;
+        } else if (selectedFrequency === 5) {
+          calculatedDuration = durationOptions["5_days"].weeks;
+        }
+      }
+      
+      // Create the program using the backend endpoint with dynamic duration
       const programData = {
         player_id: playerId,
         program_name: `${playerId}'s Elite Training Program`,
-        total_duration_weeks: programRecommendation.totalWeeks,
+        total_duration_weeks: calculatedDuration,
         program_objectives: [
           `Improve from ${assessmentData.performance_level} to ${programRecommendation.targetLevel}`,
           `Focus on ${programRecommendation.weakestAreas.join(' and ')}`,
