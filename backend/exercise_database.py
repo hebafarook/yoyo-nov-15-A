@@ -297,34 +297,89 @@ PERIODIZATION_TEMPLATES = {
 }
 
 def generate_daily_routine(phase: str, week_number: int, day_number: int, player_weaknesses: List[str]) -> Dict[str, Any]:
-    """Generate a daily routine based on phase, week, day, and player needs"""
+    """Generate a daily routine based on phase, week, day, and player needs with VARIETY"""
     template = PERIODIZATION_TEMPLATES.get(phase, PERIODIZATION_TEMPLATES["foundation_building"])
     intensity = template["intensity_progression"][week_number - 1] if week_number <= len(template["intensity_progression"]) else 75
     
-    # Select exercises based on player weaknesses and phase focus
+    # Select exercises based on player weaknesses, phase, and day for VARIETY
     exercises = []
     
-    # Always include some physical conditioning
-    exercises.append(EXERCISE_DATABASE["sprint_intervals_30m"])
+    # PHYSICAL CONDITIONING - Vary by day
+    physical_options = [
+        EXERCISE_DATABASE["sprint_intervals_30m"],
+        EXERCISE_DATABASE["yo_yo_endurance_intervals"],
+        EXERCISE_DATABASE["agility_ladder_sequences"],
+        EXERCISE_DATABASE["plyometric_box_jumps"]
+    ]
+    exercises.append(physical_options[day_number % len(physical_options)])
     
-    # Add technical work based on weaknesses
+    # TECHNICAL WORK - Add based on weaknesses with variety
     if "ball_control" in player_weaknesses:
-        exercises.append(EXERCISE_DATABASE["ball_mastery_cone_weaving"])
-    if "passing" in player_weaknesses:
-        exercises.append(EXERCISE_DATABASE["passing_accuracy_gates"])
-        
-    # Add tactical work (increases in later phases)
+        technical_bc = [
+            EXERCISE_DATABASE["ball_mastery_cone_weaving"],
+            EXERCISE_DATABASE["close_control_dribbling"]
+        ]
+        exercises.append(technical_bc[week_number % len(technical_bc)])
+    
+    if "passing" in player_weaknesses or "passing_accuracy" in player_weaknesses:
+        passing_options = [
+            EXERCISE_DATABASE["passing_accuracy_gates"],
+            EXERCISE_DATABASE["one_touch_passing_triangles"]
+        ]
+        exercises.append(passing_options[day_number % len(passing_options)])
+    
+    if "shooting" in player_weaknesses or "shooting_accuracy" in player_weaknesses:
+        shooting_options = [
+            EXERCISE_DATABASE["finishing_inside_box"],
+            EXERCISE_DATABASE["power_shooting_technique"]
+        ]
+        exercises.append(shooting_options[week_number % len(shooting_options)])
+    
+    if "speed" in player_weaknesses:
+        speed_options = [
+            EXERCISE_DATABASE["acceleration_first_5_yards"],
+            EXERCISE_DATABASE["sprint_intervals_30m"]
+        ]
+        exercises.append(speed_options[day_number % len(speed_options)])
+    
+    if "endurance" in player_weaknesses:
+        exercises.append(EXERCISE_DATABASE["yo_yo_endurance_intervals"])
+    
+    # TACTICAL WORK - Increases in later phases
     if phase in ["development_phase", "peak_performance"]:
+        tactical_options = [
+            EXERCISE_DATABASE["small_sided_positioning"],
+            EXERCISE_DATABASE["defensive_shape_organization"],
+            EXERCISE_DATABASE["transition_attack_defense"]
+        ]
+        exercises.append(tactical_options[(week_number + day_number) % len(tactical_options)])
+    elif "tactical" in player_weaknesses or "positioning" in player_weaknesses:
         exercises.append(EXERCISE_DATABASE["small_sided_positioning"])
         
-    # Add psychological training
-    exercises.append(EXERCISE_DATABASE["visualization_mental_rehearsal"])
+    # POSITION-SPECIFIC (if no weaknesses detected, ensure at least 3-4 exercises)
+    if len(exercises) < 3:
+        additional = [
+            EXERCISE_DATABASE["match_situation_visualization"],
+            EXERCISE_DATABASE["dynamic_ball_control"],
+            EXERCISE_DATABASE["first_touch_receiving"]
+        ]
+        exercises.extend(additional[:(4 - len(exercises))])
+    
+    # PSYCHOLOGICAL/RECOVERY - Vary by phase
+    if phase == "peak_performance":
+        exercises.append(EXERCISE_DATABASE["match_situation_visualization"])
+    else:
+        mental_options = [
+            EXERCISE_DATABASE["visualization_mental_rehearsal"],
+            EXERCISE_DATABASE["breathing_focus_exercises"]
+        ]
+        exercises.append(mental_options[week_number % len(mental_options)])
     
     return {
         "day_number": day_number,
         "phase": phase,
         "exercises": exercises,
-        "total_duration": sum(ex["duration"] for ex in exercises),
+        "total_duration": sum(ex.get("duration", 30) for ex in exercises),
         "intensity_rating": get_intensity_rating(intensity),
         "focus_areas": get_focus_areas(phase, player_weaknesses),
         "objectives": template["objectives"]
