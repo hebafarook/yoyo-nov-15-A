@@ -1700,6 +1700,108 @@ async def create_periodized_program(program: PeriodizedProgramCreate):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.get("/analyze-assessment/{player_name}")
+async def analyze_player_assessment(player_name: str):
+    """Analyze player assessment and provide training recommendations"""
+    try:
+        # Get the latest assessment
+        assessment = await db.assessments.find_one(
+            {"player_name": player_name}, 
+            sort=[("created_at", -1)]
+        )
+        
+        if not assessment:
+            raise HTTPException(status_code=404, detail="No assessment found for this player")
+        
+        # Standards for comparison
+        STANDARDS = {
+            "sprint_30m": {"excellent": 4.0, "good": 4.3, "average": 4.6},
+            "yo_yo_test": {"excellent": 2000, "good": 1700, "average": 1400},
+            "ball_control": {"excellent": 5, "good": 4, "average": 3},
+            "passing_accuracy": {"excellent": 85, "good": 75, "average": 65},
+            "shooting_accuracy": {"excellent": 75, "good": 65, "average": 55},
+            "positioning": {"excellent": 5, "good": 4, "average": 3}
+        }
+        
+        # Analyze each category
+        analysis = {
+            "player_name": player_name,
+            "overall_score": assessment.get("overall_score", 0),
+            "performance_level": assessment.get("performance_level", "Average"),
+            "strengths": [],
+            "weaknesses": [],
+            "recommendations": {
+                "suggested_frequency": 5,  # Default
+                "program_duration": 14,    # weeks
+                "focus_areas": []
+            }
+        }
+        
+        # Physical Analysis
+        sprint = assessment.get("sprint_30m", 5.0)
+        if sprint <= STANDARDS["sprint_30m"]["good"]:
+            analysis["strengths"].append({"area": "Speed", "level": "Good"})
+        elif sprint > STANDARDS["sprint_30m"]["average"]:
+            analysis["weaknesses"].append({"area": "Speed", "current": f"{sprint}s", "target": "4.3s", "priority": "High"})
+            analysis["recommendations"]["focus_areas"].append("Sprint Development")
+        
+        endurance = assessment.get("yo_yo_test", 1000)
+        if endurance >= STANDARDS["yo_yo_test"]["good"]:
+            analysis["strengths"].append({"area": "Endurance", "level": "Good"})
+        elif endurance < STANDARDS["yo_yo_test"]["average"]:
+            analysis["weaknesses"].append({"area": "Endurance", "current": f"{endurance}m", "target": "1700m", "priority": "High"})
+            analysis["recommendations"]["focus_areas"].append("Aerobic Capacity")
+        
+        # Technical Analysis
+        ball_control = assessment.get("ball_control", 2)
+        if ball_control >= STANDARDS["ball_control"]["good"]:
+            analysis["strengths"].append({"area": "Ball Control", "level": "Good"})
+        elif ball_control < STANDARDS["ball_control"]["average"]:
+            analysis["weaknesses"].append({"area": "Ball Control", "current": f"{ball_control}/5", "target": "4/5", "priority": "Critical"})
+            analysis["recommendations"]["focus_areas"].append("Technical Skills")
+        
+        passing = assessment.get("passing_accuracy", 50)
+        if passing >= STANDARDS["passing_accuracy"]["good"]:
+            analysis["strengths"].append({"area": "Passing", "level": "Good"})
+        elif passing < STANDARDS["passing_accuracy"]["average"]:
+            analysis["weaknesses"].append({"area": "Passing", "current": f"{passing}%", "target": "75%", "priority": "High"})
+            analysis["recommendations"]["focus_areas"].append("Passing Accuracy")
+        
+        shooting = assessment.get("shooting_accuracy", 45)
+        if shooting >= STANDARDS["shooting_accuracy"]["good"]:
+            analysis["strengths"].append({"area": "Shooting", "level": "Good"})
+        elif shooting < STANDARDS["shooting_accuracy"]["average"]:
+            analysis["weaknesses"].append({"area": "Shooting", "current": f"{shooting}%", "target": "65%", "priority": "High"})
+            analysis["recommendations"]["focus_areas"].append("Shooting Accuracy")
+        
+        # Tactical Analysis
+        positioning = assessment.get("positioning", 2)
+        if positioning >= STANDARDS["positioning"]["good"]:
+            analysis["strengths"].append({"area": "Positioning", "level": "Good"})
+        elif positioning < STANDARDS["positioning"]["average"]:
+            analysis["weaknesses"].append({"area": "Positioning", "current": f"{positioning}/5", "target": "4/5", "priority": "Moderate"})
+            analysis["recommendations"]["focus_areas"].append("Tactical Awareness")
+        
+        # Determine suggested training frequency based on weaknesses
+        weakness_count = len(analysis["weaknesses"])
+        if weakness_count >= 5:
+            analysis["recommendations"]["suggested_frequency"] = 5
+            analysis["recommendations"]["intensity"] = "High - Multiple areas need development"
+        elif weakness_count >= 3:
+            analysis["recommendations"]["suggested_frequency"] = 4
+            analysis["recommendations"]["intensity"] = "Moderate - Several areas to improve"
+        else:
+            analysis["recommendations"]["suggested_frequency"] = 3
+            analysis["recommendations"]["intensity"] = "Standard - Maintenance and refinement"
+        
+        return analysis
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error analyzing assessment: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.get("/periodized-programs/{player_id}", response_model=Optional[PeriodizedProgram])
 async def get_player_program(player_id: str):
     """Get the current periodized program for a player"""
