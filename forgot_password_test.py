@@ -149,12 +149,10 @@ class ForgotPasswordTester:
             return False
             
         try:
-            reset_data = {
-                "reset_token": self.reset_token,
-                "new_password": "newpassword456"
-            }
+            # Use query parameters as expected by the endpoint
+            url = f"{BACKEND_URL}/auth/reset-password?reset_token={self.reset_token}&new_password=newpassword456"
             
-            async with self.session.post(f"{BACKEND_URL}/auth/reset-password", json=reset_data) as response:
+            async with self.session.post(url) as response:
                 response_data = await response.json()
                 
                 if response.status == 200:
