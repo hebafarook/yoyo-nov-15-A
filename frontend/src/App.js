@@ -251,7 +251,7 @@ const FieldExplanation = ({ fieldName, isVisible, onToggle }) => {
 };
 
 // Enhanced Assessment Component
-const AssessmentForm = ({ onAssessmentCreated }) => {
+const AssessmentForm = ({ onAssessmentCreated, setActiveTab }) => {
   const { t, direction } = useLanguage();
   const { user, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
