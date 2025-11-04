@@ -536,31 +536,50 @@ const TrainingDashboard = ({ playerId }) => {
                         Select Your Training Frequency
                       </label>
                       <div className="grid grid-cols-3 gap-3">
-                        {[3, 4, 5].map((freq) => (
-                          <button
-                            key={freq}
-                            onClick={() => setSelectedFrequency(freq)}
-                            className={`p-4 rounded-lg border-2 transition-all ${
-                              selectedFrequency === freq
-                                ? 'border-blue-600 bg-blue-600 text-white shadow-lg'
-                                : 'border-gray-300 bg-white hover:border-blue-400'
-                            }`}
-                          >
-                            <div className="text-2xl font-bold">{freq}</div>
-                            <div className="text-sm">days/week</div>
-                            {freq === assessmentAnalysis.recommendations.suggested_frequency && (
-                              <Badge className="mt-2 bg-green-100 text-green-800 text-xs">
-                                Recommended
-                              </Badge>
-                            )}
-                          </button>
-                        ))}
+                        {[3, 4, 5].map((freq) => {
+                          const durationKey = `${freq}_days`;
+                          const durationInfo = assessmentAnalysis.recommendations.program_duration_options?.[durationKey];
+                          
+                          return (
+                            <button
+                              key={freq}
+                              onClick={() => setSelectedFrequency(freq)}
+                              className={`p-4 rounded-lg border-2 transition-all ${
+                                selectedFrequency === freq
+                                  ? 'border-blue-600 bg-blue-600 text-white shadow-lg'
+                                  : 'border-gray-300 bg-white hover:border-blue-400'
+                              }`}
+                            >
+                              <div className="text-2xl font-bold">{freq}</div>
+                              <div className="text-sm">days/week</div>
+                              {durationInfo && (
+                                <div className={`text-xs mt-1 font-semibold ${
+                                  selectedFrequency === freq ? 'text-blue-100' : 'text-blue-600'
+                                }`}>
+                                  {durationInfo.weeks} weeks
+                                  <br />
+                                  ({durationInfo.months} months)
+                                </div>
+                              )}
+                              {freq === assessmentAnalysis.recommendations.suggested_frequency && (
+                                <Badge className="mt-2 bg-green-100 text-green-800 text-xs">
+                                  Recommended
+                                </Badge>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                       <p className="text-xs text-gray-600 mt-3 text-center">
-                        {selectedFrequency === 3 && "Ideal for beginners or those with limited time"}
-                        {selectedFrequency === 4 && "Balanced approach for steady improvement"}
-                        {selectedFrequency === 5 && "Intensive training for rapid development"}
+                        {selectedFrequency === 3 && "Slower progress - Good for beginners or busy schedules"}
+                        {selectedFrequency === 4 && "Balanced progress - Recommended for most players"}
+                        {selectedFrequency === 5 && "Fastest progress - For dedicated athletes"}
                       </p>
+                      {assessmentAnalysis.recommendations.duration_explanation && (
+                        <div className="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-800">
+                          <strong>Timeline:</strong> {assessmentAnalysis.recommendations.duration_explanation}
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
