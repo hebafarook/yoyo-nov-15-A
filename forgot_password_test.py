@@ -79,8 +79,8 @@ class ForgotPasswordTester:
                     # Verify response contains expected fields
                     if ("access_token" in response_data and 
                         "user" in response_data and
-                        response_data["user"]["username"] == "forgottest001" and
-                        response_data["user"]["email"] == "forgottest001@test.com"):
+                        response_data["user"]["username"] == username and
+                        response_data["user"]["email"] == email):
                         
                         self.test_user = response_data["user"]
                         self.log_result(test_name, True, 
