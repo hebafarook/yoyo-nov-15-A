@@ -250,12 +250,10 @@ class ForgotPasswordTester:
         
         try:
             fake_token = str(uuid.uuid4())  # Generate fake UUID token
-            reset_data = {
-                "reset_token": fake_token,
-                "new_password": "shouldnotwork123"
-            }
+            # Use query parameters as expected by the endpoint
+            url = f"{BACKEND_URL}/auth/reset-password?reset_token={fake_token}&new_password=shouldnotwork123"
             
-            async with self.session.post(f"{BACKEND_URL}/auth/reset-password", json=reset_data) as response:
+            async with self.session.post(url) as response:
                 response_data = await response.json()
                 
                 if response.status == 400:
