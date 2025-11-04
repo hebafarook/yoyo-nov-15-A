@@ -281,6 +281,8 @@ const AssessmentForm = ({ onAssessmentCreated, setActiveTab }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [explanationVisibility, setExplanationVisibility] = useState({});
+  const [assessmentSuccess, setAssessmentSuccess] = useState(false);
+  const [assessmentMessage, setAssessmentMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
