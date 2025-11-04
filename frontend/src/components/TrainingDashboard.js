@@ -62,6 +62,20 @@ const TrainingDashboard = ({ playerId }) => {
         console.log('Latest assessment:', latestAssessment);
         setAssessmentData(latestAssessment);
         
+        // Load detailed assessment analysis from backend
+        try {
+          const analysisResponse = await axios.get(`${API}/analyze-assessment/${playerId}`);
+          console.log('Assessment analysis:', analysisResponse.data);
+          setAssessmentAnalysis(analysisResponse.data);
+          
+          // Set suggested training frequency
+          if (analysisResponse.data?.recommendations?.suggested_frequency) {
+            setSelectedFrequency(analysisResponse.data.recommendations.suggested_frequency);
+          }
+        } catch (analysisError) {
+          console.log('Could not load assessment analysis:', analysisError.message);
+        }
+        
         // Calculate program recommendation based on assessment
         const recommendation = calculateProgramRecommendation(latestAssessment);
         console.log('Program recommendation:', recommendation);
@@ -76,6 +90,7 @@ const TrainingDashboard = ({ playerId }) => {
         if (programResponse.data) {
           console.log('Existing program found:', programResponse.data);
           setPeriodizedProgram(programResponse.data);
+          setShowAnalysis(false); // Hide analysis if program already exists
         }
       } catch (progError) {
         // Program might not exist yet, that's okay
