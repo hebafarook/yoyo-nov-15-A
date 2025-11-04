@@ -369,13 +369,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Milestone Assessment & Adaptive Program Generation System"
-    - "Position-Specific Training Adaptation"
-    - "Youth Handbook Standards Integration"
-    - "Assessment Report & Benchmark System"
+    - "Get Started Button Smart Routing"
   stuck_tasks: []
   test_all: false
-  test_priority: "milestone_assessment_complete"
+  test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
