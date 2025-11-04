@@ -7,13 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { UserPlus, LogIn, X, Eye, EyeOff, Shield, Users, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-const AuthModal = ({ isOpen, onClose, defaultMode = 'login' }) => {
+const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword }) => {
   const [mode, setMode] = useState(defaultMode);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [resetToken, setResetToken] = useState('');
   const [formData, setFormData] = useState({
     username: '',
     email: '',
