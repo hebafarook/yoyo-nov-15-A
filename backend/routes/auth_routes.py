@@ -187,6 +187,116 @@ async def login_user(login_data: UserLogin):
             detail="Failed to login"
         )
 
+@router.post("/forgot-password")
+async def forgot_password(email: str):
+    """Generate password reset token for user"""
+    try:
+        # Find user by email
+        user_doc = await db.users.find_one({"email": email})
+        if not user_doc:
+            # Don't reveal if email exists for security
+            return {
+                "message": "If this email exists, a reset token has been generated",
+                "success": True
+            }
+        
+        # Generate reset token
+        reset_token = str(uuid.uuid4())
+        reset_token_expiry = datetime.now(timezone.utc) + timedelta(hours=1)  # Token valid for 1 hour
+        
+        # Update user with reset token
+        await db.users.update_one(
+            {"id": user_doc["id"]},
+            {"$set": {
+                "reset_token": reset_token,
+                "reset_token_expiry": reset_token_expiry.isoformat()
+            }}
+        )
+        
+        logger.info(f"Password reset token generated for user: {user_doc['username']}")
+        
+        # In production, send email here. For now, return token
+        return {
+            "message": "Password reset token generated",
+            "success": True,
+            "reset_token": reset_token,  # In production, this would be sent via email
+            "username": user_doc["username"],
+            "expires_in": "1 hour"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error generating reset token: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to generate reset token"
+        )
+
+@router.post("/reset-password")
+async def reset_password(reset_token: str, new_password: str):
+    """Reset user password using reset token"""
+    try:
+        # Find user by reset token
+        user_doc = await db.users.find_one({"reset_token": reset_token})
+        if not user_doc:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid or expired reset token"
+            )
+        
+        # Check if token is expired
+        reset_token_expiry = user_doc.get("reset_token_expiry")
+        if not reset_token_expiry:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid reset token"
+            )
+        
+        # Parse expiry time
+        if isinstance(reset_token_expiry, str):
+            expiry_datetime = datetime.fromisoformat(reset_token_expiry.replace('Z', '+00:00'))
+        else:
+            expiry_datetime = reset_token_expiry
+        
+        # Make expiry datetime timezone-aware if it isn't
+        if expiry_datetime.tzinfo is None:
+            expiry_datetime = expiry_datetime.replace(tzinfo=timezone.utc)
+        
+        if datetime.now(timezone.utc) > expiry_datetime:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Reset token has expired"
+            )
+        
+        # Hash new password
+        hashed_password = hash_password(new_password)
+        
+        # Update user password and clear reset token
+        await db.users.update_one(
+            {"id": user_doc["id"]},
+            {"$set": {
+                "hashed_password": hashed_password,
+                "reset_token": None,
+                "reset_token_expiry": None
+            }}
+        )
+        
+        logger.info(f"Password reset successful for user: {user_doc['username']}")
+        
+        return {
+            "message": "Password reset successful",
+            "success": True,
+            "username": user_doc["username"]
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error resetting password: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to reset password"
+        )
+
 @router.get("/profile", response_model=dict)
 async def get_user_profile(current_user: dict = Depends(verify_token)):
     """Get user profile information"""
