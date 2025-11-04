@@ -53,15 +53,24 @@ class ForgotPasswordTester:
         test_name = "1. Register Test User for Forgot Password"
         
         try:
+            # Generate unique username to avoid conflicts
+            unique_id = str(uuid.uuid4())[:8]
+            username = f"forgottest{unique_id}"
+            email = f"forgottest{unique_id}@test.com"
+            
             user_data = {
-                "username": "forgottest001",
-                "email": "forgottest001@test.com",
+                "username": username,
+                "email": email,
                 "password": "oldpassword123",
                 "full_name": "Forgot Test User",
                 "role": "player",
                 "age": 18,
                 "position": "Forward"
             }
+            
+            # Store for later tests
+            self.test_username = username
+            self.test_email = email
             
             async with self.session.post(f"{BACKEND_URL}/auth/register", json=user_data) as response:
                 response_data = await response.json()
