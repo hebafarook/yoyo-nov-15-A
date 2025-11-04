@@ -18,6 +18,7 @@ const API = `${BACKEND_URL}/api`;
 
 const TrainingDashboard = ({ playerId }) => {
   const [assessmentData, setAssessmentData] = useState(null);
+  const [assessmentAnalysis, setAssessmentAnalysis] = useState(null);
   const [programRecommendation, setProgramRecommendation] = useState(null);
   const [periodizedProgram, setPeriodizedProgram] = useState(null);
   const [currentPhase, setCurrentPhase] = useState(0);
@@ -28,6 +29,8 @@ const TrainingDashboard = ({ playerId }) => {
   const [activeExercise, setActiveExercise] = useState(null);
   const [exerciseTimer, setExerciseTimer] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [selectedFrequency, setSelectedFrequency] = useState(5); // Default 5 days/week
+  const [showAnalysis, setShowAnalysis] = useState(true);
 
   useEffect(() => {
     loadDashboardData();
