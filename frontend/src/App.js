@@ -1061,6 +1061,7 @@ const MainDashboard = () => {
   const [previousAssessments, setPreviousAssessments] = useState([]);
   const [isStartupReport, setIsStartupReport] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
 
   // Redirect to assessment page after login
