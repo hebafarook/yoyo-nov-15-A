@@ -224,7 +224,7 @@ class ForgotPasswordTester:
         
         try:
             login_data = {
-                "username": "forgottest001",
+                "username": self.test_username,
                 "password": "newpassword456"  # New password should work
             }
             
