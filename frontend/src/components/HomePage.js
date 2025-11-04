@@ -102,18 +102,18 @@ const HomePage = ({ onNavigate }) => {
 
   const quickActions = [
     {
-      title: 'New Assessment',
-      description: 'Evaluate player performance',
+      title: hasAssessment ? 'New Assessment' : 'Start Assessment',
+      description: hasAssessment ? 'Evaluate player performance' : 'Complete your first assessment',
       icon: <BarChart3 className="w-6 h-6" />,
       color: 'bg-blue-500',
       action: () => onNavigate('assessment')
     },
     {
-      title: 'View Training',
-      description: 'Access training programs',
+      title: hasProgram ? 'Continue Training' : 'View Training',
+      description: hasProgram ? 'Resume your training program' : 'Access training programs',
       icon: <PlayCircle className="w-6 h-6" />,
       color: 'bg-green-500',
-      action: () => onNavigate('training')
+      action: handleGetStarted
     },
     {
       title: 'My Reports',
