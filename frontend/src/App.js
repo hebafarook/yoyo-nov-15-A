@@ -1514,6 +1514,18 @@ const MainDashboard = () => {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         defaultMode={authMode}
+        onForgotPassword={() => setShowForgotPasswordModal(true)}
+      />
+
+      {/* Forgot Password Modal */}
+      <ForgotPasswordModal
+        isOpen={showForgotPasswordModal}
+        onClose={() => setShowForgotPasswordModal(false)}
+        onBackToLogin={() => {
+          setShowForgotPasswordModal(false);
+          setShowAuthModal(true);
+          setAuthMode('login');
+        }}
       />
     </div>
   );
