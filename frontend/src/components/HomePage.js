@@ -43,19 +43,27 @@ const HomePage = ({ onNavigate }) => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
-      setHasAssessment(benchmarksRes.data && benchmarksRes.data.length > 0);
+      const benchmarks = benchmarksRes.data || [];
+      const hasBenchmarks = benchmarks.length > 0;
+      setHasAssessment(hasBenchmarks);
       
-      // Check for training program
-      if (user.username) {
+      // Check for training program using player_name from most recent benchmark
+      if (hasBenchmarks && benchmarks[0]?.player_name) {
+        const playerName = benchmarks[0].player_name;
         try {
-          const programRes = await axios.get(`${API}/periodized-programs/${user.username}`);
+          const programRes = await axios.get(`${API}/periodized-programs/${playerName}`);
           setHasProgram(!!programRes.data);
         } catch (err) {
+          // 404 or error means no program exists
           setHasProgram(false);
         }
+      } else {
+        setHasProgram(false);
       }
     } catch (error) {
       console.error('Error checking user progress:', error);
+      setHasAssessment(false);
+      setHasProgram(false);
     }
   };
 
