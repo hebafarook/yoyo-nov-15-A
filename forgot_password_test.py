@@ -235,7 +235,7 @@ class ForgotPasswordTester:
                     # Verify response contains JWT token and user data
                     if ("access_token" in response_data and 
                         "user" in response_data and
-                        response_data["user"]["username"] == "forgottest001"):
+                        response_data["user"]["username"] == self.test_username):
                         
                         self.log_result(test_name, True, 
                                       "New password works correctly - login successful with JWT token")
