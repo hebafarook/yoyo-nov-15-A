@@ -393,6 +393,21 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
               </>
             )}
 
+            {mode === 'login' && (
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    if (onForgotPassword) onForgotPassword();
+                  }}
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  Forgot Password?
+                </button>
+              </div>
+            )}
+
             <Button
               type="submit"
               disabled={loading}
