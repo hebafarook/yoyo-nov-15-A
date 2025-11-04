@@ -22,12 +22,56 @@ const HomePage = ({ onNavigate }) => {
     activePlayers: 0
   });
   const [loading, setLoading] = useState(false); // Changed to false - load in background
+  const [hasAssessment, setHasAssessment] = useState(false);
+  const [hasProgram, setHasProgram] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated && user) {
       loadDashboardStats();
+      checkUserProgress();
     }
   }, [isAuthenticated, user]);
+
+  const checkUserProgress = async () => {
+    if (!user) return;
+    
+    try {
+      const token = localStorage.getItem('access_token');
+      
+      // Check for benchmarks (assessments)
+      const benchmarksRes = await axios.get(`${API}/auth/benchmarks`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      setHasAssessment(benchmarksRes.data && benchmarksRes.data.length > 0);
+      
+      // Check for training program
+      if (user.username) {
+        try {
+          const programRes = await axios.get(`${API}/periodized-programs/${user.username}`);
+          setHasProgram(!!programRes.data);
+        } catch (err) {
+          setHasProgram(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking user progress:', error);
+    }
+  };
+
+  const handleGetStarted = () => {
+    // Smart routing based on user progress
+    if (!hasAssessment) {
+      // No assessment yet - go to assessment
+      onNavigate('assessment');
+    } else if (!hasProgram) {
+      // Has assessment but no program - go to training to generate
+      onNavigate('training');
+    } else {
+      // Has both - go to training to continue
+      onNavigate('training');
+    }
+  };
 
   const loadDashboardStats = async () => {
     if (!user || !user.id) {
