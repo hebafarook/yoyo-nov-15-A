@@ -304,76 +304,40 @@ def generate_daily_routine(phase: str, week_number: int, day_number: int, player
     # Select exercises based on player weaknesses, phase, and day for VARIETY
     exercises = []
     
-    # PHYSICAL CONDITIONING - Vary by day (use actual exercise names from database)
+    # PHYSICAL CONDITIONING - Vary by day (use ACTUAL exercise names from database)
     physical_options = [
         EXERCISE_DATABASE["sprint_intervals_30m"],
         EXERCISE_DATABASE["ladder_agility_drill"],
-        EXERCISE_DATABASE["cone_sprint_change_direction"],
-        EXERCISE_DATABASE["plyometric_box_jump"]
+        EXERCISE_DATABASE["plyometric_jump_circuit"],
+        EXERCISE_DATABASE["vo2_max_shuttle_runs"]
     ]
     exercises.append(physical_options[day_number % len(physical_options)])
     
     # TECHNICAL WORK - Add based on weaknesses with variety
     if "ball_control" in player_weaknesses:
-        technical_bc = [
-            EXERCISE_DATABASE["ball_mastery_cone_weaving"],
-            EXERCISE_DATABASE["close_control_dribbling"]
-        ]
-        exercises.append(technical_bc[week_number % len(technical_bc)])
+        exercises.append(EXERCISE_DATABASE["ball_mastery_cone_weaving"])
     
     if "passing" in player_weaknesses or "passing_accuracy" in player_weaknesses:
-        passing_options = [
-            EXERCISE_DATABASE["passing_accuracy_gates"],
-            EXERCISE_DATABASE["triangle_passing_rhythm"]
-        ]
-        exercises.append(passing_options[day_number % len(passing_options)])
+        exercises.append(EXERCISE_DATABASE["passing_accuracy_gates"])
     
-    if "shooting" in player_weaknesses or "shooting_accuracy" in player_weaknesses:
-        shooting_options = [
-            EXERCISE_DATABASE["finishing_inside_box"],
-            EXERCISE_DATABASE["power_shooting_technique"]
-        ]
-        exercises.append(shooting_options[week_number % len(shooting_options)])
-    
-    if "speed" in player_weaknesses:
-        speed_options = [
-            EXERCISE_DATABASE["acceleration_first_5_yards"],
-            EXERCISE_DATABASE["sprint_intervals_30m"]
-        ]
-        exercises.append(speed_options[day_number % len(speed_options)])
-    
-    if "endurance" in player_weaknesses:
-        exercises.append(EXERCISE_DATABASE["yo_yo_intermittent_recovery"])
-    
-    # TACTICAL WORK - Increases in later phases
-    if phase in ["development_phase", "peak_performance"]:
-        tactical_options = [
-            EXERCISE_DATABASE["small_sided_positioning"],
-            EXERCISE_DATABASE["defensive_shape_organization"],
-            EXERCISE_DATABASE["transition_attack_defense"]
-        ]
-        exercises.append(tactical_options[(week_number + day_number) % len(tactical_options)])
-    elif "tactical" in player_weaknesses or "positioning" in player_weaknesses:
+    # TACTICAL WORK - Increases in later phases or if weakness detected
+    if phase in ["development_phase", "peak_performance"] or "tactical" in player_weaknesses or "positioning" in player_weaknesses:
         exercises.append(EXERCISE_DATABASE["small_sided_positioning"])
-        
-    # POSITION-SPECIFIC (if no weaknesses detected, ensure at least 3-4 exercises)
-    if len(exercises) < 3:
-        additional = [
-            EXERCISE_DATABASE["match_situation_visualization"],
-            EXERCISE_DATABASE["dynamic_ball_control"],
-            EXERCISE_DATABASE["first_touch_receiving"]
-        ]
-        exercises.extend(additional[:(4 - len(exercises))])
     
-    # PSYCHOLOGICAL/RECOVERY - Vary by phase
-    if phase == "peak_performance":
-        exercises.append(EXERCISE_DATABASE["match_situation_visualization"])
-    else:
-        mental_options = [
-            EXERCISE_DATABASE["visualization_mental_rehearsal"],
-            EXERCISE_DATABASE["breathing_focus_exercises"]
-        ]
-        exercises.append(mental_options[week_number % len(mental_options)])
+    # Add decision making for tactical players
+    if "decision_making" in player_weaknesses or phase == "peak_performance":
+        exercises.append(EXERCISE_DATABASE["pressure_decision_making"])
+        
+    # PSYCHOLOGICAL/RECOVERY - Always include mental training
+    exercises.append(EXERCISE_DATABASE["visualization_mental_rehearsal"])
+    
+    # Ensure we have 4-5 exercises per day for variety
+    if len(exercises) < 4:
+        # Add more physical work
+        if day_number % 2 == 0:
+            exercises.append(EXERCISE_DATABASE["plyometric_jump_circuit"])
+        else:
+            exercises.append(EXERCISE_DATABASE["ladder_agility_drill"])
     
     return {
         "day_number": day_number,
