@@ -37,6 +37,7 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
   }, [playerData, previousAssessments, showComparison]);
 
   const generateReportData = () => {
+    console.log('📊 Starting generateReportData...');
     const ageCategory = getAgeCategory(playerData.age);
     const standards = YOUTH_HANDBOOK_STANDARDS[ageCategory];
     
@@ -46,6 +47,8 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
     const tacticalScore = calculateCategoryScore('tactical', playerData, standards);
     const psychologicalScore = calculateCategoryScore('psychological', playerData, standards);
     
+    console.log('📈 Category scores:', { physical: physicalScore, technical: technicalScore, tactical: tacticalScore, psychological: psychologicalScore });
+    
     // Calculate overall score
     const overallScore = calculateOverallScore(playerData);
     
@@ -54,6 +57,11 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
     
     // Identify strengths and weaknesses
     const analysis = analyzePerformance(playerData, standards);
+    
+    // Calculate program duration with category gaps
+    const programDuration = calculateProgramDuration(analysis, performanceLevel, playerData);
+    console.log('📅 Program duration calculated:', programDuration);
+    console.log('🎯 Category gaps:', programDuration.categoryGaps);
     
     const report = {
       playerInfo: {
@@ -74,11 +82,12 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
       performanceLevel,
       analysis,
       recommendations: generateRecommendations(analysis, performanceLevel, playerData),
-      programDuration: calculateProgramDuration(analysis, performanceLevel, playerData),
+      programDuration: programDuration,
       nextAssessmentDate: getNextAssessmentDate(),
       rawMetrics: extractRawMetrics(playerData)
     };
 
+    console.log('✅ Report data generated:', report);
     setReportData(report);
   };
 
