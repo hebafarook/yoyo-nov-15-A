@@ -487,15 +487,21 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
         notes: `Overall Score: ${reportData.scores.overall}/100 - ${reportData.performanceLevel.level}`
       };
 
+      console.log('📤 Sending save request:', saveData);
       const result = await saveReport(saveData);
+      console.log('📥 Save result:', result);
+      
       if (result.success) {
-        alert('Report saved to your profile successfully!');
+        console.log('✅ Report saved successfully');
+        alert('✅ Report saved to your profile successfully!');
       } else {
+        console.error('❌ Save failed:', result.error);
         alert('Failed to save report: ' + result.error);
       }
     } catch (error) {
-      console.error('Error saving report:', error);
-      alert('Failed to save report. Please try again.');
+      console.error('❌ Error saving report:', error);
+      console.error('Error details:', error.response?.data);
+      alert('Failed to save report. Please try again. Error: ' + (error.response?.data?.detail || error.message));
     }
   };
 
