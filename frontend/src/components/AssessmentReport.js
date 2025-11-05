@@ -70,7 +70,7 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
       },
       performanceLevel,
       analysis,
-      recommendations: generateRecommendations(analysis, performanceLevel),
+      recommendations: generateRecommendations(analysis, performanceLevel, playerData),
       programDuration: calculateProgramDuration(analysis, performanceLevel, playerData),
       nextAssessmentDate: getNextAssessmentDate(),
       rawMetrics: extractRawMetrics(playerData)
