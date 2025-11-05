@@ -100,8 +100,13 @@ class AssessmentReportSaveTest:
     async def test_user_login(self):
         """Test 2: Login with registered user"""
         try:
+            # Use the same username from registration
+            if not self.user_data:
+                self.log_result("User Login", False, "No user data from registration")
+                return False
+                
             login_data = {
-                "username": "reporttest001",
+                "username": self.user_data.get("username"),
                 "password": "test123"
             }
             
