@@ -467,7 +467,6 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
       }
 
       const benchmarkData = {
-        user_id: user.id,
         player_name: reportData.playerInfo.name,
         assessment_id: playerData.id || 'unknown',
         age: playerData.age,
