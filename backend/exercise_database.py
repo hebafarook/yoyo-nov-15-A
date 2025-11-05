@@ -439,20 +439,45 @@ def get_intensity_rating(intensity_percentage: float) -> str:
     else: 
         return "low"
 
-def get_focus_areas(phase: str, weaknesses: List[str]) -> List[str]:
-    """Get focus areas based on phase and player weaknesses"""
+def get_week_focus(week_cycle: int) -> str:
+    """Get focus description for the week in 4-week cycle"""
+    week_focuses = {
+        0: "Foundation Week - Building base fitness and fundamentals",
+        1: "Development Week - Increasing intensity and skill complexity",
+        2: "Peak Week - Maximum intensity and match simulation",
+        3: "Recovery Week - Active recovery with technical refinement"
+    }
+    return week_focuses.get(week_cycle, "Training Week")
+
+def get_focus_areas(phase: str, weaknesses: List[str], week_number: int = 1) -> List[str]:
+    """Get focus areas based on phase, player weaknesses, and week progression"""
     base_focus = {
         "foundation_building": ["technique", "fitness_base", "fundamentals"],
         "development_phase": ["skill_refinement", "tactical_awareness", "conditioning"],
         "peak_performance": ["match_simulation", "peak_fitness", "mental_preparation"]
     }
     
-    focus = base_focus.get(phase, base_focus["foundation_building"])
+    focus = base_focus.get(phase, base_focus["foundation_building"]).copy()
+    
+    # Add week-specific focus
+    week_cycle = (week_number - 1) % 4
+    if week_cycle == 0:
+        focus.append("foundation_building")
+    elif week_cycle == 1:
+        focus.append("progressive_overload")
+    elif week_cycle == 2:
+        focus.append("peak_intensity")
+    else:
+        focus.append("recovery_adaptation")
     
     # Add weakness-specific focus
     if "speed" in weaknesses:
         focus.append("sprint_development")
     if "ball_control" in weaknesses:
         focus.append("technical_mastery")
+    if "endurance" in weaknesses:
+        focus.append("aerobic_conditioning")
+    if "tactical" in weaknesses or "positioning" in weaknesses:
+        focus.append("tactical_intelligence")
         
     return focus
