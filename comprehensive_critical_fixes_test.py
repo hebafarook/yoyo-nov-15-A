@@ -651,7 +651,10 @@ class CriticalFixesTest:
                     low_suggested_frequency = low_analysis.get("suggested_frequency")
                     
                     # Extract duration for comparison
+                    low_recommendations = low_analysis.get("recommendations", {})
+                    low_duration_options = low_recommendations.get("program_duration_options", {})
                     low_duration_weeks = low_duration_options.get("5_days", {}).get("weeks", 0)
+                    low_suggested_frequency = low_recommendations.get("suggested_frequency")
                     
                     self.log_result(
                         "Low Score Analysis", 
