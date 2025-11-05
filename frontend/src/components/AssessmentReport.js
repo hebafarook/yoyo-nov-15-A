@@ -25,13 +25,16 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
   const { saveReport, saveBenchmark, isAuthenticated, user } = useAuth();
 
   useEffect(() => {
+    console.log('🔄 AssessmentReport useEffect triggered');
+    console.log('playerData:', playerData);
     if (playerData) {
+      console.log('✅ Generating report data...');
       generateReportData();
       if (showComparison && previousAssessments.length > 0) {
         generateComparisonData();
       }
     }
-  }, [playerData, previousAssessments]);
+  }, [playerData, previousAssessments, showComparison]);
 
   const generateReportData = () => {
     const ageCategory = getAgeCategory(playerData.age);
