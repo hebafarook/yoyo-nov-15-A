@@ -209,6 +209,8 @@ const TrainingDashboard = ({ playerId }) => {
     else if (performancePercentage >= 45) rating = 'Room for Improvement';
     else rating = 'Needs Significant Work';
     
+    console.log(`📊 ${category} Performance: ${performancePercentage.toFixed(1)}%, Gap: ${gapPercentage.toFixed(1)}%, Rating: ${rating}`);
+    
     return {
       gapScore: avgGap,
       gapPercentage: gapPercentage,
