@@ -421,12 +421,25 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
   };
 
   const printReport = () => {
-    window.print();
+    console.log('🖨️ Print button clicked');
+    try {
+      window.print();
+      console.log('✅ Print dialog opened');
+    } catch (error) {
+      console.error('❌ Print error:', error);
+      alert('Failed to open print dialog: ' + error.message);
+    }
   };
 
   const downloadReport = () => {
+    console.log('📥 Download button clicked');
+    console.log('reportData:', reportData);
     // Create a formatted text version for download
-    if (!reportData) return;
+    if (!reportData) {
+      console.error('❌ No report data available');
+      alert('No report data available to download');
+      return;
+    }
 
     const reportText = generateTextReport(reportData, comparisonData);
     const blob = new Blob([reportText], { type: 'text/plain' });
