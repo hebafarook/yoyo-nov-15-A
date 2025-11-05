@@ -440,7 +440,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Assessment Report Save Functionality Testing Completed"
+    - "3-Day Training Frequency Program Generation Testing Completed"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
