@@ -556,20 +556,26 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
         notes: `Assessment benchmark - ${reportData.playerInfo.assessmentDate}`
       };
 
+      console.log('📤 Sending benchmark request:', benchmarkData);
       const result = await saveBenchmark(benchmarkData);
+      console.log('📥 Benchmark result:', result);
+      
       if (result.success) {
         const benchmark = result.benchmark;
+        console.log('✅ Benchmark saved:', benchmark);
         if (benchmark.is_baseline) {
-          alert('Baseline benchmark saved successfully! This is your first benchmark and will be used as a reference for future progress tracking.');
+          alert('✅ Baseline benchmark saved successfully! This is your first benchmark and will be used as a reference for future progress tracking.');
         } else {
-          alert('Benchmark saved successfully! You can view your progress in the Saved Reports section.');
+          alert('✅ Benchmark saved successfully! You can view your progress in the Saved Reports section.');
         }
       } else {
+        console.error('❌ Save failed:', result.error);
         alert('Failed to save benchmark: ' + result.error);
       }
     } catch (error) {
-      console.error('Error saving benchmark:', error);
-      alert('Failed to save benchmark. Please try again.');
+      console.error('❌ Error saving benchmark:', error);
+      console.error('Error details:', error.response?.data);
+      alert('Failed to save benchmark. Please try again. Error: ' + (error.response?.data?.detail || error.message));
     }
   };
 
