@@ -203,8 +203,43 @@ const TrainingDashboard = ({ playerId }) => {
     };
   };
 
+  const evaluatePerformance = (value, metric, age) => {
+    // Evaluate based on Youth Handbook standards
+    const ageCategory = getAgeCategory(age);
+    const standards = YOUTH_HANDBOOK_STANDARDS[ageCategory];
+    
+    if (!standards || !standards[metric]) {
+      return 'average'; // Default if no standards found
+    }
+    
+    const standard = standards[metric];
+    
+    // For metrics where LOWER is better (sprint times, body fat)
+    const lowerIsBetter = ['sprint_30m', 'body_fat'];
+    
+    if (lowerIsBetter.includes(metric)) {
+      if (value <= standard.excellent) return 'excellent';
+      if (value <= standard.good) return 'good';
+      if (value <= standard.average) return 'average';
+      return 'below average';
+    } 
+    // For metrics where HIGHER is better (all others)
+    else {
+      if (value >= standard.excellent) return 'excellent';
+      if (value >= standard.good) return 'good';
+      if (value >= standard.average) return 'average';
+      return 'below average';
+    }
+  };
+
   const getPerformanceScore = (performance) => {
-    const scores = { excellent: 5, good: 4, average: 3, 'below average': 2, poor: 1 };
+    const scores = { 
+      excellent: 5, 
+      good: 4, 
+      average: 3, 
+      'below average': 2, 
+      poor: 1 
+    };
     return scores[performance] || 3;
   };
 
@@ -213,6 +248,17 @@ const TrainingDashboard = ({ playerId }) => {
     if (currentScore < 60) return 'Intermediate → Advanced';
     if (currentScore < 80) return 'Advanced → Elite';
     return 'Elite → Professional';
+  };
+  
+  const getAgeCategory = (age) => {
+    if (age <= 13) return 'U13';
+    if (age <= 14) return 'U14';
+    if (age <= 15) return 'U15';
+    if (age <= 16) return 'U16';
+    if (age <= 17) return 'U17';
+    if (age <= 18) return 'U18';
+    if (age <= 19) return 'U19';
+    return 'U19'; // Default to U19 for older players
   };
 
   const generateProgram = async () => {
