@@ -233,9 +233,9 @@ async def get_ai_coaching_feedback(
         chat = LlmChat(
             api_key=EMERGENT_KEY,
             session_id=f"coach-{player_name}-{datetime.now().timestamp()}",
-            system_message=\"\"\"You are an elite soccer coach and biomechanics expert. 
+            system_message="""You are an elite soccer coach and biomechanics expert. 
             Provide encouraging, specific, and actionable coaching feedback on exercise form.
-            Be supportive but direct. Use emojis sparingly. Keep responses under 150 words.\"\"\"
+            Be supportive but direct. Use emojis sparingly. Keep responses under 150 words."""
         ).with_model("openai", "gpt-4o-mini")
         
         # Create coaching prompt
