@@ -21,8 +21,8 @@ with open('/app/frontend/.env', 'r') as f:
         if line.startswith('REACT_APP_BACKEND_URL='):
             BACKEND_URL = line.split('=', 1)[1].strip()
             break
-else:
-    BACKEND_URL = "http://localhost:8001"
+    else:
+        BACKEND_URL = "http://localhost:8001"
 
 API_BASE = f"{BACKEND_URL}/api"
 
@@ -96,7 +96,6 @@ class AssessmentReportSaveTest:
         except Exception as e:
             self.log_result("User Registration", False, f"Registration error: {str(e)}")
             return False
-                        # Store user for login test
             
     async def test_user_login(self):
         """Test 2: Login with registered user"""
