@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix 3 critical issues: 1) Training program duration and days/week not dynamically reflecting selected training frequency (backend shows static 14 weeks), 2) Assessment Report buttons (Print, Save as Benchmark, Save to Profile) not working, 3) Performance parameters not dynamically reflecting assessment changes."
+user_problem_statement: "Fix MULTIPLE critical issues: 1) Training program duration and days/week not dynamically reflecting selected training frequency (backend shows static 14 weeks), 2) Assessment Report buttons (Print, Save as Benchmark, Save to Profile) not working, 3) Performance parameters not dynamically reflecting assessment changes, 4) Data persistence issue - training programs and assessments disappear after logout/login, 5) Generate program from assessment report with training frequency selector not working, 6) Performance category gaps all showing 40% (not dynamic), 7) Download tab not working."
 
 backend:
   - task: "User Authentication System - Login 401 Fix"
