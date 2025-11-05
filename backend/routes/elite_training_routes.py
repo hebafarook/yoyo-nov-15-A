@@ -75,7 +75,7 @@ async def generate_elite_training_plan(
 async def log_wellness_data(wellness: Wellness, player_name: str):
     """Log daily wellness data for a player"""
     try:
-        db = await get_db()
+        db = get_database()
         wellness_data = wellness.dict()
         wellness_data["player_name"] = player_name
         wellness_data["logged_at"] = datetime.now(timezone.utc).isoformat()
@@ -97,7 +97,7 @@ async def log_wellness_data(wellness: Wellness, player_name: str):
 async def get_wellness_history(player_name: str, days: int = 7):
     """Get wellness history for a player"""
     try:
-        db = await get_db()
+        db = get_database()
         
         # Get recent wellness logs
         wellness_logs = await db.wellness_logs.find(
@@ -128,7 +128,7 @@ async def get_wellness_history(player_name: str, days: int = 7):
 async def log_testing_data(testing_data: TestingData, player_name: str):
     """Log physical testing data for a player"""
     try:
-        db = await get_db()
+        db = get_database()
         test_data = testing_data.dict()
         test_data["player_name"] = player_name
         test_data["logged_at"] = datetime.now(timezone.utc).isoformat()
@@ -154,7 +154,7 @@ async def log_testing_data(testing_data: TestingData, player_name: str):
 async def get_latest_testing_data(player_name: str):
     """Get latest testing data for a player"""
     try:
-        db = await get_db()
+        db = get_database()
         
         testing_data = await db.testing_data.find_one(
             {"player_name": player_name},
@@ -185,7 +185,7 @@ async def get_latest_testing_data(player_name: str):
 async def log_load_data(load_data: PreviousLoad, player_name: str):
     """Log training load data for a player"""
     try:
-        db = await get_db()
+        db = get_database()
         load_dict = load_data.dict()
         load_dict["player_name"] = player_name
         load_dict["logged_at"] = datetime.now(timezone.utc).isoformat()
@@ -212,7 +212,7 @@ async def log_load_data(load_data: PreviousLoad, player_name: str):
 async def get_load_history(player_name: str, days: int = 7):
     """Get load monitoring history for a player"""
     try:
-        db = await get_db()
+        db = get_database()
         
         load_logs = await db.load_monitoring.find(
             {"player_name": player_name}
@@ -294,7 +294,7 @@ async def get_all_rtp_protocols():
 async def get_training_plans(player_name: str, limit: int = 10):
     """Get recent training plans for a player"""
     try:
-        db = await get_db()
+        db = get_database()
         
         plans = await db.elite_training_plans.find(
             {"player_name": player_name}
@@ -322,7 +322,7 @@ async def get_training_plans(player_name: str, limit: int = 10):
 async def update_match_schedule(match_schedule: MatchSchedule, player_name: str):
     """Update match schedule for a player/team"""
     try:
-        db = await get_db()
+        db = get_database()
         schedule_data = match_schedule.dict()
         schedule_data["player_name"] = player_name
         schedule_data["updated_at"] = datetime.now(timezone.utc).isoformat()
@@ -349,7 +349,7 @@ async def update_match_schedule(match_schedule: MatchSchedule, player_name: str)
 async def get_match_schedule(player_name: str):
     """Get current match schedule for a player"""
     try:
-        db = await get_db()
+        db = get_database()
         
         schedule = await db.match_schedules.find_one({"player_name": player_name})
         
