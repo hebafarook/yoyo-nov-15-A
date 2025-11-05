@@ -550,6 +550,7 @@ class CriticalFixesTest:
         # Step 3: Test save-benchmark endpoint
         try:
             benchmark_data = {
+                "user_id": self.user_data.get("id"),  # Add required user_id
                 "player_name": "Dynamic Duration Test Player",
                 "assessment_id": "test-assessment-123",
                 "age": 17,
