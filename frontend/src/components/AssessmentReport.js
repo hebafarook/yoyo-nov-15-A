@@ -156,8 +156,10 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
     return { strengths, weaknesses, improvements };
   };
 
-  const generateRecommendations = (analysis, performanceLevel) => {
+  const generateRecommendations = (analysis, performanceLevel, playerData) => {
     const recommendations = [];
+    
+    // Dynamic recommendations based on actual weaknesses
 
     // Based on performance level
     if (performanceLevel.level === 'Elite') {
