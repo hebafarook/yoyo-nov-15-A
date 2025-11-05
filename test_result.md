@@ -254,11 +254,11 @@ backend:
 
   - task: "Dynamic Training Frequency Program Generation (3, 4, 5 days)"
     implemented: true
-    working: false
+    working: true
     file: "server.py, exercise_database.py, TrainingDashboard.js"
     stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "testing"
@@ -272,6 +272,9 @@ backend:
         - working: "NA"
           agent: "main"
           comment: "FIXES IMPLEMENTED - Backend: Modified server.py program generation endpoint to calculate phase durations dynamically based on total_duration_weeks from request (lines 1627-1656). Instead of fixed template durations (4+6+4=14 weeks), now uses proportional distribution: 29% Foundation, 43% Development, 29% Peak Performance. Ensures minimum weeks (2,3,2) and adjusts if needed. Added logging for tracking. Frontend: Updated TrainingDashboard.js to show actual duration from backend response in alert (line 307), added program summary showing total weeks and training days badges (lines 703-719). The days per week was already working correctly (line 1643 creates correct number of daily routines). Backend restarted successfully. Ready for comprehensive testing to verify: 1) Programs with 3/4/5 days have different durations, 2) Frontend displays correct total weeks, 3) Program phases reflect the dynamic duration."
+        - working: true
+          agent: "testing"
+          comment: "CRITICAL FIX #1 VERIFICATION COMPLETED ✅ Successfully executed the exact test scenario from the review request with 100% success rate (6/6 tests passed). MAJOR ACHIEVEMENTS: 1) DYNAMIC PROGRAM DURATION WORKING PERFECTLY - Assessment analysis endpoint returns correct program_duration_options: 3-day=36w, 4-day=27w, 5-day=21w with proper progression (3-day > 4-day > 5-day due to frequency multipliers). 2) PROGRAM GENERATION USES DYNAMIC DURATION - POST /api/periodized-programs with training_frequency and total_duration_weeks creates programs with EXACT requested duration (NOT fixed 14 weeks): 5-day program: 21 weeks (requested 21w) ✅, 3-day program: 36 weeks (requested 36w) ✅, 4-day program: 27 weeks (requested 27w) ✅. 3) DAYS PER WEEK CORRECTLY IMPLEMENTED - Each program generates correct number of daily routines per week: 3-day program: exactly 3 daily routines per week ✅, 4-day program: exactly 4 daily routines per week ✅, 5-day program: exactly 5 daily routines per week ✅. 4) DURATION COMPARISON VERIFIED - 3-day program (36w) > 4-day program (27w) > 5-day program (21w) confirming frequency multipliers working correctly. 5) PHASE DURATIONS ARE PROPORTIONAL - Programs use proportional distribution (29% Foundation, 43% Development, 29% Peak) instead of fixed 4+6+4 weeks. CRITICAL SUCCESS CRITERIA MET: ✅ Programs with 3/4/5 days have DIFFERENT total_duration_weeks (not all 14), ✅ Days per week correctly reflected in daily_routines count, ✅ Assessment analysis provides dynamic duration recommendations, ✅ Backend program generation uses requested total_duration_weeks from analysis. The user-reported issue has been COMPLETELY RESOLVED - both program duration AND days per week are now dynamic based on selected training frequency."
 
   - task: "Training Program Generation Issue Debug"
     implemented: true
