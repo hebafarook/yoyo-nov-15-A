@@ -441,16 +441,27 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
       return;
     }
 
-    const reportText = generateTextReport(reportData, comparisonData);
-    const blob = new Blob([reportText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${reportData.playerInfo.name}_Assessment_Report_${reportData.playerInfo.assessmentDate.replace(/\//g, '-')}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      const reportText = generateTextReport(reportData, comparisonData);
+      console.log('📄 Generated report text length:', reportText.length);
+      
+      const blob = new Blob([reportText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const fileName = `${reportData.playerInfo.name}_Assessment_Report_${reportData.playerInfo.assessmentDate.replace(/\//g, '-')}.txt`;
+      a.download = fileName;
+      console.log('📁 Download filename:', fileName);
+      
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      console.log('✅ Download initiated');
+    } catch (error) {
+      console.error('❌ Download error:', error);
+      alert('Failed to download report: ' + error.message);
+    }
   };
 
   const saveToProfile = async () => {
