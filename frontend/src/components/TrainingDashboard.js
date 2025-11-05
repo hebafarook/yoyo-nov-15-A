@@ -181,25 +181,39 @@ const TrainingDashboard = ({ playerId }) => {
     };
     
     const categoryMetrics = metrics[category];
-    let totalGap = 0;
+    let totalScore = 0;
+    let maxScore = 0;
     let validMetrics = 0;
     
     categoryMetrics.forEach(metric => {
       const value = assessment[metric];
-      if (value !== undefined && value !== null) {
+      if (value !== undefined && value !== null && value !== '') {
         const performance = evaluatePerformance(value, metric, assessment.age);
         const performanceScore = getPerformanceScore(performance);
-        const gap = 5 - performanceScore; // Gap from excellence (5)
-        totalGap += gap;
+        totalScore += performanceScore;
+        maxScore += 5; // Maximum score per metric
         validMetrics++;
       }
     });
     
-    const avgGap = validMetrics > 0 ? totalGap / validMetrics : 0;
+    // Calculate actual performance percentage
+    const performancePercentage = validMetrics > 0 ? (totalScore / maxScore) * 100 : 50;
+    const avgGap = validMetrics > 0 ? (maxScore - totalScore) / validMetrics : 2.5;
+    const gapPercentage = 100 - performancePercentage;
+    
+    // More granular rating based on actual performance
+    let rating = 'Average';
+    if (performancePercentage >= 85) rating = 'Excellent';
+    else if (performancePercentage >= 75) rating = 'Strong';
+    else if (performancePercentage >= 60) rating = 'Good';
+    else if (performancePercentage >= 45) rating = 'Room for Improvement';
+    else rating = 'Needs Significant Work';
+    
     return {
       gapScore: avgGap,
-      gapPercentage: (avgGap / 5) * 100,
-      rating: avgGap > 2 ? 'Needs Significant Work' : avgGap > 1 ? 'Room for Improvement' : 'Strong'
+      gapPercentage: gapPercentage,
+      currentPercentage: performancePercentage,
+      rating: rating
     };
   };
 
