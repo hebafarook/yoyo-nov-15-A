@@ -1585,9 +1585,20 @@ async def delete_vo2_benchmark(benchmark_id: str):
 
 # Enhanced Training Program Endpoints with Periodization
 @api_router.post("/periodized-programs", response_model=PeriodizedProgram)
-async def create_periodized_program(program: PeriodizedProgramCreate):
+async def create_periodized_program(program: PeriodizedProgramCreate, authorization: Optional[str] = Header(None)):
     """Create a comprehensive personalized training program based on player assessment"""
     try:
+        # Extract user_id from JWT token
+        user_id = None
+        if authorization and authorization.startswith('Bearer '):
+            try:
+                token = authorization.split(' ')[1]
+                payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+                user_id = payload.get("sub")
+                logger.info(f"Program created by user_id: {user_id}")
+            except Exception as token_error:
+                logger.warning(f"Could not extract user_id from token: {token_error}")
+        
         from exercise_database import PERIODIZATION_TEMPLATES, generate_daily_routine
         
         # Get the latest assessment for this player
