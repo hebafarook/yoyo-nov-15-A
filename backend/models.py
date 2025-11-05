@@ -392,6 +392,27 @@ class UserProfile(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class NotificationPreferences(BaseModel):
+    user_id: str
+    email_notifications: bool = True
+    push_notifications: bool = True
+    daily_reminders: bool = True
+    check_in_reminders: bool = True
+    weekly_summaries: bool = True
+    achievement_alerts: bool = True
+    reminder_time: str = "08:00"  # Default 8 AM
+    fcm_token: Optional[str] = None
+
+class CheckInOut(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    player_name: str
+    check_in_time: datetime
+    check_out_time: Optional[datetime] = None
+    session_type: str = "training"  # training, match, practice
+    notes: Optional[str] = None
+    completed: bool = False
+
 class TrainingProgramCreate(BaseModel):
     player_id: str
     program_type: str
