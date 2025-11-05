@@ -2173,6 +2173,14 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import auth routes: {e}")
 
+# Import notification routes
+try:
+    from routes.notification_routes import router as notification_router
+    api_router.include_router(notification_router, tags=["notifications"])
+    logging.info("Notification routes loaded successfully")
+except ImportError as e:
+    logging.warning(f"Could not import notification routes: {e}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
