@@ -269,6 +269,9 @@ backend:
         - working: false
           agent: "user"
           comment: "User reported that BOTH the days per week AND the overall program length are NOT changing based on selected training frequency. Backend test showed ALL programs had 14 weeks, which suggests the duration is static not dynamic. Need to fix: 1) Backend program generation to use dynamic duration from assessment analysis (not fixed 14 weeks), 2) Frontend display to correctly show the dynamic program length."
+        - working: "NA"
+          agent: "main"
+          comment: "FIXES IMPLEMENTED - Backend: Modified server.py program generation endpoint to calculate phase durations dynamically based on total_duration_weeks from request (lines 1627-1656). Instead of fixed template durations (4+6+4=14 weeks), now uses proportional distribution: 29% Foundation, 43% Development, 29% Peak Performance. Ensures minimum weeks (2,3,2) and adjusts if needed. Added logging for tracking. Frontend: Updated TrainingDashboard.js to show actual duration from backend response in alert (line 307), added program summary showing total weeks and training days badges (lines 703-719). The days per week was already working correctly (line 1643 creates correct number of daily routines). Backend restarted successfully. Ready for comprehensive testing to verify: 1) Programs with 3/4/5 days have different durations, 2) Frontend displays correct total weeks, 3) Program phases reflect the dynamic duration."
 
   - task: "Training Program Generation Issue Debug"
     implemented: true
