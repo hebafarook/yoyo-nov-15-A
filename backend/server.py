@@ -2284,6 +2284,14 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import elite training routes: {e}")
 
+# Import AI Coach & Computer Vision routes
+try:
+    from routes.ai_coach_routes import router as ai_coach_router
+    api_router.include_router(ai_coach_router, tags=["ai-coach"])
+    logging.info("✅ AI Coach & Computer Vision routes loaded successfully (Predictive Models + MediaPipe)")
+except ImportError as e:
+    logging.warning(f"Could not import AI coach routes: {e}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
