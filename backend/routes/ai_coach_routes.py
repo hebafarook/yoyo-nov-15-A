@@ -239,7 +239,7 @@ async def get_ai_coaching_feedback(
         ).with_model("openai", "gpt-4o-mini")
         
         # Create coaching prompt
-        prompt = f\"\"\"Player: {player_name}
+        prompt = f"""Player: {player_name}
 Exercise: {exercise_type.upper()}
 Form Score: {form_score}/100
 
@@ -252,7 +252,7 @@ Provide coaching feedback that:
 3. Gives 2-3 specific corrections with cues
 4. Encourages proper progression
 
-Be motivational and professional.\"\"\"
+Be motivational and professional."""
         
         # Get AI response
         user_message = UserMessage(text=prompt)
