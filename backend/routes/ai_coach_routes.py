@@ -357,14 +357,36 @@ Provide:
 Keep under 200 words. Be professional and motivating."""
         
         # Get AI insights
-        chat = LlmChat(
-            api_key=EMERGENT_KEY,
-            session_id=f"insights-{player_name}-{datetime.now().timestamp()}",
-            system_message="You are an elite soccer performance analyst and coach."
-        ).with_model("openai", "gpt-4o-mini")
-        
-        user_message = UserMessage(text=prompt)
-        insights = await chat.send_message(user_message)
+        if not EMERGENT_KEY or EMERGENT_KEY == "your_emergent_llm_key_here":
+            # Mock insights for testing
+            insights = f"""**Performance Analysis for {player_name}**
+
+**Key Observations:**
+1. Overall score changed by {score_change:+.1f} points between assessments
+2. Sprint performance: {abs(sprint_change):.2f}s {'improvement' if sprint_change > 0 else 'decline' if sprint_change < 0 else 'maintained'}
+3. Endurance: {endurance_change:+}m change in Yo-Yo test
+
+**What's Working Well:**
+- Consistent assessment tracking shows commitment to improvement
+- {'Positive overall score trend' if score_change > 0 else 'Maintaining baseline performance levels'}
+
+**Areas Needing Focus:**
+- {'Continue building on current momentum' if score_change > 0 else 'Focus on areas showing decline'}
+- Technical skills development for well-rounded improvement
+
+**Training Recommendation:**
+Implement targeted training focusing on {'maintaining strengths while addressing weaknesses' if score_change >= 0 else 'rebuilding foundational fitness and technical skills'}.
+
+*Note: Mock analysis - Emergent LLM key not configured*"""
+        else:
+            chat = LlmChat(
+                api_key=EMERGENT_KEY,
+                session_id=f"insights-{player_name}-{datetime.now().timestamp()}",
+                system_message="You are an elite soccer performance analyst and coach."
+            ).with_model("openai", "gpt-4o-mini")
+            
+            user_message = UserMessage(text=prompt)
+            insights = await chat.send_message(user_message)
         
         return {
             "success": True,
