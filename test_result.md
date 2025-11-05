@@ -524,9 +524,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Fix Dynamic Training Program Duration Based on Frequency"
-    - "Fix Assessment Report Save Buttons"
-    - "Fix Dynamic Performance Parameters Display"
+    - "AI Coach & Computer Vision System Testing Complete"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
