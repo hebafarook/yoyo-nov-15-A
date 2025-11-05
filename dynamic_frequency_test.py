@@ -380,16 +380,18 @@ class DynamicFrequencyTest:
             for freq in [3, 4, 5]:
                 program = self.programs[freq]
                 
-                # Find week 5 (should be in first macro cycle, 5th micro cycle)
+                # Week 5 is in the second macro cycle (development phase), first micro cycle
+                # Because first macro cycle (foundation) only has 4 weeks
                 try:
-                    first_macro = program.get("macro_cycles", [{}])[0]
-                    week_5_micro = first_macro.get("micro_cycles", [{}])[4]  # Index 4 = week 5
+                    second_macro = program.get("macro_cycles", [{}])[1]  # Second macro cycle
+                    week_5_micro = second_macro.get("micro_cycles", [{}])[0]  # First week of second phase = week 5 overall
                     daily_routines = week_5_micro.get("daily_routines", [])
                     
                     week_5_results[freq] = {
                         "daily_routines_count": len(daily_routines),
                         "expected_count": freq,
-                        "correct": len(daily_routines) == freq
+                        "correct": len(daily_routines) == freq,
+                        "location": "Second macro cycle, first micro cycle"
                     }
                     
                 except (IndexError, KeyError):
@@ -397,7 +399,7 @@ class DynamicFrequencyTest:
                         "daily_routines_count": 0,
                         "expected_count": freq,
                         "correct": False,
-                        "error": "Week 5 not found"
+                        "error": "Week 5 not found in second macro cycle"
                     }
                     
             # Check if all are correct
