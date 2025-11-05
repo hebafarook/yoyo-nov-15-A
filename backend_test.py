@@ -62,8 +62,8 @@ class AssessmentReportSaveTest:
         try:
             unique_id = str(uuid.uuid4())[:8]
             user_data = {
-                "username": "reporttest001",
-                "email": "reporttest001@test.com", 
+                "username": f"reporttest{unique_id}",
+                "email": f"reporttest{unique_id}@test.com", 
                 "password": "test123",
                 "full_name": "Report Test User",
                 "role": "player",
