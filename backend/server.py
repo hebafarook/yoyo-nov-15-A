@@ -1778,6 +1778,7 @@ async def create_periodized_program(program: PeriodizedProgramCreate, authorizat
         
         periodized_program = PeriodizedProgram(
             player_id=program.player_id,
+            user_id=user_id,  # Link program to authenticated user
             program_name=program.program_name,
             total_duration_weeks=total_weeks,
             macro_cycles=macro_cycles,
