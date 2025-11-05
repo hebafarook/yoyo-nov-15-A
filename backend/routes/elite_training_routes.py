@@ -14,7 +14,7 @@ from elite_training_system import (
     TacticalFocus, PreviousLoad, ExistingProgram,
     EliteTrainingOutput, RTP_PROTOCOLS
 )
-from utils.database import get_db
+from utils.database import get_database
 
 router = APIRouter(prefix="/elite-training", tags=["Elite Training System"])
 logger = logging.getLogger(__name__)
