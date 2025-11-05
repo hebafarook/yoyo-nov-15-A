@@ -1368,6 +1368,13 @@ const MainDashboard = () => {
             {t('nav.training')}
           </button>
           <button 
+            onClick={() => setActiveTab("aicoach")}
+            className={`tab-trigger ${activeTab === "aicoach" ? "active" : ""}`}
+          >
+            <span className="w-4 h-4">🤖</span>
+            {t('nav.aicoach')}
+          </button>
+          <button 
             onClick={() => setActiveTab("progress")}
             className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
           >
