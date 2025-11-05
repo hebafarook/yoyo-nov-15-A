@@ -101,7 +101,11 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
       }
     });
 
-    return validMetrics > 0 ? (totalScore / validMetrics) * 20 : 0; // Convert to 100-point scale
+    // Calculate average score and convert to percentage (0-100 scale)
+    // Score range: 1-5, so we need: (avgScore / 5) * 100
+    const avgScore = validMetrics > 0 ? totalScore / validMetrics : 0;
+    const percentage = (avgScore / 5) * 100;
+    return Math.round(percentage);
   };
 
   const getPerformanceScore = (performance) => {
