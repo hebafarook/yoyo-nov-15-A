@@ -303,7 +303,7 @@ async def get_performance_insights(player_name: str = Form(...)):
         sprint_change = previous.get('sprint_30m', 0) - latest.get('sprint_30m', 0)  # Lower is better
         endurance_change = latest.get('yo_yo_test', 0) - previous.get('yo_yo_test', 0)
         
-        prompt = f\"\"\"Analyze this soccer player's progress:
+        prompt = f"""Analyze this soccer player's progress:
 
 Player: {player_name}
 
@@ -328,7 +328,7 @@ Provide:
 3. Areas needing focus
 4. One specific training recommendation
 
-Keep under 200 words. Be professional and motivating.\"\"\"
+Keep under 200 words. Be professional and motivating."""
         
         # Get AI insights
         chat = LlmChat(
