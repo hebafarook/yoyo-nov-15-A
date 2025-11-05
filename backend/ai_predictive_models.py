@@ -39,6 +39,7 @@ class InjuryRiskPredictor:
         
         # 1. Training Load Analysis (ACWR - Acute:Chronic Workload Ratio)
         chronic = 0  # Initialize chronic variable
+        acute = 0    # Initialize acute variable
         if len(training_loads) >= 28:
             # Acute load (last 7 days)
             acute = sum(load.get('total_distance_m', 0) for load in training_loads[:7]) / 7
