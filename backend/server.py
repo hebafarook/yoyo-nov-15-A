@@ -2207,6 +2207,14 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import notification routes: {e}")
 
+# Import Elite Training System routes
+try:
+    from routes.elite_training_routes import router as elite_training_router
+    api_router.include_router(elite_training_router, tags=["elite-training"])
+    logging.info("✅ Elite Training System routes loaded successfully (FIFA & Manchester United Edition)")
+except ImportError as e:
+    logging.warning(f"Could not import elite training routes: {e}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
