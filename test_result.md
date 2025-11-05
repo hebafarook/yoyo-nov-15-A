@@ -254,11 +254,11 @@ backend:
 
   - task: "Dynamic Training Frequency Program Generation (3, 4, 5 days)"
     implemented: true
-    working: true
-    file: "server.py, exercise_database.py"
-    stuck_count: 0
+    working: false
+    file: "server.py, exercise_database.py, TrainingDashboard.js"
+    stuck_count: 1
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: true
           agent: "testing"
@@ -266,6 +266,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "COMPREHENSIVE DYNAMIC TRAINING FREQUENCY TESTING COMPLETED ✅ Successfully executed the exact test scenario requested in the review with 100% success rate (8/8 tests passed). MAJOR ACHIEVEMENTS: 1) COMPLETE MULTI-FREQUENCY TESTING - Successfully tested all three training frequencies (3, 4, 5 days) with user 'Dynamic Frequency Test' and created assessment for player 'Dynamic Frequency Test' with comprehensive metrics. 2) FREQUENCY-SPECIFIC PROGRAM GENERATION VERIFIED - 3-Day Program: Exactly 3 daily routines per week with day numbers [1, 2, 3] ✅, 4-Day Program: Exactly 4 daily routines per week with day numbers [1, 2, 3, 4] ✅, 5-Day Program: Exactly 5 daily routines per week with day numbers [1, 2, 3, 4, 5] ✅. 3) TOTAL TRAINING DAYS CALCULATION CORRECT - System uses fixed periodization phases (Foundation: 4 weeks + Development: 6 weeks + Peak: 4 weeks = 14 weeks total), 3-day program: 42 total training days (14 × 3) ✅, 4-day program: 56 total training days (14 × 4) ✅, 5-day program: 70 total training days (14 × 5) ✅. 4) WEEK 5 CONSISTENCY VERIFIED - Week 5 located in second macro cycle (Development Phase), first micro cycle, all frequencies have correct number of routines in week 5 (3, 4, 5 respectively) ✅. 5) PROGRAM DIFFERENTIATION CONFIRMED - All programs have unique IDs proving they are different programs, each program generates different total training days based on frequency. 6) LOOP FUNCTIONALITY AT LINE 1644 WORKING CORRECTLY - Loop 'for day in range(1, training_days + 1)' creates correct number of daily routines, all routines have proper structure (day_number, exercises, phase), training_frequency parameter correctly controls loop iterations. CRITICAL FINDINGS: ✅ Training frequency is NOT being ignored, ✅ Programs do NOT default to 5 days (each uses specified frequency), ✅ Loop at line 1644 is working correctly, ✅ Daily routines are being created properly with correct day numbering, ✅ Different frequencies produce different numbers of daily routines per week, ✅ System correctly implements the requested training frequency in program generation. The dynamic training frequency system is fully functional and meets all review requirements."
+        - working: false
+          agent: "user"
+          comment: "User reported that BOTH the days per week AND the overall program length are NOT changing based on selected training frequency. Backend test showed ALL programs had 14 weeks, which suggests the duration is static not dynamic. Need to fix: 1) Backend program generation to use dynamic duration from assessment analysis (not fixed 14 weeks), 2) Frontend display to correctly show the dynamic program length."
 
   - task: "Training Program Generation Issue Debug"
     implemented: true
