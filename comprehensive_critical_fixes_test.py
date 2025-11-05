@@ -234,10 +234,11 @@ class CriticalFixesTest:
                 if response.status == 200:
                     analysis_data = await response.json()
                     
-                    # Verify response contains program_duration_options
-                    duration_options = analysis_data.get("program_duration_options", {})
+                    # Verify response contains program_duration_options under recommendations
+                    recommendations = analysis_data.get("recommendations", {})
+                    duration_options = recommendations.get("program_duration_options", {})
                     if not duration_options:
-                        self.log_result("Assessment Analysis", False, "No program_duration_options in response")
+                        self.log_result("Assessment Analysis", False, "No program_duration_options in recommendations")
                         return False
                         
                     # Extract durations for each frequency
