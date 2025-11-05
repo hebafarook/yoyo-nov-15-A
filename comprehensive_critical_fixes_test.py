@@ -686,11 +686,12 @@ class CriticalFixesTest:
                     high_analysis = await response.json()
                     
                     high_weaknesses = high_analysis.get("weaknesses", [])
-                    high_duration_options = high_analysis.get("program_duration_options", {})
-                    high_suggested_frequency = high_analysis.get("suggested_frequency")
                     
                     # Extract duration for comparison
+                    high_recommendations = high_analysis.get("recommendations", {})
+                    high_duration_options = high_recommendations.get("program_duration_options", {})
                     high_duration_weeks = high_duration_options.get("5_days", {}).get("weeks", 0)
+                    high_suggested_frequency = high_recommendations.get("suggested_frequency")
                     
                     # Verify fewer weaknesses and shorter duration
                     fewer_weaknesses = len(high_weaknesses) < len(low_weaknesses)
