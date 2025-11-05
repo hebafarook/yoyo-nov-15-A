@@ -526,27 +526,50 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
     try {
       setIsGeneratingProgram(true);
       
+      // Extract weakness names as strings
+      const weaknessNames = reportData.analysis.weaknesses
+        .slice(0, 3)
+        .map(w => w.area || w.metric || 'general improvement');
+      
+      // Build program objectives as array of strings
+      const objectives = [
+        `Improve ${reportData.performanceLevel.level} to ${reportData.programDuration.targetLevel}`,
+        `Focus on ${weaknessNames.join(', ')}`,
+        'Build comprehensive soccer skills',
+        'Achieve peak performance'
+      ];
+      
       const programData = {
         player_id: playerData.player_name,
-        age: playerData.age,
-        position: playerData.position,
-        current_level: reportData.performanceLevel.level,
-        training_frequency: trainingFrequency, // 3, 4, or 5 days per week
-        duration_weeks: reportData.programDuration.totalWeeks,
-        focus_areas: reportData.analysis.weaknesses.slice(0, 3)
+        program_name: `${playerData.player_name}'s ${trainingFrequency}-Day Training Program`,
+        total_duration_weeks: reportData.programDuration.totalWeeks,
+        program_objectives: objectives,
+        assessment_interval_weeks: 4,
+        training_frequency: trainingFrequency // 3, 4, or 5 days per week
       };
       
-      console.log('Generating program with data:', programData);
+      console.log('✅ Generating program with data:', JSON.stringify(programData, null, 2));
       
       const response = await axios.post(`${API}/periodized-programs`, programData);
       
-      console.log('Program generated successfully:', response.data);
+      console.log('✅ Program generated successfully:', response.data);
       
-      alert(`Training program generated successfully! ${trainingFrequency} days per week for ${reportData.programDuration.totalWeeks} weeks. Go to the Training tab to view your personalized program.`);
+      alert(`✅ Training program generated successfully!\n\n📅 ${trainingFrequency} days per week\n⏱️ ${reportData.programDuration.totalWeeks} weeks total\n\n➡️ Go to the Training Programs tab to view your personalized program.`);
       
     } catch (error) {
-      console.error('Error generating program:', error);
-      alert(`Failed to generate program: ${error.response?.data?.detail || error.message}`);
+      console.error('❌ Error generating program:', error);
+      const errorDetail = error.response?.data?.detail;
+      let errorMessage = 'Failed to generate program.';
+      
+      if (typeof errorDetail === 'string') {
+        errorMessage = errorDetail;
+      } else if (Array.isArray(errorDetail)) {
+        errorMessage = errorDetail.map(e => `${e.loc?.join('.')}: ${e.msg}`).join('\n');
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      alert(`❌ ${errorMessage}\n\nPlease try again or contact support.`);
     } finally {
       setIsGeneratingProgram(false);
     }
