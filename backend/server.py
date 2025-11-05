@@ -21,6 +21,10 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# JWT Configuration
+SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'your-secret-key-here')
+ALGORITHM = "HS256"
+
 # Create the main app without a prefix
 app = FastAPI()
 
