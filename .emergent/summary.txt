@@ -1,73 +1,60 @@
 <analysis>
-The AI engineer's work focused on expanding the Yo-Yo Elite Soccer Player AI Coach from core features to robust user experience and data persistence. Initial efforts established VO2 Max, periodized training, and performance dashboards. A major phase involved implementing user authentication and profiles, enabling users to save assessment reports/benchmarks to their profiles, requiring extensive backend model/route updates and corresponding frontend components.
-
-Key challenges included resolving a critical 401 login error (traced to missing  and  in tokens), fixing 404 errors for training program generation due to incorrect API endpoints, and ensuring strict data isolation per user. The engineer also introduced an admin role with specific endpoints and a functional Achievements system. Current efforts are centered on implementing intelligent routing for the Get Started button on the Home page, guiding users based on their assessment completion and program status.
+The AI engineer's work primarily focused on iteratively enhancing the Yo-Yo Elite Soccer Player AI Coach application, addressing numerous user-reported issues and adding core functionalities. Initial efforts involved establishing foundational features like assessments and training programs, with later phases concentrating on user authentication, personalized profiles, and data persistence. Key challenges included fixing UI/UX issues related to static data displays, improving navigation, implementing a Forgot Password feature, and integrating a comprehensive notification system. The engineer also refined backend logic for dynamic program generation, ensuring training plans adapted to player assessments and selected frequencies. Continuous testing, often with a troubleshooting agent, was employed to diagnose and rectify bugs. The process involved a cycle of understanding user feedback, making targeted code changes in both frontend (React) and backend (FastAPI), and verifying functionality.
 </analysis>
 
 <product_requirements>
-The Yo-Yo Elite Soccer Player AI Coach is a full-stack platform for professional soccer training, utilizing an LLM to generate dynamic weekly/daily training programs based on player data. Key features required:
-
-1.  **Comprehensive Assessments**: Age-based standards with detailed explanations across physical, technical, tactical, and psychological metrics, including a VO2 Max Calculator.
-2.  **Dynamic Training Programs**: Periodized training with a detailed exercise database, daily routine display, and completion tracking. The program dashboard needs to display assessment results, suggest program length/phases (3, 4, or 5 training days/week), and provide weekly/daily breakdowns.
+The Yo-Yo Elite Soccer Player AI Coach is a full-stack platform designed for professional soccer training, leveraging LLMs to generate dynamic weekly/daily training programs tailored to individual player data.
+1.  **Comprehensive Assessments**: Age-based standards, VO2 Max Calculator, covering physical, technical, tactical, and psychological metrics with detailed explanations.
+2.  **Dynamic Training Programs**: Periodized training, detailed exercise database, daily routine display, and completion tracking. Programs should display assessment results, suggest adaptable program lengths (3, 4, or 5 training days/week), and provide weekly/daily breakdowns that are truly dynamic based on player weaknesses and goals.
 3.  **Performance Tracking**: Highlights and Body dashboards for achievements, trends, and physical metrics.
-4.  **Assessment Report System**: Savable reports to a user's profile, including a Save as Benchmark feature, replacing auto-printing.
-5.  **User Authentication & Profiles**: Robust JWT-based system with role selection (Player, Coach, Parent/Guardian), enabling users to save and view personal assessment reports and benchmarks, with strict data isolation.
-6.  **UI/UX**: Navy blue/cream theme, responsive design, updated title, interactive Home (now Dashboard) page as the login landing.
+4.  **Assessment Report System**: Reports savable to a user's profile, including a Save as Benchmark feature, replacing auto-printing.
+5.  **User Authentication & Profiles**: Robust JWT-based system with role selection (Player, Coach, Parent/Guardian), enabling users to save and view personal assessment reports and benchmarks, with strict data isolation. Includes Forgot Password functionality.
+6.  **UI/UX**: Navy blue/cream theme, responsive design, updated title. Interactive Home (Dashboard) page as the login landing, featuring intelligent routing based on user progress.
 7.  **Core Functionality**: Full Arabic translation, gamification, bilingual support, retest functionality.
 8.  **Data Persistence**: All user-specific input must be saved and available upon subsequent logins.
+9.  **Notifications**: Implement push notifications, email reminders, and Apple Siri integration for daily program check-ins.
 </product_requirements>
 
 <key_technical_concepts>
--   **Frontend**: React, Shadcn UI, Tailwind CSS, , , , .
--   **Backend**: FastAPI, MongoDB (, ), Pydantic,  (LLM),  (authentication).
--   **Authentication**: JWT-based user authentication, role-based access.
--   **Data Serialization**: ISO strings for date/time, UUIDs for IDs (avoiding Mongo ObjectID).
+-   **Frontend**: React, Shadcn UI, Tailwind CSS, , .
+-   **Backend**: FastAPI, MongoDB (), Pydantic,  (LLM), .
+-   **Authentication**: JWT-based, role-based access, password reset mechanisms.
+-   **Data Management**: ISO strings for datetime objects, UUIDs for IDs.
+-   **Notifications**: SMTP for email, Firebase Cloud Messaging (FCM) for push notifications, Siri Shortcuts integration.
 </key_technical_concepts>
 
 <code_architecture>
-The application utilizes a full-stack architecture with a React frontend and a FastAPI backend, connected to MongoDB.
+The application employs a full-stack architecture comprising a React frontend, a FastAPI backend, and a MongoDB database.
 
 
 
--   **/app/backend/main.py**: Integrates modular routes, now includes .
--   **/app/backend/models.py**: Pydantic models.  model updated to include , , , , and .  field was made optional with a default for backward compatibility.
--   **/app/backend/routes/auth_routes.py**: Handles user authentication and profiles. Implemented , , , , .  and the login endpoint were modified to include the user's  in the JWT token. New  and  endpoints were added for admin functionality.
--   **/app/backend/routes/training_routes.py**: Contains endpoints for training programs. Modified  to accept .
--   **/app/backend/server.py**: (Main backend entry). Added  endpoint to retrieve assessments by player name. Program generation logic (lines 1536-1551) was significantly updated to detect more player weaknesses and dynamically select diverse exercises, ensuring personalized and non-repetitive programs.
--   **/app/backend/requirements.txt**: Added .
--   **/app/backend/.env**:  was added to the environment variables.
--   **/app/backend/utils/database.py**: MongoDB connection/serialization.  updated to include , , and  for proper datetime handling.
--   **/app/backend/exercise_database.py**: Exercise data.  (lines 311-314, 355-358) was refined to use correct exercise names and dynamically select exercises based on identified weaknesses, enhancing program variety.
--   **/app/frontend/src/App.js**: Main React component. Wrapped with . Integrated  and updated navigation tabs.  modified for automatic benchmark saving with .  now accepts training frequency. A  hook was added to clear player-specific state upon user changes (login/logout) to ensure data isolation.
--   **/app/frontend/src/components/AssessmentReport.js**: Report generation. Auto-printing removed; Save to Profile and Save as Benchmark buttons added.
--   **/app/frontend/src/components/AuthModal.js**: Login/Register UI. Added role selection (Player, Coach, Parent/Guardian) and player-specific input fields (age, position) for registration.
--   **/app/frontend/src/components/SavedReports.js**: Displays saved reports/benchmarks. Refactored with tabs, enhanced modals, and authentication checks.
--   **/app/frontend/src/components/BenchmarkHistory.js**: New component created to display saved benchmarks.
--   **/app/frontend/src/components/TrainingDashboard.js**: Training display. Rewritten to integrate assessment results. The API call for assessments was corrected from  to . A Generate Program button was added, and error display logic in  was improved for better debugging.
--   **/app/frontend/src/contexts/AuthContext.js**: Manages authentication state. Added  and handles new user role fields.
--   **/app/frontend/src/components/HomePage.js**: (Now Dashboard). The primary landing page post-login. Refactored to immediately show non-authenticated state instead of a loading spinner. Simplified  and removed its loading check. Logic is being updated for Get Started button to provide intelligent routing based on user progress.
--   **/app/frontend/src/components/AdminDashboard.js**: New component created for admin users to view and manage user data.
--   **/app/frontend/src/components/AchievementsDisplay.js**: New component created to display user achievements and upcoming milestones.
--   **/app/CODE_DOCUMENTATION.md**: New markdown file created to document the application's code logic for administrative review.
+-   **/app/backend/models.py**: The  model was augmented with  and  for password reset functionality. New models for notifications, user preferences, and schedules were also introduced.
+-   **/app/backend/routes/auth_routes.py**: New API endpoints (, ) were added to manage user password resets, leveraging the token fields in the  model.
+-   **/app/backend/server.py**: The program generation logic was significantly enhanced to integrate Youth Handbook standards, dynamic weakness analysis, and interactive duration calculation. A new endpoint for pre-program assessment analysis was created. The newly defined  were included here.
+-   **/app/backend/exercise_database.py**: The  function was refined to ensure exercises vary progressively on a weekly basis, not just daily.
+-   **/app/backend/.env**: New environment variables (, SMTP settings, FCM settings, ) were added to support authentication, email, and push notifications.
+-   **/app/backend/utils/email_service.py**: A new utility file was created to encapsulate SMTP email sending logic as per the integration playbook.
+-   **/app/backend/utils/notification_service.py**: This new utility file manages Firebase Cloud Messaging (FCM) for push notifications and handles notification scheduling.
+-   **/app/backend/routes/notification_routes.py**: A dedicated file was created to define API endpoints for managing and sending various types of notifications.
+-   **/app/frontend/src/App.js**: The  was integrated. Assessment success/error states were moved to  to streamline state management.
+-   **/app/frontend/src/components/HomePage.js**: The Get Started button received intelligent routing, directing users to the assessment page (if new) or the training program page (if an assessment exists). Non-authenticated Get Started now navigates to assessments.
+-   **/app/frontend/src/components/AuthModal.js**: Modified to include a Forgot Password? link, which opens a dedicated . This refactoring removed internal complex forgot and reset modes.
+-   **/app/frontend/src/components/ForgotPasswordModal.js**: A new, separate component was created to handle the entire Forgot Password and Reset Password user interface flow.
+-   **/app/frontend/src/components/TrainingDashboard.js**: Enhanced to display dynamic assessment analysis, allow selection of training frequency, and show program duration dynamically calculated based on assessments and goals. Performance metrics calculations were improved to reflect accurate data.
+-   **/app/frontend/src/components/AssessmentReport.js**: Buttons for Save to Profile, Save as Benchmark, and Download were fixed by correctly extracting  from JWT. The overall score calculation was corrected to accurately convert scores to percentages. Program generation was fixed to pass  as strings, aligning with the backend model. All performance gaps and breakdowns now dynamically reflect player data.
+
 </code_architecture>
 
 <pending_tasks>
--   Complete the intelligent routing logic for all Get Started buttons on the Home page, ensuring they redirect users to either the assessment page (if no assessment) or the training program page (if assessment exists).
--   Verify the frontend behavior with different user scenarios for the Get Started button.
+-   Provide the required API keys (Gmail SMTP credentials, Firebase FCM server key, ) for the notification system.
+-   Verify the frontend display for the training program duration and daily routine structure, ensuring it dynamically reflects the selected training frequency.
+-   Implement the Siri Shortcuts integration (via Calendar) on the frontend for notification check-ins.
 </pending_tasks>
 
 <current_work>
-The AI engineer is currently addressing the Get Started button functionality on the Home page. The user reported that clicking Get Started does not consistently navigate them to the correct page based on their progress (i.e., assessment status or existing training program). The objective is to implement smart routing logic for this button.
-
-Previously, the engineer resolved:
--   **Admin Access:** Fixed an Access Denied error for admin users by ensuring the user  is included in the JWT token during login and registration, enabling proper role-based access to the admin dashboard.
--   **Dynamic Program Generation:** Enhanced the backend logic in  and  to make training programs truly dynamic and adaptive. This involved expanding weakness detection in assessments and diversifying the daily routine exercise selection to avoid repetition and customize programs based on player-specific needs.
--   **Achievements System:** Implemented a new frontend  component and integrated it into , moving the Trophies tab from a Coming Soon placeholder to a functional feature.
--   **Code Documentation:** Created  to provide administrators with a clear guide to accessing and understanding the application's backend and frontend logic.
-
-The immediate focus is on modifying  and potentially  to implement the conditional navigation for the Get Started button, checking for existing assessments or programs to guide the user appropriately. The user's last request explicitly stated, get started tab on home not working should link to assessment if not created or to program page to resume program.
+The AI engineer is currently verifying the responsiveness of the training program generation and display, specifically concerning the selected training days (3, 4, or 5) and the overall program length. The backend logic for generating programs with the correct number of daily routines based on  has been confirmed to be 100% successful through backend testing. However, there's a user-reported discrepancy where the frontend might not be accurately reflecting these dynamic changes, particularly regarding the program's total duration, which was observed as a static 14 weeks in a previous backend test, despite dynamic calculation being implemented. The immediate task is to investigate and ensure that both the  and the  dynamically change and are correctly displayed on the frontend based on the player's selected training frequency.
 </current_work>
 
 <optional_next_step>
-Identify and implement the intelligent routing logic for all Get Started buttons in .
+Verify the frontend display in  to ensure program length and routine structure dynamically reflect the chosen training frequency.
 </optional_next_step>
