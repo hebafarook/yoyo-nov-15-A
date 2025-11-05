@@ -451,8 +451,8 @@ const TrainingDashboard = ({ playerId }) => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-red-50 rounded-lg">
                 <Activity className="w-8 h-8 mx-auto mb-2 text-red-600" />
-                <div className="text-2xl font-bold">{Math.round(assessmentData.overall_score || 0)}</div>
-                <div className="text-sm text-gray-600">Overall Score</div>
+                <div className="text-2xl font-bold">{Math.round(100 - programRecommendation.gaps.physical.gapPercentage)}%</div>
+                <div className="text-sm text-gray-600">Physical Fitness</div>
                 <Badge className={`mt-2 ${programRecommendation.gaps.physical.gapPercentage > 30 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
                   {programRecommendation.gaps.physical.rating}
                 </Badge>
