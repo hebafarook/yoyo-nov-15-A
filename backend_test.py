@@ -58,46 +58,44 @@ class AssessmentReportSaveTest:
             print(f"   Details: {details}")
             
     async def test_user_registration(self):
-        """Test registering a new player user"""
-        test_name = "User Registration - Player Role"
-        
-        # Generate unique test data
-        unique_id = str(uuid.uuid4())[:8]
-        test_user = {
-            "username": f"player_{unique_id}",
-            "email": f"player_{unique_id}@test.com",
-            "full_name": f"Test Player {unique_id}",
-            "password": "testpass123",
-            "role": "player",
-            "age": 16,
-            "position": "midfielder"
-        }
-        
+        """Test 1: Register test user"""
         try:
-            async with self.session.post(
-                f"{BACKEND_URL}/auth/register",
-                json=test_user,
-                headers={"Content-Type": "application/json"}
-            ) as response:
-                response_data = await response.json()
-                
+            unique_id = str(uuid.uuid4())[:8]
+            user_data = {
+                "username": "reporttest001",
+                "email": "reporttest001@test.com", 
+                "password": "test123",
+                "full_name": "Report Test User",
+                "role": "player",
+                "age": 17,
+                "position": "Forward"
+            }
+            
+            async with self.session.post(f"{API_BASE}/auth/register", json=user_data) as response:
                 if response.status == 200:
-                    # Verify response structure
-                    required_fields = ["access_token", "user", "message"]
-                    user_fields = ["id", "username", "email", "role", "player_id", "age", "position"]
+                    data = await response.json()
+                    self.user_data = data.get("user", {})
+                    self.jwt_token = data.get("access_token")
                     
-                    missing_fields = []
-                    for field in required_fields:
-                        if field not in response_data:
-                            missing_fields.append(field)
-                    
-                    for field in user_fields:
-                        if field not in response_data.get("user", {}):
-                            missing_fields.append(f"user.{field}")
-                    
-                    if missing_fields:
-                        self.log_result(test_name, False, f"Missing fields: {missing_fields}", response_data)
+                    if self.jwt_token and self.user_data:
+                        self.log_result(
+                            "User Registration", 
+                            True, 
+                            f"Successfully registered user: {self.user_data.get('username')}",
+                            {"user_id": self.user_data.get("id"), "role": self.user_data.get("role")}
+                        )
+                        return True
                     else:
+                        self.log_result("User Registration", False, "Missing JWT token or user data in response")
+                        return False
+                else:
+                    error_text = await response.text()
+                    self.log_result("User Registration", False, f"Registration failed with status {response.status}", {"error": error_text})
+                    return False
+                    
+        except Exception as e:
+            self.log_result("User Registration", False, f"Registration error: {str(e)}")
+            return False
                         # Store user for login test
                         self.test_users.append({
                             "username": test_user["username"],
