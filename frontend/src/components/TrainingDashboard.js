@@ -255,17 +255,30 @@ const TrainingDashboard = ({ playerId }) => {
       }
       
       // Calculate dynamic duration based on selected training frequency
-      let calculatedDuration = programRecommendation.totalWeeks; // default
+      let calculatedDuration = programRecommendation.totalWeeks; // fallback default
       
+      // ALWAYS use backend's dynamic calculation if available (most accurate)
       if (assessmentAnalysis?.recommendations?.program_duration_options) {
         const durationOptions = assessmentAnalysis.recommendations.program_duration_options;
-        if (selectedFrequency === 3) {
-          calculatedDuration = durationOptions["3_days"].weeks;
-        } else if (selectedFrequency === 4) {
-          calculatedDuration = durationOptions["4_days"].weeks;
-        } else if (selectedFrequency === 5) {
-          calculatedDuration = durationOptions["5_days"].weeks;
+        const frequencyKey = `${selectedFrequency}_days`;
+        
+        if (durationOptions[frequencyKey]) {
+          calculatedDuration = durationOptions[frequencyKey].weeks;
+          console.log(`✅ Using dynamic duration from backend: ${calculatedDuration} weeks for ${selectedFrequency} days/week`);
+        } else {
+          console.warn(`⚠️  No duration found for ${selectedFrequency} days, using default`);
         }
+      } else {
+        console.warn('⚠️  Assessment analysis not loaded, using fallback duration:', calculatedDuration);
+        
+        // Better fallback: adjust duration based on frequency
+        // 5 days = baseline, 4 days = +25%, 3 days = +67%
+        if (selectedFrequency === 3) {
+          calculatedDuration = Math.ceil(calculatedDuration * 1.67);
+        } else if (selectedFrequency === 4) {
+          calculatedDuration = Math.ceil(calculatedDuration * 1.25);
+        }
+        console.log(`Using calculated fallback duration: ${calculatedDuration} weeks`);
       }
       
       // Create the program using the backend endpoint with dynamic duration
