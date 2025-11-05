@@ -108,6 +108,7 @@ const LanguageProvider = ({ children }) => {
       'nav.home': 'Home',
       'nav.assessment': 'Assessment',
       'nav.training': 'Training Programs',
+      'nav.aicoach': 'AI Coach & Analysis',
       'nav.progress': 'Progress Tracking',
       'nav.voice': 'Voice Notes',
       'nav.trophies': 'Achievements',
