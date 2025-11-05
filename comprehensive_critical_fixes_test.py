@@ -647,8 +647,6 @@ class CriticalFixesTest:
                     low_analysis = await response.json()
                     
                     low_weaknesses = low_analysis.get("weaknesses", [])
-                    low_duration_options = low_analysis.get("program_duration_options", {})
-                    low_suggested_frequency = low_analysis.get("suggested_frequency")
                     
                     # Extract duration for comparison
                     low_recommendations = low_analysis.get("recommendations", {})
