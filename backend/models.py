@@ -297,7 +297,6 @@ class SavedReport(BaseModel):
     notes: Optional[str] = None
 
 class SavedReportCreate(BaseModel):
-    user_id: str
     player_name: str
     assessment_id: str
     report_data: Dict[str, Any]
