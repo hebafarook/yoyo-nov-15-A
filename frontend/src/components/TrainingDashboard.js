@@ -304,7 +304,10 @@ const TrainingDashboard = ({ playerId }) => {
       
       if (response.data) {
         setPeriodizedProgram(response.data);
-        alert('✅ Training program generated successfully!\n\nYour personalized ' + programRecommendation.totalWeeks + '-week program is ready.');
+        // Use the actual duration from the response (which reflects the dynamic calculation)
+        const actualDuration = response.data.total_duration_weeks || calculatedDuration;
+        alert(`✅ Training program generated successfully!\n\nYour personalized ${actualDuration}-week program (${selectedFrequency} days/week) is ready.`);
+        setShowAnalysis(false); // Hide analysis panel after program is generated
       }
       
     } catch (error) {
