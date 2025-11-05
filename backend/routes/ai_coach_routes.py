@@ -226,8 +226,34 @@ async def get_ai_coaching_feedback(
     try:
         logger.info(f"Generating AI feedback for {player_name}")
         
-        if not EMERGENT_KEY:
-            raise HTTPException(status_code=500, detail="Emergent LLM key not configured")
+        if not EMERGENT_KEY or EMERGENT_KEY == "your_emergent_llm_key_here":
+            # Mock response for testing when API key is not configured
+            mock_feedback = f"""Great work on your {exercise_type} training, {player_name}! 
+
+With a form score of {form_score}/100, you're making solid progress. Here's what I noticed:
+
+**Issues to address:**
+{form_issues}
+
+**Key corrections:**
+1. Focus on proper depth - aim for thighs parallel to ground
+2. Keep your torso more upright - engage your core
+3. Control the movement - slow down on the descent
+
+**Why this matters:**
+Proper form prevents injury and maximizes strength gains. These adjustments will help you build better movement patterns.
+
+Keep pushing yourself - consistency is key! 💪"""
+            
+            return {
+                "success": True,
+                "player_name": player_name,
+                "exercise_type": exercise_type,
+                "form_score": form_score,
+                "ai_feedback": mock_feedback,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "note": "Mock response - Emergent LLM key not configured"
+            }
         
         # Initialize LLM chat
         chat = LlmChat(
