@@ -129,6 +129,7 @@ const LanguageProvider = ({ children }) => {
       'nav.home': 'الرئيسية',
       'nav.assessment': 'التقييم',
       'nav.training': 'برامج التدريب',
+      'nav.aicoach': 'مدرب الذكاء الاصطناعي',
       'nav.progress': 'تتبع التقدم',
       'nav.voice': 'الملاحظات الصوتية',
       'nav.trophies': 'الإنجازات',
