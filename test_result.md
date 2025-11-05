@@ -467,7 +467,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Dynamic Training Frequency Program Generation Testing Completed"
+    - "Fix Dynamic Training Program Duration Based on Frequency"
+    - "Fix Assessment Report Save Buttons"
+    - "Fix Dynamic Performance Parameters Display"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
