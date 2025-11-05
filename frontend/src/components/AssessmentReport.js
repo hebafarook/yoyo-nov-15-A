@@ -591,7 +591,16 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
   };
 
   const generateProgram = async (trainingFrequency) => {
-    if (!reportData || !playerData) return;
+    console.log('🏋️ Generate Program button clicked');
+    console.log('Training frequency:', trainingFrequency);
+    console.log('reportData:', reportData);
+    console.log('playerData:', playerData);
+    
+    if (!reportData || !playerData) {
+      console.error('❌ Missing report or player data');
+      alert('Missing report or player data. Please complete an assessment first.');
+      return;
+    }
 
     try {
       setIsGeneratingProgram(true);
@@ -600,6 +609,8 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
       const weaknessNames = reportData.analysis.weaknesses
         .slice(0, 3)
         .map(w => w.area || w.metric || 'general improvement');
+      
+      console.log('📊 Weakness names:', weaknessNames);
       
       // Build program objectives as array of strings
       const objectives = [
@@ -618,13 +629,14 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
         training_frequency: trainingFrequency // 3, 4, or 5 days per week
       };
       
-      console.log('✅ Generating program with data:', JSON.stringify(programData, null, 2));
+      console.log('📤 Generating program with data:', JSON.stringify(programData, null, 2));
       
       const response = await axios.post(`${API}/periodized-programs`, programData);
       
       console.log('✅ Program generated successfully:', response.data);
+      console.log('Program duration from response:', response.data.total_duration_weeks);
       
-      alert(`✅ Training program generated successfully!\n\n📅 ${trainingFrequency} days per week\n⏱️ ${reportData.programDuration.totalWeeks} weeks total\n\n➡️ Go to the Training Programs tab to view your personalized program.`);
+      alert(`✅ Training program generated successfully!\n\n📅 ${trainingFrequency} days per week\n⏱️ ${response.data.total_duration_weeks || reportData.programDuration.totalWeeks} weeks total\n\n➡️ Go to the Training Programs tab to view your personalized program.`);
       
     } catch (error) {
       console.error('❌ Error generating program:', error);
