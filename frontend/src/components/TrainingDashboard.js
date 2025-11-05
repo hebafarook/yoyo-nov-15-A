@@ -701,7 +701,21 @@ const TrainingDashboard = ({ playerId }) => {
       {periodizedProgram && periodizedProgram.macro_cycles && (
         <Card>
           <CardHeader>
-            <CardTitle>Training Program - Phase by Phase</CardTitle>
+            <CardTitle className="flex items-center justify-between">
+              <span>Training Program - Phase by Phase</span>
+              <div className="flex gap-4 text-sm font-normal">
+                <Badge variant="outline" className="text-blue-600 border-blue-600">
+                  {periodizedProgram.total_duration_weeks} weeks total
+                </Badge>
+                <Badge variant="outline" className="text-green-600 border-green-600">
+                  {periodizedProgram.macro_cycles.reduce((acc, phase) => 
+                    acc + phase.micro_cycles.reduce((weekAcc, week) => 
+                      weekAcc + week.daily_routines.length, 0
+                    ), 0
+                  )} training days
+                </Badge>
+              </div>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs value={`phase-${currentPhase}`} onValueChange={(val) => setCurrentPhase(parseInt(val.replace('phase-', '')))}>
