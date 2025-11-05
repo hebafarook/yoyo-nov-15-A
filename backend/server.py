@@ -1629,11 +1629,37 @@ async def create_periodized_program(program: PeriodizedProgramCreate):
         current_date = datetime.now(timezone.utc)
         
         phases = ["foundation_building", "development_phase", "peak_performance"]
+        
+        # DYNAMIC DURATION CALCULATION based on total_duration_weeks from request
+        # Default template proportions: 4:6:4 = 28.6%:42.9%:28.6%
+        requested_duration = program.total_duration_weeks
+        logger.info(f"Requested program duration: {requested_duration} weeks")
+        
+        # Calculate phase durations proportionally
+        # Foundation: ~29% of total, Development: ~43% of total, Peak: ~29% of total
+        phase_durations = {
+            "foundation_building": max(2, int(requested_duration * 0.29)),  # At least 2 weeks
+            "development_phase": max(3, int(requested_duration * 0.43)),    # At least 3 weeks
+            "peak_performance": max(2, int(requested_duration * 0.29))      # At least 2 weeks
+        }
+        
+        # Adjust to match exact total (account for rounding)
+        calculated_total = sum(phase_durations.values())
+        if calculated_total < requested_duration:
+            # Add extra weeks to development phase (most critical)
+            phase_durations["development_phase"] += (requested_duration - calculated_total)
+        elif calculated_total > requested_duration:
+            # Remove weeks from development phase
+            phase_durations["development_phase"] -= (calculated_total - requested_duration)
+        
+        logger.info(f"Dynamic phase durations - Foundation: {phase_durations['foundation_building']}w, Development: {phase_durations['development_phase']}w, Peak: {phase_durations['peak_performance']}w")
+        
         total_weeks = 0
         
         for i, phase in enumerate(phases):
             template = PERIODIZATION_TEMPLATES[phase]
-            phase_weeks = template["duration_weeks"]
+            # Use dynamic duration instead of template duration
+            phase_weeks = phase_durations[phase]
             
             # Create micro cycles (weeks) for this phase
             micro_cycles = []
