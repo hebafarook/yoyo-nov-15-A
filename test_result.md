@@ -467,7 +467,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "3-Day Training Frequency Program Generation Testing Completed"
+    - "Dynamic Training Frequency Program Generation Testing Completed"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
