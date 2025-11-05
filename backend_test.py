@@ -97,453 +97,431 @@ class AssessmentReportSaveTest:
             self.log_result("User Registration", False, f"Registration error: {str(e)}")
             return False
                         # Store user for login test
-                        self.test_users.append({
-                            "username": test_user["username"],
-                            "password": test_user["password"],
-                            "user_data": response_data["user"],
-                            "token": response_data["access_token"]
-                        })
-                        self.log_result(test_name, True, f"Player registered successfully with ID: {response_data['user']['id']}")
-                else:
-                    self.log_result(test_name, False, f"HTTP {response.status}", response_data)
-                    
-        except Exception as e:
-            self.log_result(test_name, False, f"Exception: {str(e)}")
             
-    async def test_user_registration_coach(self):
-        """Test registering a new coach user"""
-        test_name = "User Registration - Coach Role"
-        
-        # Generate unique test data
-        unique_id = str(uuid.uuid4())[:8]
-        test_user = {
-            "username": f"coach_{unique_id}",
-            "email": f"coach_{unique_id}@test.com",
-            "full_name": f"Test Coach {unique_id}",
-            "password": "testpass123",
-            "role": "coach"
-        }
-        
+    async def test_user_login(self):
+        """Test 2: Login with registered user"""
         try:
-            async with self.session.post(
-                f"{BACKEND_URL}/auth/register",
-                json=test_user,
-                headers={"Content-Type": "application/json"}
-            ) as response:
-                response_data = await response.json()
-                
-                if response.status == 200:
-                    # Verify coach-specific fields
-                    user_data = response_data.get("user", {})
-                    if user_data.get("role") == "coach" and user_data.get("is_coach") == True:
-                        self.test_users.append({
-                            "username": test_user["username"],
-                            "password": test_user["password"],
-                            "user_data": response_data["user"],
-                            "token": response_data["access_token"]
-                        })
-                        self.log_result(test_name, True, f"Coach registered successfully")
-                    else:
-                        self.log_result(test_name, False, "Coach role not set correctly", response_data)
-                else:
-                    self.log_result(test_name, False, f"HTTP {response.status}", response_data)
-                    
-        except Exception as e:
-            self.log_result(test_name, False, f"Exception: {str(e)}")
-            
-    async def test_user_registration_parent(self):
-        """Test registering a new parent user"""
-        test_name = "User Registration - Parent Role"
-        
-        # Generate unique test data
-        unique_id = str(uuid.uuid4())[:8]
-        test_user = {
-            "username": f"parent_{unique_id}",
-            "email": f"parent_{unique_id}@test.com",
-            "full_name": f"Test Parent {unique_id}",
-            "password": "testpass123",
-            "role": "parent"
-        }
-        
-        try:
-            async with self.session.post(
-                f"{BACKEND_URL}/auth/register",
-                json=test_user,
-                headers={"Content-Type": "application/json"}
-            ) as response:
-                response_data = await response.json()
-                
-                if response.status == 200:
-                    self.test_users.append({
-                        "username": test_user["username"],
-                        "password": test_user["password"],
-                        "user_data": response_data["user"],
-                        "token": response_data["access_token"]
-                    })
-                    self.log_result(test_name, True, f"Parent registered successfully")
-                else:
-                    self.log_result(test_name, False, f"HTTP {response.status}", response_data)
-                    
-        except Exception as e:
-            self.log_result(test_name, False, f"Exception: {str(e)}")
-            
-    async def test_user_login_success(self):
-        """Test successful login with registered users"""
-        if not self.test_users:
-            self.log_result("User Login - Success", False, "No test users available for login test")
-            return
-            
-        for user in self.test_users:
-            test_name = f"User Login - Success ({user['user_data']['role']})"
-            
             login_data = {
-                "username": user["username"],
-                "password": user["password"]
+                "username": "reporttest001",
+                "password": "test123"
             }
             
-            try:
-                async with self.session.post(
-                    f"{BACKEND_URL}/auth/login",
-                    json=login_data,
-                    headers={"Content-Type": "application/json"}
-                ) as response:
-                    response_data = await response.json()
+            async with self.session.post(f"{API_BASE}/auth/login", json=login_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    self.jwt_token = data.get("access_token")
                     
-                    if response.status == 200:
-                        # Verify response structure
-                        required_fields = ["access_token", "user", "message"]
-                        missing_fields = [field for field in required_fields if field not in response_data]
-                        
-                        if missing_fields:
-                            self.log_result(test_name, False, f"Missing fields: {missing_fields}", response_data)
-                        else:
-                            # Verify user_id consistency
-                            if response_data["user"]["id"] == user["user_data"]["id"]:
-                                # Update token for profile test
-                                user["token"] = response_data["access_token"]
-                                self.log_result(test_name, True, "Login successful with consistent user_id")
-                            else:
-                                self.log_result(test_name, False, "User ID mismatch between registration and login", response_data)
+                    if self.jwt_token:
+                        self.log_result(
+                            "User Login", 
+                            True, 
+                            "Successfully logged in and received JWT token",
+                            {"token_length": len(self.jwt_token)}
+                        )
+                        return True
                     else:
-                        self.log_result(test_name, False, f"HTTP {response.status}", response_data)
-                        
-            except Exception as e:
-                self.log_result(test_name, False, f"Exception: {str(e)}")
-                
-    async def test_user_login_wrong_password(self):
-        """Test login with wrong password returns 401"""
-        if not self.test_users:
-            self.log_result("User Login - Wrong Password", False, "No test users available")
-            return
-            
-        test_name = "User Login - Wrong Password (401 Expected)"
-        user = self.test_users[0]  # Use first test user
-        
-        login_data = {
-            "username": user["username"],
-            "password": "wrongpassword123"
-        }
-        
-        try:
-            async with self.session.post(
-                f"{BACKEND_URL}/auth/login",
-                json=login_data,
-                headers={"Content-Type": "application/json"}
-            ) as response:
-                response_data = await response.json()
-                
-                if response.status == 401:
-                    self.log_result(test_name, True, "Correctly returned 401 for wrong password")
+                        self.log_result("User Login", False, "No JWT token received")
+                        return False
                 else:
-                    self.log_result(test_name, False, f"Expected 401, got {response.status}", response_data)
+                    error_text = await response.text()
+                    self.log_result("User Login", False, f"Login failed with status {response.status}", {"error": error_text})
+                    return False
                     
         except Exception as e:
-            self.log_result(test_name, False, f"Exception: {str(e)}")
+            self.log_result("User Login", False, f"Login error: {str(e)}")
+            return False
             
-    async def test_user_login_nonexistent_user(self):
-        """Test login with non-existent user returns 401"""
-        test_name = "User Login - Non-existent User (401 Expected)"
-        
-        login_data = {
-            "username": "nonexistent_user_12345",
-            "password": "anypassword"
-        }
-        
+    async def test_create_assessment(self):
+        """Test 3: Create assessment for the player"""
         try:
-            async with self.session.post(
-                f"{BACKEND_URL}/auth/login",
-                json=login_data,
-                headers={"Content-Type": "application/json"}
-            ) as response:
-                response_data = await response.json()
-                
-                if response.status == 401:
-                    self.log_result(test_name, True, "Correctly returned 401 for non-existent user")
+            assessment_data = {
+                "player_name": "Report Test Player",
+                "age": 17,
+                "position": "Forward",
+                # Physical metrics (20%)
+                "sprint_30m": 4.3,
+                "yo_yo_test": 1800,
+                "vo2_max": 58.5,
+                "vertical_jump": 55,
+                "body_fat": 10.2,
+                # Technical metrics (40%)
+                "ball_control": 4,
+                "passing_accuracy": 82.5,
+                "dribbling_success": 68.0,
+                "shooting_accuracy": 72.0,
+                "defensive_duels": 75.0,
+                # Tactical metrics (30%)
+                "game_intelligence": 4,
+                "positioning": 3,
+                "decision_making": 4,
+                # Psychological metrics (10%)
+                "coachability": 5,
+                "mental_toughness": 4
+            }
+            
+            async with self.session.post(f"{API_BASE}/assessments", json=assessment_data) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    self.assessment_id = data.get("id")
+                    
+                    if self.assessment_id:
+                        self.log_result(
+                            "Assessment Creation", 
+                            True, 
+                            f"Successfully created assessment for {assessment_data['player_name']}",
+                            {
+                                "assessment_id": self.assessment_id,
+                                "overall_score": data.get("overall_score"),
+                                "performance_level": data.get("performance_level")
+                            }
+                        )
+                        return True
+                    else:
+                        self.log_result("Assessment Creation", False, "No assessment ID returned")
+                        return False
                 else:
-                    self.log_result(test_name, False, f"Expected 401, got {response.status}", response_data)
+                    error_text = await response.text()
+                    self.log_result("Assessment Creation", False, f"Assessment creation failed with status {response.status}", {"error": error_text})
+                    return False
                     
         except Exception as e:
-            self.log_result(test_name, False, f"Exception: {str(e)}")
+            self.log_result("Assessment Creation", False, f"Assessment creation error: {str(e)}")
+            return False
             
-    async def test_profile_retrieval_valid_token(self):
-        """Test profile retrieval with valid token"""
-        if not self.test_users:
-            self.log_result("Profile Retrieval - Valid Token", False, "No test users available")
-            return
-            
-        for user in self.test_users:
-            test_name = f"Profile Retrieval - Valid Token ({user['user_data']['role']})"
-            
-            try:
-                headers = {
-                    "Authorization": f"Bearer {user['token']}",
-                    "Content-Type": "application/json"
-                }
-                
-                async with self.session.get(
-                    f"{BACKEND_URL}/auth/profile",
-                    headers=headers
-                ) as response:
-                    response_data = await response.json()
-                    
-                    if response.status == 200:
-                        # Verify profile structure
-                        if "user" in response_data and "profile" in response_data:
-                            profile_user = response_data["user"]
-                            if profile_user["id"] == user["user_data"]["id"]:
-                                self.log_result(test_name, True, "Profile retrieved successfully with correct user data")
-                            else:
-                                self.log_result(test_name, False, "User ID mismatch in profile", response_data)
-                        else:
-                            self.log_result(test_name, False, "Missing user or profile in response", response_data)
-                    else:
-                        self.log_result(test_name, False, f"HTTP {response.status}", response_data)
-                        
-            except Exception as e:
-                self.log_result(test_name, False, f"Exception: {str(e)}")
-                
-    async def test_profile_retrieval_invalid_token(self):
-        """Test profile retrieval with invalid token returns 401"""
-        test_name = "Profile Retrieval - Invalid Token (401 Expected)"
-        
+    async def test_save_report_endpoint(self):
+        """Test 4: Test save-report endpoint with JWT authentication"""
         try:
+            if not self.jwt_token:
+                self.log_result("Save Report Test", False, "No JWT token available for authentication")
+                return False
+                
             headers = {
+                "Authorization": f"Bearer {self.jwt_token}",
+                "Content-Type": "application/json"
+            }
+            
+            report_data = {
+                "player_name": "Report Test Player",
+                "assessment_id": self.assessment_id,
+                "report_data": {
+                    "assessment_summary": {
+                        "player_name": "Report Test Player",
+                        "age": 17,
+                        "position": "Forward",
+                        "overall_score": 4.2,
+                        "performance_level": "Good"
+                    },
+                    "strengths": ["Mental toughness", "Coachability", "Ball control"],
+                    "weaknesses": ["Positioning", "Sprint speed"],
+                    "recommendations": ["Focus on tactical positioning drills", "Speed training program"]
+                },
+                "report_type": "milestone",
+                "title": "Test Assessment Report",
+                "notes": "Test save functionality"
+            }
+            
+            async with self.session.post(f"{API_BASE}/auth/save-report", json=report_data, headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    report_id = data.get("id")
+                    
+                    if report_id:
+                        self.log_result(
+                            "Save Report Endpoint", 
+                            True, 
+                            "Successfully saved assessment report",
+                            {
+                                "report_id": report_id,
+                                "report_type": data.get("report_type"),
+                                "title": data.get("title")
+                            }
+                        )
+                        return True
+                    else:
+                        self.log_result("Save Report Endpoint", False, "No report ID returned")
+                        return False
+                elif response.status == 401:
+                    self.log_result("Save Report Endpoint", False, "Authentication failed (401) - JWT token invalid or expired")
+                    return False
+                elif response.status == 404:
+                    self.log_result("Save Report Endpoint", False, "Endpoint not found (404) - save-report endpoint may not exist")
+                    return False
+                else:
+                    error_text = await response.text()
+                    self.log_result("Save Report Endpoint", False, f"Save report failed with status {response.status}", {"error": error_text})
+                    return False
+                    
+        except Exception as e:
+            self.log_result("Save Report Endpoint", False, f"Save report error: {str(e)}")
+            return False
+            
+    async def test_save_benchmark_endpoint(self):
+        """Test 5: Test save-benchmark endpoint with JWT authentication"""
+        try:
+            if not self.jwt_token or not self.user_data:
+                self.log_result("Save Benchmark Test", False, "No JWT token or user data available")
+                return False
+                
+            headers = {
+                "Authorization": f"Bearer {self.jwt_token}",
+                "Content-Type": "application/json"
+            }
+            
+            benchmark_data = {
+                "user_id": self.user_data.get("id"),
+                "player_name": "Report Test Player",
+                "assessment_id": self.assessment_id,
+                "age": 17,
+                "position": "Forward",
+                # Physical metrics
+                "sprint_30m": 4.3,
+                "yo_yo_test": 1800,
+                "vo2_max": 58.5,
+                "vertical_jump": 55,
+                "body_fat": 10.2,
+                # Technical metrics
+                "ball_control": 4,
+                "passing_accuracy": 82.5,
+                "dribbling_success": 68.0,
+                "shooting_accuracy": 72.0,
+                "defensive_duels": 75.0,
+                # Tactical metrics
+                "game_intelligence": 4,
+                "positioning": 3,
+                "decision_making": 4,
+                # Psychological metrics
+                "coachability": 5,
+                "mental_toughness": 4,
+                # Calculated metrics
+                "overall_score": 4.2,
+                "performance_level": "Good",
+                "benchmark_type": "milestone",
+                "notes": "Test benchmark save"
+            }
+            
+            async with self.session.post(f"{API_BASE}/auth/save-benchmark", json=benchmark_data, headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    benchmark_id = data.get("id")
+                    
+                    if benchmark_id:
+                        self.log_result(
+                            "Save Benchmark Endpoint", 
+                            True, 
+                            "Successfully saved assessment benchmark",
+                            {
+                                "benchmark_id": benchmark_id,
+                                "is_baseline": data.get("is_baseline"),
+                                "benchmark_type": data.get("benchmark_type")
+                            }
+                        )
+                        return True
+                    else:
+                        self.log_result("Save Benchmark Endpoint", False, "No benchmark ID returned")
+                        return False
+                elif response.status == 401:
+                    self.log_result("Save Benchmark Endpoint", False, "Authentication failed (401) - JWT token invalid")
+                    return False
+                elif response.status == 403:
+                    self.log_result("Save Benchmark Endpoint", False, "Authorization failed (403) - User not authorized")
+                    return False
+                elif response.status == 404:
+                    self.log_result("Save Benchmark Endpoint", False, "Endpoint not found (404) - save-benchmark endpoint may not exist")
+                    return False
+                elif response.status == 422:
+                    error_text = await response.text()
+                    self.log_result("Save Benchmark Endpoint", False, f"Invalid request format (422)", {"error": error_text})
+                    return False
+                else:
+                    error_text = await response.text()
+                    self.log_result("Save Benchmark Endpoint", False, f"Save benchmark failed with status {response.status}", {"error": error_text})
+                    return False
+                    
+        except Exception as e:
+            self.log_result("Save Benchmark Endpoint", False, f"Save benchmark error: {str(e)}")
+            return False
+            
+    async def test_verify_saved_reports(self):
+        """Test 6: Verify saved reports can be retrieved"""
+        try:
+            if not self.jwt_token:
+                self.log_result("Verify Saved Reports", False, "No JWT token available")
+                return False
+                
+            headers = {
+                "Authorization": f"Bearer {self.jwt_token}"
+            }
+            
+            async with self.session.get(f"{API_BASE}/auth/saved-reports", headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    if isinstance(data, list) and len(data) > 0:
+                        report = data[0]
+                        self.log_result(
+                            "Verify Saved Reports", 
+                            True, 
+                            f"Successfully retrieved {len(data)} saved report(s)",
+                            {
+                                "report_count": len(data),
+                                "first_report_id": report.get("id"),
+                                "player_name": report.get("player_name")
+                            }
+                        )
+                        return True
+                    else:
+                        self.log_result("Verify Saved Reports", False, "No saved reports found")
+                        return False
+                else:
+                    error_text = await response.text()
+                    self.log_result("Verify Saved Reports", False, f"Failed to retrieve saved reports with status {response.status}", {"error": error_text})
+                    return False
+                    
+        except Exception as e:
+            self.log_result("Verify Saved Reports", False, f"Verify saved reports error: {str(e)}")
+            return False
+            
+    async def test_verify_saved_benchmarks(self):
+        """Test 7: Verify saved benchmarks can be retrieved"""
+        try:
+            if not self.jwt_token:
+                self.log_result("Verify Saved Benchmarks", False, "No JWT token available")
+                return False
+                
+            headers = {
+                "Authorization": f"Bearer {self.jwt_token}"
+            }
+            
+            async with self.session.get(f"{API_BASE}/auth/benchmarks", headers=headers) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    
+                    if isinstance(data, list) and len(data) > 0:
+                        benchmark = data[0]
+                        self.log_result(
+                            "Verify Saved Benchmarks", 
+                            True, 
+                            f"Successfully retrieved {len(data)} benchmark(s)",
+                            {
+                                "benchmark_count": len(data),
+                                "first_benchmark_id": benchmark.get("id"),
+                                "player_name": benchmark.get("player_name"),
+                                "is_baseline": benchmark.get("is_baseline")
+                            }
+                        )
+                        return True
+                    else:
+                        self.log_result("Verify Saved Benchmarks", False, "No saved benchmarks found")
+                        return False
+                else:
+                    error_text = await response.text()
+                    self.log_result("Verify Saved Benchmarks", False, f"Failed to retrieve benchmarks with status {response.status}", {"error": error_text})
+                    return False
+                    
+        except Exception as e:
+            self.log_result("Verify Saved Benchmarks", False, f"Verify saved benchmarks error: {str(e)}")
+            return False
+            
+    async def test_authentication_errors(self):
+        """Test 8: Test authentication error handling"""
+        try:
+            # Test with invalid token
+            invalid_headers = {
                 "Authorization": "Bearer invalid_token_12345",
                 "Content-Type": "application/json"
             }
             
-            async with self.session.get(
-                f"{BACKEND_URL}/auth/profile",
-                headers=headers
-            ) as response:
-                # Handle both JSON and non-JSON responses
-                try:
-                    response_data = await response.json()
-                except:
-                    response_data = await response.text()
-                
-                if response.status == 401:
-                    self.log_result(test_name, True, "Correctly returned 401 for invalid token")
-                else:
-                    self.log_result(test_name, False, f"Expected 401, got {response.status}", response_data)
-                    
-        except Exception as e:
-            self.log_result(test_name, False, f"Exception: {str(e)}")
-            
-    async def test_database_verification(self):
-        """Test database storage verification by checking user data persistence"""
-        if not self.test_users:
-            self.log_result("Database Verification", False, "No test users available")
-            return
-            
-        test_name = "Database Verification - User Data Persistence"
-        
-        # Test by logging in again and checking if last_login was updated
-        user = self.test_users[0]
-        
-        # First login to set initial last_login
-        login_data = {
-            "username": user["username"],
-            "password": user["password"]
-        }
-        
-        try:
-            # Wait a moment to ensure timestamp difference
-            await asyncio.sleep(1)
-            
-            async with self.session.post(
-                f"{BACKEND_URL}/auth/login",
-                json=login_data,
-                headers={"Content-Type": "application/json"}
-            ) as response:
-                response_data = await response.json()
-                
-                if response.status == 200:
-                    # Get profile to check last_login update
-                    headers = {"Authorization": f"Bearer {response_data['access_token']}"}
-                    
-                    async with self.session.get(
-                        f"{BACKEND_URL}/auth/profile",
-                        headers=headers
-                    ) as profile_response:
-                        profile_data = await profile_response.json()
-                        
-                        if profile_response.status == 200:
-                            user_profile = profile_data.get("user", {})
-                            if "last_login" in user_profile and user_profile["last_login"]:
-                                self.log_result(test_name, True, "Database properly stores and updates user data (last_login field verified)")
-                            else:
-                                self.log_result(test_name, False, "last_login field not found or empty", profile_data)
-                        else:
-                            self.log_result(test_name, False, f"Profile retrieval failed: HTTP {profile_response.status}")
-                else:
-                    self.log_result(test_name, False, f"Login failed: HTTP {response.status}", response_data)
-                    
-        except Exception as e:
-            self.log_result(test_name, False, f"Exception: {str(e)}")
-            
-    async def test_end_to_end_flow(self):
-        """Test complete end-to-end authentication flow"""
-        test_name = "End-to-End Authentication Flow"
-        
-        # Generate unique test data for E2E test
-        unique_id = str(uuid.uuid4())[:8]
-        test_user = {
-            "username": f"e2e_player_{unique_id}",
-            "email": f"e2e_player_{unique_id}@test.com",
-            "full_name": f"E2E Test Player {unique_id}",
-            "password": "e2etest123",
-            "role": "player",
-            "age": 17,
-            "position": "forward"
-        }
-        
-        try:
-            # Step 1: Register
-            async with self.session.post(
-                f"{BACKEND_URL}/auth/register",
-                json=test_user,
-                headers={"Content-Type": "application/json"}
-            ) as response:
-                if response.status != 200:
-                    self.log_result(test_name, False, f"Registration failed: HTTP {response.status}")
-                    return
-                    
-                reg_data = await response.json()
-                user_id = reg_data["user"]["id"]
-                
-            # Step 2: Login immediately with same credentials
-            login_data = {
-                "username": test_user["username"],
-                "password": test_user["password"]
+            report_data = {
+                "player_name": "Test Player",
+                "assessment_id": "test_id",
+                "report_data": {},
+                "report_type": "test"
             }
             
-            async with self.session.post(
-                f"{BACKEND_URL}/auth/login",
-                json=login_data,
-                headers={"Content-Type": "application/json"}
-            ) as response:
-                if response.status != 200:
-                    self.log_result(test_name, False, f"Login failed: HTTP {response.status}")
-                    return
+            async with self.session.post(f"{API_BASE}/auth/save-report", json=report_data, headers=invalid_headers) as response:
+                if response.status == 401:
+                    self.log_result(
+                        "Authentication Error Handling", 
+                        True, 
+                        "Correctly rejected invalid JWT token with 401 status"
+                    )
+                    return True
+                else:
+                    self.log_result("Authentication Error Handling", False, f"Expected 401 for invalid token, got {response.status}")
+                    return False
                     
-                login_data_response = await response.json()
-                token = login_data_response["access_token"]
-                
-            # Step 3: Get profile
-            headers = {"Authorization": f"Bearer {token}"}
-            async with self.session.get(
-                f"{BACKEND_URL}/auth/profile",
-                headers=headers
-            ) as response:
-                if response.status != 200:
-                    self.log_result(test_name, False, f"Profile retrieval failed: HTTP {response.status}")
-                    return
-                    
-                profile_data = await response.json()
-                
-            # Step 4: Verify user_id consistency
-            profile_user_id = profile_data["user"]["id"]
-            login_user_id = login_data_response["user"]["id"]
-            
-            if user_id == login_user_id == profile_user_id:
-                self.log_result(test_name, True, f"Complete E2E flow successful with consistent user_id: {user_id}")
-            else:
-                self.log_result(test_name, False, f"User ID inconsistency: reg={user_id}, login={login_user_id}, profile={profile_user_id}")
-                
         except Exception as e:
-            self.log_result(test_name, False, f"Exception: {str(e)}")
+            self.log_result("Authentication Error Handling", False, f"Authentication error test failed: {str(e)}")
+            return False
             
     async def run_all_tests(self):
-        """Run all authentication tests"""
-        print("🔥 STARTING USER AUTHENTICATION SYSTEM TESTING 🔥")
+        """Run all assessment report save functionality tests"""
+        print("🔥 ASSESSMENT REPORT SAVE FUNCTIONALITY TESTING 🔥")
         print("=" * 60)
         print(f"Backend URL: {BACKEND_URL}")
-        print(f"Test started at: {datetime.now()}")
+        print(f"API Base: {API_BASE}")
         print("=" * 60)
-        print()
         
-        await self.setup()
+        await self.setup_session()
         
         try:
-            # Test user registration for different roles
-            await self.test_user_registration_player()
-            await self.test_user_registration_coach()
-            await self.test_user_registration_parent()
+            # Test sequence
+            tests = [
+                ("User Registration", self.test_user_registration),
+                ("User Login", self.test_user_login),
+                ("Assessment Creation", self.test_create_assessment),
+                ("Save Report Endpoint", self.test_save_report_endpoint),
+                ("Save Benchmark Endpoint", self.test_save_benchmark_endpoint),
+                ("Verify Saved Reports", self.test_verify_saved_reports),
+                ("Verify Saved Benchmarks", self.test_verify_saved_benchmarks),
+                ("Authentication Error Handling", self.test_authentication_errors)
+            ]
             
-            # Test login scenarios
-            await self.test_user_login_success()
-            await self.test_user_login_wrong_password()
-            await self.test_user_login_nonexistent_user()
+            passed = 0
+            total = len(tests)
             
-            # Test profile retrieval
-            await self.test_profile_retrieval_valid_token()
-            await self.test_profile_retrieval_invalid_token()
+            for test_name, test_func in tests:
+                print(f"\n🧪 Running: {test_name}")
+                success = await test_func()
+                if success:
+                    passed += 1
+                    
+            # Summary
+            print("\n" + "=" * 60)
+            print("📊 TEST SUMMARY")
+            print("=" * 60)
             
-            # Test database verification
-            await self.test_database_verification()
+            success_rate = (passed / total) * 100
+            print(f"Tests Passed: {passed}/{total} ({success_rate:.1f}%)")
             
-            # Test end-to-end flow
-            await self.test_end_to_end_flow()
-            
-        finally:
-            await self.cleanup()
-            
-        # Print summary
-        print("=" * 60)
-        print("🏆 TEST SUMMARY")
-        print("=" * 60)
-        
-        total_tests = len(self.test_results)
-        passed_tests = sum(1 for result in self.test_results if result["success"])
-        failed_tests = total_tests - passed_tests
-        
-        print(f"Total Tests: {total_tests}")
-        print(f"Passed: {passed_tests} ✅")
-        print(f"Failed: {failed_tests} ❌")
-        print(f"Success Rate: {(passed_tests/total_tests)*100:.1f}%")
-        print()
-        
-        if failed_tests > 0:
-            print("❌ FAILED TESTS:")
+            if success_rate >= 85:
+                print("🎉 EXCELLENT: Assessment report save functionality is working well!")
+            elif success_rate >= 70:
+                print("✅ GOOD: Most functionality working, minor issues to address")
+            else:
+                print("⚠️  NEEDS ATTENTION: Significant issues found in save functionality")
+                
+            # Detailed results
+            print("\n📋 DETAILED RESULTS:")
             for result in self.test_results:
-                if not result["success"]:
-                    print(f"  - {result['test']}: {result['details']}")
-            print()
-            
-        print("=" * 60)
-        print(f"Test completed at: {datetime.now()}")
-        print("=" * 60)
-        
-        return passed_tests, failed_tests
+                print(f"{result['status']}: {result['test']} - {result['message']}")
+                
+            # Critical issues
+            failed_tests = [r for r in self.test_results if "❌ FAIL" in r['status']]
+            if failed_tests:
+                print("\n🚨 CRITICAL ISSUES FOUND:")
+                for failed in failed_tests:
+                    print(f"   • {failed['test']}: {failed['message']}")
+                    if failed.get('details'):
+                        print(f"     Details: {failed['details']}")
+                        
+        finally:
+            await self.cleanup_session()
 
 async def main():
     """Main test execution"""
-    tester = AuthenticationTester()
-    passed, failed = await tester.run_all_tests()
-    
-    # Exit with appropriate code
-    sys.exit(0 if failed == 0 else 1)
+    tester = AssessmentReportSaveTest()
+    await tester.run_all_tests()
 
 if __name__ == "__main__":
     asyncio.run(main())
