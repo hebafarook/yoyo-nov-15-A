@@ -926,6 +926,58 @@ async def create_assessment(assessment: AssessmentCreate):
         assessment_obj = PlayerAssessment(**assessment_dict)
         assessment_data = prepare_for_mongo(assessment_obj.dict())
         await db.assessments.insert_one(assessment_data)
+        
+        # CRITICAL FIX: Also save as benchmark for data persistence across logins
+        # This ensures users can see their data when they log back in
+        try:
+            # Check if user has benchmarks already
+            existing_benchmarks = await db.benchmarks.find(
+                {"player_name": assessment_obj.player_name}
+            ).to_list(length=1000)
+            
+            is_baseline = len(existing_benchmarks) == 0  # First assessment is baseline
+            
+            benchmark_data = {
+                "id": str(uuid.uuid4()),
+                "user_id": assessment_obj.user_id if hasattr(assessment_obj, 'user_id') and assessment_obj.user_id else None,
+                "player_name": assessment_obj.player_name,
+                "assessment_id": assessment_obj.id,
+                "age": assessment_obj.age,
+                "position": assessment_obj.position,
+                # Physical metrics
+                "sprint_30m": assessment_obj.sprint_30m,
+                "yo_yo_test": assessment_obj.yo_yo_test,
+                "vo2_max": assessment_obj.vo2_max,
+                "vertical_jump": assessment_obj.vertical_jump,
+                "body_fat": assessment_obj.body_fat,
+                # Technical metrics
+                "ball_control": assessment_obj.ball_control,
+                "passing_accuracy": assessment_obj.passing_accuracy,
+                "dribbling_success": assessment_obj.dribbling_success,
+                "shooting_accuracy": assessment_obj.shooting_accuracy,
+                "defensive_duels": assessment_obj.defensive_duels,
+                # Tactical metrics
+                "game_intelligence": assessment_obj.game_intelligence,
+                "positioning": assessment_obj.positioning,
+                "decision_making": assessment_obj.decision_making,
+                # Psychological metrics
+                "coachability": assessment_obj.coachability,
+                "mental_toughness": assessment_obj.mental_toughness,
+                # Calculated metrics
+                "overall_score": assessment_obj.overall_score,
+                "performance_level": "Average",  # Default, can be calculated
+                "is_baseline": is_baseline,
+                "benchmark_type": "baseline" if is_baseline else "regular",
+                "benchmark_date": datetime.now(timezone.utc).isoformat(),
+                "notes": f"Auto-saved from assessment on {datetime.now(timezone.utc).strftime('%Y-%m-%d')}"
+            }
+            
+            await db.benchmarks.insert_one(benchmark_data)
+            logger.info(f"✅ Auto-saved assessment as benchmark for {assessment_obj.player_name} (baseline: {is_baseline})")
+        except Exception as bench_error:
+            logger.warning(f"Could not auto-save benchmark: {bench_error}")
+            # Don't fail the assessment creation if benchmark save fails
+        
         return assessment_obj
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
