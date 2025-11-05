@@ -58,7 +58,7 @@ async def generate_elite_training_plan(
         )
         
         # Store in database
-        db = await get_db()
+        db = get_database()
         plan_data = output.dict()
         plan_data["created_at"] = datetime.now(timezone.utc).isoformat()
         await db.elite_training_plans.insert_one(plan_data)
