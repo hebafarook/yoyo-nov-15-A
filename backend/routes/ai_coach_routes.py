@@ -412,10 +412,18 @@ async def get_analysis_history(player_name: str, limit: int = 10):
             {"player_name": player_name}
         ).sort("timestamp", -1).limit(limit).to_list(length=limit)
         
+        # Convert MongoDB documents to JSON-serializable format
+        serializable_analyses = []
+        for analysis in analyses:
+            # Remove MongoDB ObjectId and convert to dict
+            if '_id' in analysis:
+                del analysis['_id']
+            serializable_analyses.append(analysis)
+        
         return {
             "player_name": player_name,
-            "analyses": analyses,
-            "count": len(analyses)
+            "analyses": serializable_analyses,
+            "count": len(serializable_analyses)
         }
         
     except Exception as e:
