@@ -147,6 +147,7 @@ class MacroCycle(BaseModel):
 class PeriodizedProgram(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     player_id: str
+    user_id: Optional[str] = None  # Link to user who created the program
     program_name: str
     total_duration_weeks: int
     macro_cycles: List[MacroCycle]
