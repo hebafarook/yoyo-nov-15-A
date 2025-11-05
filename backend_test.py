@@ -1,53 +1,63 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend Testing for User Authentication System
-Testing the 401 login error fix as requested in the review.
+Assessment Report Save Functionality Test
+Testing "Save to Profile" and "Save as Benchmark" buttons with proper authentication
 """
 
 import asyncio
 import aiohttp
 import json
 import uuid
-from datetime import datetime
-import sys
+from datetime import datetime, timezone
 import os
+from dotenv import load_dotenv
 
-# Backend URL from environment
-BACKEND_URL = "https://elite-soccer-ai.preview.emergentagent.com/api"
+# Load environment variables
+load_dotenv('/app/backend/.env')
 
-class AuthenticationTester:
+# Get backend URL from frontend .env
+with open('/app/frontend/.env', 'r') as f:
+    for line in f:
+        if line.startswith('REACT_APP_BACKEND_URL='):
+            BACKEND_URL = line.split('=', 1)[1].strip()
+            break
+else:
+    BACKEND_URL = "http://localhost:8001"
+
+API_BASE = f"{BACKEND_URL}/api"
+
+class AssessmentReportSaveTest:
     def __init__(self):
         self.session = None
+        self.user_data = None
+        self.jwt_token = None
+        self.assessment_id = None
         self.test_results = []
-        self.test_users = []
         
-    async def setup(self):
-        """Setup test session"""
+    async def setup_session(self):
+        """Setup HTTP session"""
         self.session = aiohttp.ClientSession()
         
-    async def cleanup(self):
-        """Cleanup test session"""
+    async def cleanup_session(self):
+        """Cleanup HTTP session"""
         if self.session:
             await self.session.close()
             
-    def log_result(self, test_name, success, details="", response_data=None):
+    def log_result(self, test_name, success, message, details=None):
         """Log test result"""
         status = "✅ PASS" if success else "❌ FAIL"
-        print(f"{status} {test_name}")
+        result = {
+            "test": test_name,
+            "status": status,
+            "message": message,
+            "details": details or {}
+        }
+        self.test_results.append(result)
+        print(f"{status}: {test_name} - {message}")
         if details:
             print(f"   Details: {details}")
-        if response_data and not success:
-            print(f"   Response: {response_data}")
-        print()
-        
-        self.test_results.append({
-            "test": test_name,
-            "success": success,
-            "details": details,
-            "response": response_data
-        })
-        
-    async def test_user_registration_player(self):
+            
+    async def test_user_registration(self):
         """Test registering a new player user"""
         test_name = "User Registration - Player Role"
         
