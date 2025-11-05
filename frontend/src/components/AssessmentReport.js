@@ -500,10 +500,21 @@ const AssessmentReport = ({ playerData, previousAssessments = [], showComparison
   };
 
   const saveBenchmarkToProfile = async () => {
-    if (!reportData || !playerData) return;
+    console.log('🎯 Save as Benchmark button clicked');
+    console.log('reportData:', reportData);
+    console.log('playerData:', playerData);
+    console.log('isAuthenticated:', isAuthenticated);
+    console.log('user:', user);
+    
+    if (!reportData || !playerData) {
+      console.error('❌ Missing report or player data');
+      alert('Missing report or player data. Please try again.');
+      return;
+    }
 
     try {
       if (!isAuthenticated || !user) {
+        console.error('❌ User not authenticated');
         alert('Please login to save benchmarks to your profile');
         return;
       }
