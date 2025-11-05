@@ -297,56 +297,135 @@ PERIODIZATION_TEMPLATES = {
 }
 
 def generate_daily_routine(phase: str, week_number: int, day_number: int, player_weaknesses: List[str]) -> Dict[str, Any]:
-    """Generate a daily routine based on phase, week, day, and player needs with VARIETY"""
+    """Generate a daily routine based on phase, week, day, and player needs with PROGRESSIVE VARIATION"""
     template = PERIODIZATION_TEMPLATES.get(phase, PERIODIZATION_TEMPLATES["foundation_building"])
     intensity = template["intensity_progression"][week_number - 1] if week_number <= len(template["intensity_progression"]) else 75
     
-    # Select exercises based on player weaknesses, phase, and day for VARIETY
+    # Select exercises based on player weaknesses, phase, week, and day for PROGRESSIVE VARIETY
     exercises = []
     
-    # PHYSICAL CONDITIONING - Vary by day (use ACTUAL exercise names from database)
-    physical_options = [
-        EXERCISE_DATABASE["sprint_intervals_30m"],
-        EXERCISE_DATABASE["ladder_agility_drill"],
-        EXERCISE_DATABASE["plyometric_jump_circuit"],
-        EXERCISE_DATABASE["vo2_max_shuttle_runs"]
-    ]
-    exercises.append(physical_options[day_number % len(physical_options)])
+    # WEEK-BASED PROGRESSION: Different exercise variations per week
+    week_cycle = (week_number - 1) % 4  # 4-week cycle for variation
     
-    # TECHNICAL WORK - Add based on weaknesses with variety
+    # PHYSICAL CONDITIONING - Vary by BOTH week and day for progression
+    physical_week_progressions = [
+        # Week 1: Foundation
+        [
+            EXERCISE_DATABASE["sprint_intervals_30m"],
+            EXERCISE_DATABASE["ladder_agility_drill"],
+            EXERCISE_DATABASE["plyometric_jump_circuit"],
+            EXERCISE_DATABASE["vo2_max_shuttle_runs"],
+            EXERCISE_DATABASE["sprint_intervals_30m"]
+        ],
+        # Week 2: Build
+        [
+            EXERCISE_DATABASE["vo2_max_shuttle_runs"],
+            EXERCISE_DATABASE["sprint_intervals_30m"],
+            EXERCISE_DATABASE["ladder_agility_drill"],
+            EXERCISE_DATABASE["plyometric_jump_circuit"],
+            EXERCISE_DATABASE["vo2_max_shuttle_runs"]
+        ],
+        # Week 3: Intensify
+        [
+            EXERCISE_DATABASE["plyometric_jump_circuit"],
+            EXERCISE_DATABASE["vo2_max_shuttle_runs"],
+            EXERCISE_DATABASE["sprint_intervals_30m"],
+            EXERCISE_DATABASE["ladder_agility_drill"],
+            EXERCISE_DATABASE["plyometric_jump_circuit"]
+        ],
+        # Week 4: Peak/Recovery
+        [
+            EXERCISE_DATABASE["ladder_agility_drill"],
+            EXERCISE_DATABASE["plyometric_jump_circuit"],
+            EXERCISE_DATABASE["vo2_max_shuttle_runs"],
+            EXERCISE_DATABASE["sprint_intervals_30m"],
+            EXERCISE_DATABASE["ladder_agility_drill"]
+        ]
+    ]
+    
+    physical_exercises = physical_week_progressions[week_cycle]
+    exercises.append(physical_exercises[(day_number - 1) % len(physical_exercises)])
+    
+    # TECHNICAL WORK - Progressive variation by week
     if "ball_control" in player_weaknesses:
-        exercises.append(EXERCISE_DATABASE["ball_mastery_cone_weaving"])
+        if week_cycle < 2:
+            exercises.append(EXERCISE_DATABASE["ball_mastery_cone_weaving"])
+        else:
+            # Week 3-4: Add more advanced technical work
+            exercises.append(EXERCISE_DATABASE["ball_mastery_cone_weaving"])
+            if day_number % 2 == 0:
+                exercises.append(EXERCISE_DATABASE["passing_accuracy_gates"])
     
     if "passing" in player_weaknesses or "passing_accuracy" in player_weaknesses:
         exercises.append(EXERCISE_DATABASE["passing_accuracy_gates"])
+        # Week 3-4: Add pressure passing
+        if week_cycle >= 2:
+            exercises.append(EXERCISE_DATABASE["pressure_decision_making"])
     
-    # TACTICAL WORK - Increases in later phases or if weakness detected
-    if phase in ["development_phase", "peak_performance"] or "tactical" in player_weaknesses or "positioning" in player_weaknesses:
-        exercises.append(EXERCISE_DATABASE["small_sided_positioning"])
-    
-    # Add decision making for tactical players
-    if "decision_making" in player_weaknesses or phase == "peak_performance":
-        exercises.append(EXERCISE_DATABASE["pressure_decision_making"])
+    if "shooting" in player_weaknesses or "shooting_accuracy" in player_weaknesses:
+        # Vary shooting work by week
+        if week_cycle % 2 == 0:
+            exercises.append(EXERCISE_DATABASE["shooting_accuracy_zones"])
         
-    # PSYCHOLOGICAL/RECOVERY - Always include mental training
-    exercises.append(EXERCISE_DATABASE["visualization_mental_rehearsal"])
+    if "speed" in player_weaknesses:
+        # Extra speed work in weeks 2 and 4
+        if week_cycle in [1, 3]:
+            exercises.append(EXERCISE_DATABASE["sprint_intervals_30m"])
     
-    # Ensure we have 4-5 exercises per day for variety
-    if len(exercises) < 4:
-        # Add more physical work
-        if day_number % 2 == 0:
-            exercises.append(EXERCISE_DATABASE["plyometric_jump_circuit"])
+    if "endurance" in player_weaknesses or "aerobic_capacity" in player_weaknesses:
+        # Extra endurance in weeks 1 and 3
+        if week_cycle in [0, 2]:
+            exercises.append(EXERCISE_DATABASE["vo2_max_shuttle_runs"])
+    
+    # TACTICAL WORK - Increases in later weeks and phases
+    if phase in ["development_phase", "peak_performance"] or "tactical" in player_weaknesses or "positioning" in player_weaknesses:
+        if week_cycle < 2:
+            exercises.append(EXERCISE_DATABASE["small_sided_positioning"])
         else:
+            # Week 3-4: More complex tactical work
+            exercises.append(EXERCISE_DATABASE["small_sided_positioning"])
+            if day_number % 2 == 1:
+                exercises.append(EXERCISE_DATABASE["pressure_decision_making"])
+    
+    # Add decision making - varies by week
+    if "decision_making" in player_weaknesses or phase == "peak_performance":
+        if week_cycle >= 1:  # Week 2+ only
+            exercises.append(EXERCISE_DATABASE["pressure_decision_making"])
+        
+    # PSYCHOLOGICAL/RECOVERY - Alternate mental training by week
+    if week_cycle % 2 == 0:
+        exercises.append(EXERCISE_DATABASE["visualization_mental_rehearsal"])
+    else:
+        # Week 2, 4: Focus recovery or mental toughness
+        if day_number % 3 == 0:
+            exercises.append(EXERCISE_DATABASE["visualization_mental_rehearsal"])
+    
+    # Ensure minimum exercises with week-based variety
+    if len(exercises) < 4:
+        # Add filler exercises that vary by week
+        if week_cycle == 0:
             exercises.append(EXERCISE_DATABASE["ladder_agility_drill"])
+        elif week_cycle == 1:
+            exercises.append(EXERCISE_DATABASE["plyometric_jump_circuit"])
+        elif week_cycle == 2:
+            exercises.append(EXERCISE_DATABASE["sprint_intervals_30m"])
+        else:
+            exercises.append(EXERCISE_DATABASE["vo2_max_shuttle_runs"])
+    
+    # Cap at 6 exercises max per session
+    if len(exercises) > 6:
+        exercises = exercises[:6]
     
     return {
         "day_number": day_number,
+        "week_number": week_number,
         "phase": phase,
         "exercises": exercises,
         "total_duration": sum(ex.get("duration", 30) for ex in exercises),
         "intensity_rating": get_intensity_rating(intensity),
-        "focus_areas": get_focus_areas(phase, player_weaknesses),
-        "objectives": template["objectives"]
+        "focus_areas": get_focus_areas(phase, player_weaknesses, week_number),
+        "objectives": template["objectives"],
+        "week_focus": get_week_focus(week_cycle)
     }
 
 def get_intensity_rating(intensity_percentage: float) -> str:
