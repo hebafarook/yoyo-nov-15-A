@@ -67,18 +67,41 @@ const PlayerTodaySession = () => {
     return (
       <div className="max-w-4xl mx-auto p-6 flex items-center justify-center h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading today's session...</p>
         </div>
       </div>
     );
   }
 
-  // If no routine, show default mock data
-  const session = currentRoutine || {
-    title: "Today's Session",
-    subtitle: "Built from your latest assessment",
-    estimatedTime: "50 min",
+  // If no routine from API, show helpful message
+  if (!currentRoutine || !currentRoutine.exercises || currentRoutine.exercises.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-white rounded-2xl p-12 shadow-lg border-2 border-purple-200 text-center">
+          <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Play className="w-10 h-10 text-purple-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">No Training Session Today</h2>
+          <p className="text-gray-600 mb-6">
+            Complete your assessment and generate a training program to see your daily sessions here!
+          </p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition"
+          >
+            Refresh Session
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Use mock data structure that matches expected format
+  const session = {
+    title: currentRoutine?.title || "Today's Session",
+    subtitle: currentRoutine?.subtitle || "Built from your latest assessment",
+    estimatedTime: currentRoutine?.duration ? `${currentRoutine.duration} min` : "50 min",
     blocks: [
       {
         id: 'warmup',
