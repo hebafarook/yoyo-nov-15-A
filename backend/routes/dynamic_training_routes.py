@@ -260,7 +260,7 @@ Be extremely specific with exercises, sets, reps, rest periods, and progressions
             "programs_generated": 2 if request.generate_both_programs else 1,
             "ai_program_id": program_data["id"],
             "coach_program_id": coach_program_id,
-            "message": f"Both training programs generated successfully!" if request.generate_both_programs else f"AI program generated",
+            "message": "Both training programs generated successfully!" if request.generate_both_programs else "AI program generated",
             "program_summary": {
                 "duration_weeks": request.duration_weeks,
                 "sessions_per_week": request.training_days_per_week,
