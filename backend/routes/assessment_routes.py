@@ -114,9 +114,22 @@ async def get_player_assessments(
         )
 
 @router.get("/player/{player_name}/latest", response_model=Optional[PlayerAssessment])
-async def get_latest_assessment(player_name: str):
+async def get_latest_assessment(
+    player_name: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Get the latest assessment for a specific player"""
     try:
+        # Verify token and get user info
+        current_user = await verify_token(credentials.credentials)
+        
+        # Check if user has access to this player's data
+        if not await check_player_access(player_name, current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: You don't have permission to view this player's assessments"
+            )
+        
         assessment = await db.assessments.find_one(
             {"player_name": player_name},
             sort=[("created_at", -1)]
@@ -125,6 +138,8 @@ async def get_latest_assessment(player_name: str):
         if assessment:
             return PlayerAssessment(**parse_from_mongo(assessment))
         return None
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error fetching latest assessment: {e}")
         raise HTTPException(
