@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 import time
 
 # Backend URL from frontend environment
-BACKEND_URL = "https://yo-yo-coach-dash.preview.emergentagent.com/api"
+BACKEND_URL = "https://soccer-ai-coach-6.preview.emergentagent.com/api"
 
 class AICoachTester:
     def __init__(self):
