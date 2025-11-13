@@ -208,8 +208,8 @@ const PlayerAssessmentHistory = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
-        <h2 className="text-3xl font-bold mb-2">My Assessments</h2>
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-6 text-white shadow-lg border-2 border-yellow-400">
+        <h2 className="text-3xl font-bold mb-2">📝 My Assessments</h2>
         <p className="text-white/90">Track your progress and improvements</p>
       </div>
 
