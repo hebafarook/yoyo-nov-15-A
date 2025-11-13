@@ -371,36 +371,21 @@ const AssessmentForm = ({ onAssessmentCreated, setActiveTab }) => {
         });
         console.log('Benchmark saved:', benchmarkResponse.data);
         
-        // Auto-generate and save assessment report
+        // Auto-generate intelligent report using LLM engine
         try {
-          const reportData = {
-            player_name: formData.player_name,
-            title: `Assessment Report - ${new Date().toLocaleDateString()}`,
-            report_type: 'milestone',
-            report_data: {
-              playerData: {
-                ...formData,
-                overall_score: overallScore,
-                physical_score: createdAssessment.physical_score || 0,
-                technical_score: createdAssessment.technical_score || 0,
-                tactical_score: createdAssessment.tactical_score || 0,
-                psychological_score: createdAssessment.psychological_score || 0,
-                assessment_date: new Date().toISOString()
-              },
-              assessmentDate: new Date().toISOString(),
-              overallScore: overallScore,
-              performanceLevel: performanceLevel
-            },
-            notes: `Completed on ${new Date().toLocaleDateString()}`
-          };
-          
-          console.log('Auto-saving assessment report:', reportData);
-          await axios.post(`${API}/auth/save-report`, reportData, {
+          console.log('Triggering AI report generation for assessment:', createdAssessment.id);
+          const reportGenResponse = await axios.post(`${API}/reports/generate-report`, {
+            assessment_id: createdAssessment.id,
+            include_comparison: true,
+            include_training_plan: true
+          }, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
-          console.log('Assessment report auto-saved successfully');
+          
+          console.log('AI-powered report generated successfully:', reportGenResponse.data);
+          
         } catch (reportError) {
-          console.error('Error auto-saving report (non-critical):', reportError);
+          console.error('Error generating AI report (non-critical):', reportError);
         }
         
         if (benchmarkResponse.data.is_baseline) {
