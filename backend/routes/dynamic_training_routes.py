@@ -444,7 +444,3 @@ async def get_my_coach_program(user_token: dict = Depends(verify_token)):
         logger.error(f"Error fetching coach program: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-    }
-    
-    return coach_program
-
