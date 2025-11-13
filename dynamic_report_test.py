@@ -109,52 +109,8 @@ class DynamicReportTester:
             async with self.session.post(f"{API_BASE}/assessments/authenticated", json=create_data, headers=headers) as response:
                 if response.status == 200:
                     assessment_data = await response.json()
-                    assessment_id = assessment_data.get('id')
-                    
-                    # Now create a benchmark to link this assessment to the user
-                    benchmark_data = {
-                        "player_name": self.test_player_name,
-                        "assessment_id": assessment_id,
-                        "age": 17,
-                        "position": "Forward",
-                        # Physical metrics
-                        "sprint_30m": 4.3,
-                        "yo_yo_test": 1650,
-                        "vo2_max": 56.5,
-                        "vertical_jump": 48,
-                        "body_fat": 11.2,
-                        # Technical metrics
-                        "ball_control": 4,
-                        "passing_accuracy": 78.5,
-                        "dribbling_success": 65.0,
-                        "shooting_accuracy": 68.0,
-                        "defensive_duels": 72.0,
-                        # Tactical metrics
-                        "game_intelligence": 4,
-                        "positioning": 3,
-                        "decision_making": 4,
-                        # Psychological metrics
-                        "coachability": 5,
-                        "mental_toughness": 4,
-                        # Calculated metrics
-                        "overall_score": assessment_data.get('overall_score', 3.7),
-                        "performance_level": "Standard",
-                        "notes": "Test assessment for dynamic report"
-                    }
-                    
-                    # Save as benchmark to link to user
-                    async with self.session.post(f"{API_BASE}/auth/save-benchmark", json=benchmark_data, headers=headers) as bench_response:
-                        if bench_response.status == 200:
-                            # Now we need to manually update the assessment to include user_id
-                            # Since we can't do this directly, let's try a different approach
-                            # Let's create an authenticated assessment endpoint temporarily
-                            
-                            self.log_test("Assessment Creation", True, f"Created assessment and benchmark for {self.test_player_name}")
-                            return True
-                        else:
-                            bench_error = await bench_response.text()
-                            self.log_test("Assessment Creation", False, f"Benchmark creation failed: {bench_error}")
-                            return False
+                    self.log_test("Assessment Creation", True, f"Created authenticated assessment for {self.test_player_name}")
+                    return True
                 else:
                     error_text = await response.text()
                     self.log_test("Assessment Creation", False, f"Status: {response.status}, Error: {error_text}")
