@@ -536,7 +536,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "AI Coach & Computer Vision System Testing Complete"
+    - "AI Coach Player Insights Endpoint Testing Complete"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
