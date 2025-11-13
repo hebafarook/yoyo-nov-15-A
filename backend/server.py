@@ -2302,6 +2302,227 @@ def get_next_assessment_date(player_id: str):
     # For now, return a default 4 weeks from now
     return datetime.now(timezone.utc) + timedelta(weeks=4)
 
+@api_router.get("/player-performance-summary/{user_id}")
+async def get_player_performance_summary(user_id: str):
+    """Get detailed performance summary with strengths and weaknesses from latest assessment"""
+    try:
+        # Get latest benchmark for this user
+        benchmark = await db.assessment_benchmarks.find_one(
+            {"user_id": user_id},
+            sort=[("saved_at", -1)]
+        )
+        
+        if not benchmark:
+            return {
+                "has_assessment": False,
+                "message": "No assessment data available"
+            }
+        
+        assessment_data = benchmark.get("assessment_data", {})
+        
+        # Standards for comparison (Youth Handbook)
+        STANDARDS = {
+            "sprint_30m": {"excellent": 4.0, "good": 4.3, "average": 4.6, "needs_improvement": 5.0},
+            "yo_yo_test": {"excellent": 2000, "good": 1700, "average": 1400, "needs_improvement": 1000},
+            "vo2_max": {"excellent": 55, "good": 50, "average": 45, "needs_improvement": 40},
+            "vertical_jump": {"excellent": 55, "good": 50, "average": 45, "needs_improvement": 35},
+            "body_fat": {"excellent": 10, "good": 12, "average": 15, "needs_improvement": 18},
+            "ball_control": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "passing_accuracy": {"excellent": 85, "good": 75, "average": 65, "needs_improvement": 50},
+            "dribbling_success": {"excellent": 80, "good": 70, "average": 60, "needs_improvement": 45},
+            "shooting_accuracy": {"excellent": 75, "good": 65, "average": 55, "needs_improvement": 40},
+            "defensive_duels": {"excellent": 70, "good": 60, "average": 50, "needs_improvement": 35},
+            "game_intelligence": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "positioning": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "decision_making": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "coachability": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2},
+            "mental_toughness": {"excellent": 5, "good": 4, "average": 3, "needs_improvement": 2}
+        }
+        
+        def evaluate_metric(value, standards, reverse=False):
+            """Evaluate a metric and return level and if it's a strength/weakness"""
+            if reverse:  # For metrics where lower is better (e.g., sprint time, body fat)
+                if value <= standards["excellent"]:
+                    return "Excellent", True, False
+                elif value <= standards["good"]:
+                    return "Good", True, False
+                elif value <= standards["average"]:
+                    return "Average", False, False
+                else:
+                    return "Needs Improvement", False, True
+            else:  # For metrics where higher is better
+                if value >= standards["excellent"]:
+                    return "Excellent", True, False
+                elif value >= standards["good"]:
+                    return "Good", True, False
+                elif value >= standards["average"]:
+                    return "Average", False, False
+                else:
+                    return "Needs Improvement", False, True
+        
+        # Analyze each category
+        physical_strengths = []
+        physical_weaknesses = []
+        physical_scores = []
+        
+        # Physical metrics analysis
+        sprint = assessment_data.get("sprint_30m", 5.0)
+        level, is_strength, is_weakness = evaluate_metric(sprint, STANDARDS["sprint_30m"], reverse=True)
+        if is_strength:
+            physical_strengths.append(f"Sprint Speed ({sprint}s - {level})")
+        if is_weakness:
+            physical_weaknesses.append(f"Sprint Speed needs work ({sprint}s)")
+        physical_scores.append(5 if level == "Excellent" else 4 if level == "Good" else 3 if level == "Average" else 2)
+        
+        endurance = assessment_data.get("yo_yo_test", 1000)
+        level, is_strength, is_weakness = evaluate_metric(endurance, STANDARDS["yo_yo_test"])
+        if is_strength:
+            physical_strengths.append(f"Endurance ({endurance}m - {level})")
+        if is_weakness:
+            physical_weaknesses.append(f"Endurance needs improvement ({endurance}m)")
+        physical_scores.append(5 if level == "Excellent" else 4 if level == "Good" else 3 if level == "Average" else 2)
+        
+        vo2 = assessment_data.get("vo2_max", 45)
+        level, is_strength, is_weakness = evaluate_metric(vo2, STANDARDS["vo2_max"])
+        if is_strength:
+            physical_strengths.append(f"VO2 Max ({vo2} ml/kg/min - {level})")
+        if is_weakness:
+            physical_weaknesses.append(f"VO2 Max below target ({vo2} ml/kg/min)")
+        physical_scores.append(5 if level == "Excellent" else 4 if level == "Good" else 3 if level == "Average" else 2)
+        
+        # Technical metrics analysis
+        technical_strengths = []
+        technical_weaknesses = []
+        technical_scores = []
+        
+        ball_control = assessment_data.get("ball_control", 3)
+        level, is_strength, is_weakness = evaluate_metric(ball_control, STANDARDS["ball_control"])
+        if is_strength:
+            technical_strengths.append(f"Ball Control ({ball_control}/5 - {level})")
+        if is_weakness:
+            technical_weaknesses.append(f"Ball Control needs focus ({ball_control}/5)")
+        technical_scores.append(ball_control)
+        
+        passing = assessment_data.get("passing_accuracy", 60)
+        level, is_strength, is_weakness = evaluate_metric(passing, STANDARDS["passing_accuracy"])
+        if is_strength:
+            technical_strengths.append(f"Passing Accuracy ({passing}% - {level})")
+        if is_weakness:
+            technical_weaknesses.append(f"Passing Accuracy needs work ({passing}%)")
+        technical_scores.append(5 if level == "Excellent" else 4 if level == "Good" else 3 if level == "Average" else 2)
+        
+        dribbling = assessment_data.get("dribbling_success", 60)
+        level, is_strength, is_weakness = evaluate_metric(dribbling, STANDARDS["dribbling_success"])
+        if is_strength:
+            technical_strengths.append(f"Dribbling ({dribbling}% - {level})")
+        if is_weakness:
+            technical_weaknesses.append(f"Dribbling success rate low ({dribbling}%)")
+        technical_scores.append(5 if level == "Excellent" else 4 if level == "Good" else 3 if level == "Average" else 2)
+        
+        shooting = assessment_data.get("shooting_accuracy", 55)
+        level, is_strength, is_weakness = evaluate_metric(shooting, STANDARDS["shooting_accuracy"])
+        if is_strength:
+            technical_strengths.append(f"Shooting Accuracy ({shooting}% - {level})")
+        if is_weakness:
+            technical_weaknesses.append(f"Shooting Accuracy needs improvement ({shooting}%)")
+        technical_scores.append(5 if level == "Excellent" else 4 if level == "Good" else 3 if level == "Average" else 2)
+        
+        # Tactical metrics analysis
+        tactical_strengths = []
+        tactical_weaknesses = []
+        tactical_scores = []
+        
+        positioning = assessment_data.get("positioning", 3)
+        level, is_strength, is_weakness = evaluate_metric(positioning, STANDARDS["positioning"])
+        if is_strength:
+            tactical_strengths.append(f"Positioning ({positioning}/5 - {level})")
+        if is_weakness:
+            tactical_weaknesses.append(f"Positioning needs work ({positioning}/5)")
+        tactical_scores.append(positioning)
+        
+        game_intel = assessment_data.get("game_intelligence", 3)
+        level, is_strength, is_weakness = evaluate_metric(game_intel, STANDARDS["game_intelligence"])
+        if is_strength:
+            tactical_strengths.append(f"Game Intelligence ({game_intel}/5 - {level})")
+        if is_weakness:
+            tactical_weaknesses.append(f"Game Reading needs development ({game_intel}/5)")
+        tactical_scores.append(game_intel)
+        
+        decision = assessment_data.get("decision_making", 3)
+        level, is_strength, is_weakness = evaluate_metric(decision, STANDARDS["decision_making"])
+        if is_strength:
+            tactical_strengths.append(f"Decision Making ({decision}/5 - {level})")
+        if is_weakness:
+            tactical_weaknesses.append(f"Decision Making under pressure ({decision}/5)")
+        tactical_scores.append(decision)
+        
+        # Mental/Psychological metrics
+        mental_strengths = []
+        mental_weaknesses = []
+        mental_scores = []
+        
+        coachability = assessment_data.get("coachability", 3)
+        level, is_strength, is_weakness = evaluate_metric(coachability, STANDARDS["coachability"])
+        if is_strength:
+            mental_strengths.append(f"Coachability ({coachability}/5 - {level})")
+        if is_weakness:
+            mental_weaknesses.append(f"Openness to feedback ({coachability}/5)")
+        mental_scores.append(coachability)
+        
+        mental_tough = assessment_data.get("mental_toughness", 3)
+        level, is_strength, is_weakness = evaluate_metric(mental_tough, STANDARDS["mental_toughness"])
+        if is_strength:
+            mental_strengths.append(f"Mental Toughness ({mental_tough}/5 - {level})")
+        if is_weakness:
+            mental_weaknesses.append(f"Performance under pressure ({mental_tough}/5)")
+        mental_scores.append(mental_tough)
+        
+        # Calculate overall scores per category (convert to 100 scale)
+        physical_score = sum(physical_scores) / len(physical_scores) if physical_scores else 3
+        technical_score = sum(technical_scores) / len(technical_scores) if technical_scores else 3
+        tactical_score = sum(tactical_scores) / len(tactical_scores) if tactical_scores else 3
+        mental_score = sum(mental_scores) / len(mental_scores) if mental_scores else 3
+        
+        # Get last assessment date
+        last_assessment_date = benchmark.get("saved_at")
+        
+        # Calculate focus areas
+        focus_areas = []
+        if len(physical_weaknesses) > 0:
+            focus_areas.append("Physical Conditioning")
+        if len(technical_weaknesses) > 0:
+            focus_areas.append("Technical Skills Development")
+        if len(tactical_weaknesses) > 0:
+            focus_areas.append("Tactical Awareness")
+        if len(mental_weaknesses) > 0:
+            focus_areas.append("Mental Strength")
+        
+        if not focus_areas:
+            focus_areas = ["Maintain current performance", "Continue balanced development", "Prepare for advanced challenges"]
+        
+        return {
+            "has_assessment": True,
+            "physical_score": physical_score,
+            "technical_score": technical_score,
+            "tactical_score": tactical_score,
+            "psychological_score": mental_score,
+            "physical_strengths": physical_strengths,
+            "physical_weaknesses": physical_weaknesses,
+            "technical_strengths": technical_strengths,
+            "technical_weaknesses": technical_weaknesses,
+            "tactical_strengths": tactical_strengths,
+            "tactical_weaknesses": tactical_weaknesses,
+            "mental_strengths": mental_strengths,
+            "mental_weaknesses": mental_weaknesses,
+            "last_assessment_date": last_assessment_date.isoformat() if last_assessment_date else None,
+            "focus_areas": focus_areas,
+            "overall_score": (physical_score * 0.2 + technical_score * 0.4 + tactical_score * 0.3 + mental_score * 0.1)
+        }
+        
+    except Exception as e:
+        logging.error(f"Error getting player performance summary: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Import auth routes
 try:
     from routes.auth_routes import router as auth_router
