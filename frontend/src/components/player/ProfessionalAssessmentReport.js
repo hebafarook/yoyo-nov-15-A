@@ -128,28 +128,54 @@ Report ID: ${report.id}
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      // Generate training program based on assessment
+      // Call AI-powered dynamic program generation
       const response = await axios.post(
-        `${BACKEND_URL}/api/periodized-programs`,
+        `${BACKEND_URL}/api/training/generate-dynamic-program`,
         {
+          // Player basic info
           player_id: user.id,
           player_name: report.player_info.name,
           age: report.player_info.age,
           position: report.player_info.position,
+          gender: programParams.gender,
+          
+          // Assessment results
           assessment_data: report.assessment_data,
-          focus_areas: report.coach_recommendations.slice(0, 3),
-          duration_weeks: 12,
-          intensity: 'moderate'
+          assessment_scores: report.scores,
+          performance_level: report.scores.performance_level,
+          
+          // AI & Coach feedback
+          ai_analysis: report.ai_analysis,
+          coach_recommendations: report.coach_recommendations,
+          standards_comparison: report.standards_comparison,
+          
+          // Training parameters
+          training_days_per_week: programParams.training_days_per_week,
+          duration_weeks: programParams.duration_weeks,
+          session_duration_minutes: programParams.session_duration_minutes,
+          
+          // Recovery & injury considerations
+          has_injuries: programParams.has_injuries,
+          injury_details: programParams.injury_details,
+          recovery_priority: programParams.recovery_priority,
+          
+          // Availability & equipment
+          availability: programParams.availability,
+          equipment_available: programParams.equipment_available,
+          
+          // Player goals
+          player_goals: programParams.goals
         },
         { headers }
       );
 
-      console.log('Training program generated:', response.data);
+      console.log('Dynamic training program generated:', response.data);
       setProgramGenerated(true);
       setGeneratingProgram(false);
+      setShowProgramForm(false);
       
       // Show success message
-      alert('✅ Training program generated successfully! Click "Go to Training Plan" to view it.');
+      alert(`✅ Personalized ${programParams.duration_weeks}-week training program generated!\n\n${programParams.training_days_per_week} sessions per week\nTailored to your assessment results and recovery needs`);
       
     } catch (error) {
       console.error('Error generating training program:', error);
