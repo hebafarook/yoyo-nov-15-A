@@ -398,6 +398,11 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
                 {/* Player-specific fields */}
                 {formData.role === 'player' && (
                   <>
+                    <div className="bg-blue-50 border border-blue-200 p-3 rounded-md text-sm text-blue-800 mb-3">
+                      <strong>Complete Your Player Profile</strong> - This information helps us create personalized training programs for you.
+                    </div>
+
+                    {/* Basic Info Grid */}
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <Label htmlFor="age">Age *</Label>
@@ -406,13 +411,60 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
                           name="age"
                           type="number"
                           required
-                          min="12"
-                          max="25"
+                          min="10"
+                          max="30"
                           value={formData.age}
                           onChange={handleInputChange}
                           placeholder="Age"
                         />
                       </div>
+                      <div>
+                        <Label htmlFor="gender">Gender *</Label>
+                        <Select value={formData.gender} onValueChange={(value) => setFormData(prev => ({...prev, gender: value}))}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="female">Female</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label htmlFor="height">Height (cm) *</Label>
+                        <Input
+                          id="height"
+                          name="height"
+                          type="number"
+                          required
+                          min="140"
+                          max="210"
+                          value={formData.height}
+                          onChange={handleInputChange}
+                          placeholder="e.g., 175"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="weight">Weight (kg) *</Label>
+                        <Input
+                          id="weight"
+                          name="weight"
+                          type="number"
+                          required
+                          min="40"
+                          max="120"
+                          value={formData.weight}
+                          onChange={handleInputChange}
+                          placeholder="e.g., 68"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
                       <div>
                         <Label htmlFor="position">Position *</Label>
                         <Select value={formData.position} onValueChange={(value) => setFormData(prev => ({...prev, position: value}))}>
@@ -428,9 +480,71 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
                           </SelectContent>
                         </Select>
                       </div>
+                      <div>
+                        <Label htmlFor="dominant_foot">Dominant Foot *</Label>
+                        <Select value={formData.dominant_foot} onValueChange={(value) => setFormData(prev => ({...prev, dominant_foot: value}))}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Right">Right</SelectItem>
+                            <SelectItem value="Left">Left</SelectItem>
+                            <SelectItem value="Both">Both</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                    <div className="bg-blue-50 border border-blue-200 p-3 rounded-md text-sm text-blue-800">
-                      As a player, your assessments will be visible to your assigned coaches and parents.
+
+                    {/* Injury Information */}
+                    <div>
+                      <Label htmlFor="current_injuries">Current Injuries or Medical Concerns (Optional)</Label>
+                      <Input
+                        id="current_injuries"
+                        name="current_injuries"
+                        type="text"
+                        value={formData.current_injuries}
+                        onChange={handleInputChange}
+                        placeholder="e.g., Ankle sprain, knee pain, or None"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Help us create a safe training plan for you</p>
+                    </div>
+
+                    {/* Parent/Guardian Information */}
+                    <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg space-y-3">
+                      <h4 className="font-semibold text-purple-900 text-sm">Parent/Guardian Connection</h4>
+                      <div>
+                        <Label htmlFor="parent_email">Parent/Guardian Email (Optional)</Label>
+                        <Input
+                          id="parent_email"
+                          name="parent_email"
+                          type="email"
+                          value={formData.parent_email}
+                          onChange={handleInputChange}
+                          placeholder="parent@email.com"
+                        />
+                        <p className="text-xs text-gray-600 mt-1">We'll send them an invitation to view your progress</p>
+                      </div>
+                    </div>
+
+                    {/* Coach Information */}
+                    <div className="bg-green-50 border border-green-200 p-4 rounded-lg space-y-3">
+                      <h4 className="font-semibold text-green-900 text-sm">Coach Connection</h4>
+                      <div>
+                        <Label htmlFor="coach_email">Coach Email (Optional)</Label>
+                        <Input
+                          id="coach_email"
+                          name="coach_email"
+                          type="email"
+                          value={formData.coach_email}
+                          onChange={handleInputChange}
+                          placeholder="coach@email.com"
+                        />
+                        <p className="text-xs text-gray-600 mt-1">Connect with your coach for personalized feedback</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-md text-xs text-yellow-800">
+                      <strong>Next Step:</strong> After registration, you'll complete your first assessment to create your personalized training program!
                     </div>
                   </>
                 )}
