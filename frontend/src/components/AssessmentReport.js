@@ -1,63 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
-import { Label } from './ui/label';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import axios from 'axios';
-import { useAuth } from '../contexts/AuthContext';
-import { Printer, Download, Save, Bookmark, MessageSquare } from 'lucide-react';
+import { Printer, Download, X } from 'lucide-react';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
-
-// Interactive Gauge Chart Component with Animation
-const GaugeChart = ({ value, label, max = 100, unit = '', description = '', isLowerBetter = false }) => {
-  const [animatedValue, setAnimatedValue] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+// Professional Semicircle Gauge matching reference image
+const SemicircleGauge = ({ value, label, percentOfStandard, description, unit = '' }) => {
+  const [animated, setAnimated] = useState(0);
   
-  // Ensure value is a number
-  const numericValue = Number(value) || 0;
-  const maxValue = Number(max) || 100;
-  
-  // Calculate percentage (0-100)
-  let percentage = Math.min(100, Math.max(0, (numericValue / maxValue) * 100));
-  
-  // For "lower is better" metrics (like sprint times), invert the percentage for color coding
-  const displayPercentage = isLowerBetter ? Math.max(0, 100 - percentage) : percentage;
-  
-  // Animate the gauge on mount
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimatedValue(percentage);
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [percentage]);
+    setTimeout(() => setAnimated(percentOfStandard), 100);
+  }, [percentOfStandard]);
   
-  // Determine color based on display percentage
-  let color, colorName;
-  if (displayPercentage >= 75) {
-    color = '#16a34a'; // green
-    colorName = 'Excellent';
-  } else if (displayPercentage >= 50) {
-    color = '#eab308'; // yellow/orange
-    colorName = 'Good';
-  } else {
-    color = '#ef4444'; // red
-    colorName = 'Needs Work';
-  }
-  
-  // SVG gauge parameters
-  const size = 160;
-  const strokeWidth = 16;
+  // Gauge parameters
+  const size = 180;
+  const strokeWidth = 18;
   const center = size / 2;
   const radius = (size - strokeWidth) / 2;
   
-  // Calculate angle for semicircle gauge (-90 to 90 degrees)
-  const angle = -90 + (animatedValue / 100) * 180;
+  // Calculate angle based on percent (-90 to 90 degrees for semicircle)
+  const percentage = Math.min(120, Math.max(0, animated));
+  const angle = -90 + (percentage / 120) * 180;
   
-  // Create arc path for background and value
-  const createArcPath = (startAngle, endAngle) => {
+  // Color coding
+  let color;
+  if (percentOfStandard >= 100) color = '#22c55e'; // green
+  else if (percentOfStandard >= 85) color = '#eab308'; // yellow
+  else color = '#ef4444'; // red
+  
+  // Create arc path
+  const createArc = (startAngle, endAngle) => {
     const start = (startAngle * Math.PI) / 180;
     const end = (endAngle * Math.PI) / 180;
     const x1 = center + radius * Math.cos(start);
@@ -65,779 +37,397 @@ const GaugeChart = ({ value, label, max = 100, unit = '', description = '', isLo
     const x2 = center + radius * Math.cos(end);
     const y2 = center + radius * Math.sin(end);
     const largeArc = endAngle - startAngle > 180 ? 1 : 0;
-    return `M ${x1},${y1} A ${radius},${radius} 0 ${largeArc} 1 ${x2},${y2}`;
+    return `M ${x1} ${y1} A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}`;
   };
   
   return (
-    <div 
-      className="flex flex-col items-center p-4 transition-transform hover:scale-105 cursor-pointer"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <svg width={size} height={size * 0.7} viewBox={`0 0 ${size} ${size * 0.7}`}>
-        {/* Background arc (gray) */}
+    <div className="flex flex-col items-center p-4 bg-white rounded-lg border border-gray-200">
+      <svg width={size} height={size * 0.65} viewBox={`0 0 ${size} ${size * 0.65}`}>
+        {/* Background arc */}
         <path
-          d={createArcPath(-90, 90)}
+          d={createArc(-90, 90)}
           fill="none"
           stroke="#e5e7eb"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
         
-        {/* Gradient zones (green, yellow, red) */}
-        <defs>
-          <linearGradient id={`gradient-${label.replace(/\s/g, '')}`} x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ef4444" />
-            <stop offset="50%" stopColor="#eab308" />
-            <stop offset="100%" stopColor="#16a34a" />
-          </linearGradient>
-        </defs>
-        
-        {/* Value arc with transition */}
+        {/* Green zone */}
         <path
-          d={createArcPath(-90, angle)}
+          d={createArc(-90, -30)}
           fill="none"
-          stroke={color}
-          strokeWidth={isHovered ? strokeWidth + 2 : strokeWidth}
+          stroke="#22c55e"
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
-          style={{ 
-            transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
-            filter: isHovered ? 'drop-shadow(0 0 8px rgba(0,0,0,0.3))' : 'none'
-          }}
+          opacity="0.3"
         />
         
-        {/* Needle indicator */}
-        <g 
-          transform={`rotate(${angle} ${center} ${center})`}
-          style={{ transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)' }}
-        >
+        {/* Yellow zone */}
+        <path
+          d={createArc(-30, 30)}
+          fill="none"
+          stroke="#eab308"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          opacity="0.3"
+        />
+        
+        {/* Red zone */}
+        <path
+          d={createArc(30, 90)}
+          fill="none"
+          stroke="#ef4444"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          opacity="0.3"
+        />
+        
+        {/* Value arc */}
+        <path
+          d={createArc(-90, angle)}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          style={{ transition: 'all 1s ease-out' }}
+        />
+        
+        {/* Needle */}
+        <g transform={`rotate(${angle} ${center} ${center})`} style={{ transition: 'transform 1s ease-out' }}>
           <line
             x1={center}
             y1={center}
             x2={center}
-            y2={strokeWidth + 5}
+            y2={strokeWidth}
             stroke="#1f2937"
-            strokeWidth="4"
+            strokeWidth="3"
             strokeLinecap="round"
           />
-          <circle cx={center} cy={center} r="8" fill="#1f2937" />
-          <circle cx={center} cy={center} r="4" fill="#ffffff" />
+          <circle cx={center} cy={center} r="7" fill="#1f2937" />
         </g>
         
         {/* Min/Max labels */}
-        <text x="15" y={center + 5} fill="#9ca3af" fontSize="10" fontWeight="600">0</text>
-        <text x={size - 15} y={center + 5} fill="#9ca3af" fontSize="10" fontWeight="600" textAnchor="end">{maxValue}</text>
+        <text x="10" y={center + 5} fontSize="11" fill="#9ca3af" fontWeight="600">0</text>
+        <text x={size - 25} y={center + 5} fontSize="11" fill="#9ca3af" fontWeight="600" textAnchor="end">
+          {percentOfStandard >= 100 ? '100' : '110'}
+        </text>
         
-        {/* Value text */}
+        {/* Value display */}
         <text
           x={center}
-          y={center + 25}
+          y={center + 20}
           textAnchor="middle"
-          fontSize="28"
+          fontSize="32"
           fontWeight="700"
           fill="#1f2937"
         >
-          {numericValue.toFixed(numericValue % 1 === 0 ? 0 : 1)}
-        </text>
-        <text
-          x={center}
-          y={center + 42}
-          textAnchor="middle"
-          fontSize="12"
-          fill="#6b7280"
-        >
-          {unit}
+          {value}{unit}
         </text>
       </svg>
       
+      {/* Labels */}
       <div className="text-center mt-3 w-full">
-        <div className="font-bold text-base text-gray-900 mb-1">{label}</div>
-        {description && (
-          <div className="text-xs text-gray-600 mb-2 px-2">{description}</div>
-        )}
+        <h4 className="font-bold text-base text-gray-900 mb-1">{label}</h4>
+        <p className="text-xs text-gray-600 mb-2 px-2 leading-tight">{description}</p>
         <div 
-          className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white"
-          style={{ backgroundColor: color }}
+          className="inline-block px-3 py-1 rounded text-xs font-semibold"
+          style={{ backgroundColor: color, color: 'white' }}
         >
-          {colorName} • {Math.round(displayPercentage)}%
+          {percentOfStandard}% of standard
         </div>
       </div>
     </div>
   );
 };
 
-const AssessmentReport = ({ 
-  playerData, 
-  previousAssessments = [], 
-  showComparison = true, 
-  onClose 
-}) => {
-  const [assessmentHistory, setAssessmentHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [coachComment, setCoachComment] = useState('');
-  const [strengths, setStrengths] = useState([]);
-  const [weaknesses, setWeaknesses] = useState([]);
-  const [recommendations, setRecommendations] = useState([]);
-  const { user, isAuthenticated } = useAuth();
+const PlayerReport = ({ reportData, onClose }) => {
+  const [trendData, setTrendData] = useState([]);
   
   useEffect(() => {
-    if (playerData) {
-      fetchAssessmentHistory();
-      analyzePerformance();
-      setCoachComment(playerData.coach_notes || '');
-    }
-  }, [playerData]);
-  
-  const fetchAssessmentHistory = async () => {
-    if (!playerData?.player_name) return;
-    
-    try {
-      setLoading(true);
-      const response = await axios.get(`${API}/assessments/player/${encodeURIComponent(playerData.player_name)}`);
-      
-      // Format data for the trend chart
-      const historyData = response.data.slice(0, 10).reverse().map((assessment) => ({
-        date: new Date(assessment.created_at || assessment.assessment_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        overall: assessment.overall_score || 0,
-        physical: assessment.physical_score || 0,
-        technical: assessment.technical_score || 0,
-        tactical: assessment.tactical_score || 0,
-        psychological: assessment.psychological_score || 0,
+    if (reportData?.trend) {
+      const formatted = reportData.trend.dates.map((date, i) => ({
+        date: new Date(date).toLocaleDateString('en-US', { month: 'short', year: '2-digit' }),
+        overall: reportData.trend.overall_scores[i] || 0,
+        sprint: reportData.trend.sprint_30m_scores[i] || 0,
+        passing: reportData.trend.passing_accuracy_scores[i] || 0
       }));
-      
-      setAssessmentHistory(historyData);
-    } catch (error) {
-      console.error('Error fetching assessment history:', error);
-      setAssessmentHistory([]);
-    } finally {
-      setLoading(false);
+      setTrendData(formatted);
     }
-  };
+  }, [reportData]);
   
-  const analyzePerformance = () => {
-    if (!playerData) return;
-    
-    const strengthsList = [];
-    const weaknessesList = [];
-    const recommendationsList = [];
-    
-    // Analyze physical metrics
-    if (playerData.sprint_30m && playerData.sprint_30m < 4.5) {
-      strengthsList.push('Excellent sprint speed and acceleration');
-    } else if (playerData.sprint_30m && playerData.sprint_30m > 5.0) {
-      weaknessesList.push('Sprint speed needs improvement');
-      recommendationsList.push('Focus on acceleration drills and plyometric training');
-    }
-    
-    if (playerData.yo_yo_test && playerData.yo_yo_test > 1800) {
-      strengthsList.push('Outstanding endurance capacity');
-    } else if (playerData.yo_yo_test && playerData.yo_yo_test < 1200) {
-      weaknessesList.push('Endurance below optimal level');
-      recommendationsList.push('Increase aerobic training with interval running');
-    }
-    
-    // Analyze technical skills
-    if (playerData.passing_accuracy && playerData.passing_accuracy >= 80) {
-      strengthsList.push('Excellent passing accuracy');
-    } else if (playerData.passing_accuracy && playerData.passing_accuracy < 65) {
-      weaknessesList.push('Passing accuracy needs work');
-      recommendationsList.push('Practice passing drills under pressure');
-    }
-    
-    if (playerData.ball_control && playerData.ball_control >= 4) {
-      strengthsList.push('Strong ball control and first touch');
-    } else if (playerData.ball_control && playerData.ball_control < 3) {
-      weaknessesList.push('Ball control requires development');
-      recommendationsList.push('Increase ball mastery training sessions');
-    }
-    
-    // Analyze tactical intelligence
-    if (playerData.game_intelligence && playerData.game_intelligence >= 4) {
-      strengthsList.push('High tactical awareness and game reading');
-    } else if (playerData.game_intelligence && playerData.game_intelligence < 3) {
-      weaknessesList.push('Tactical understanding needs improvement');
-      recommendationsList.push('Study game footage and work on positioning');
-    }
-    
-    // Analyze psychological attributes
-    if (playerData.mental_toughness && playerData.mental_toughness >= 4) {
-      strengthsList.push('Strong mental resilience');
-    }
-    
-    // Add general recommendations if none specific
-    if (recommendationsList.length === 0) {
-      recommendationsList.push('Continue current training program');
-      recommendationsList.push('Focus on maintaining consistency');
-      recommendationsList.push('Set progressive goals for next assessment');
-    }
-    
-    setStrengths(strengthsList.length > 0 ? strengthsList : ['All-around solid performance']);
-    setWeaknesses(weaknessesList.length > 0 ? weaknessesList : ['No major weaknesses identified']);
-    setRecommendations(recommendationsList);
-  };
-  
-  const handlePrint = () => {
-    window.print();
-  };
-  
-  const handleDownloadPDF = () => {
-    try {
-      const reportContent = `
-╔════════════════════════════════════════════════════════════╗
-║           YO-YO ELITE SOCCER ASSESSMENT REPORT            ║
-╚════════════════════════════════════════════════════════════╝
-
-PLAYER INFORMATION
-──────────────────────────────────────────────────────────────
-Name:                ${playerData.player_name || 'N/A'}
-Age:                 ${playerData.age || 'N/A'} years
-Position:            ${playerData.position || 'N/A'}
-Assessment Date:     ${new Date().toLocaleDateString()}
-
-PERFORMANCE SCORES
-──────────────────────────────────────────────────────────────
-Overall Score:       ${Math.round(playerData.overall_score || 0)}/100
-Physical Score:      ${Math.round(playerData.physical_score || 0)}/100
-Technical Score:     ${Math.round(playerData.technical_score || 0)}/100
-Tactical Score:      ${Math.round(playerData.tactical_score || 0)}/100
-Psychological Score: ${Math.round(playerData.psychological_score || 0)}/100
-
-DETAILED METRICS
-──────────────────────────────────────────────────────────────
-Physical:
-  • Sprint 30m:        ${playerData.sprint_30m || 'N/A'} sec
-  • Yo-Yo Test:        ${playerData.yo_yo_test || 'N/A'} m
-  • VO₂ Max:           ${playerData.vo2_max || 'N/A'} ml/kg/min
-  • Vertical Jump:     ${playerData.vertical_jump || 'N/A'} cm
-  • Body Fat:          ${playerData.body_fat || 'N/A'}%
-
-Technical:
-  • Ball Control:      ${playerData.ball_control || 'N/A'}/5
-  • Passing Accuracy:  ${playerData.passing_accuracy || 'N/A'}%
-  • Dribbling Success: ${playerData.dribbling_success || 'N/A'}%
-  • Shooting Accuracy: ${playerData.shooting_accuracy || 'N/A'}%
-
-Tactical:
-  • Game Intelligence: ${playerData.game_intelligence || 'N/A'}/5
-  • Positioning:       ${playerData.positioning || 'N/A'}/5
-  • Decision Making:   ${playerData.decision_making || 'N/A'}/5
-
-Psychological:
-  • Mental Toughness:  ${playerData.mental_toughness || 'N/A'}/5
-  • Coachability:      ${playerData.coachability || 'N/A'}/5
-
-STRENGTHS
-──────────────────────────────────────────────────────────────
-${strengths.map((s, i) => `${i + 1}. ${s}`).join('\n')}
-
-AREAS FOR IMPROVEMENT
-──────────────────────────────────────────────────────────────
-${weaknesses.map((w, i) => `${i + 1}. ${w}`).join('\n')}
-
-RECOMMENDATIONS
-──────────────────────────────────────────────────────────────
-${recommendations.map((r, i) => `${i + 1}. ${r}`).join('\n')}
-
-${coachComment ? `COACH COMMENTS
-──────────────────────────────────────────────────────────────
-${coachComment}
-` : ''}
-──────────────────────────────────────────────────────────────
-Generated by Yo-Yo Elite Soccer Player AI Coach
-Report Date: ${new Date().toLocaleString()}
-      `;
-      
-      const blob = new Blob([reportContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `Assessment_Report_${playerData.player_name?.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error downloading report:', error);
-      alert('Failed to download report');
-    }
-  };
-  
-  const handleSaveToProfile = async () => {
-    if (!isAuthenticated) {
-      alert('Please login to save reports');
-      return;
-    }
-    
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Authentication required');
-        return;
-      }
-      
-      const reportData = {
-        player_name: playerData.player_name,
-        title: `Assessment Report - ${playerData.player_name}`,
-        report_type: 'milestone',
-        report_data: {
-          playerData: playerData,
-          assessmentDate: new Date().toISOString(),
-          strengths: strengths,
-          weaknesses: weaknesses,
-          recommendations: recommendations,
-          coachComment: coachComment
-        },
-        notes: coachComment
-      };
-      
-      const response = await axios.post(`${API}/auth/save-report`, reportData, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
-      
-      alert('✅ Report saved to profile successfully!');
-    } catch (error) {
-      console.error('Error saving report:', error);
-      alert('Failed to save report: ' + (error.response?.data?.detail || error.message));
-    }
-  };
-  
-  const handleSaveBenchmark = async () => {
-    if (!isAuthenticated) {
-      alert('Please login to save benchmarks');
-      return;
-    }
-    
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Authentication required');
-        return;
-      }
-      
-      const benchmarkData = {
-        player_name: playerData.player_name,
-        age: playerData.age,
-        position: playerData.position,
-        assessment_date: new Date().toISOString(),
-        // Physical metrics
-        sprint_30m: playerData.sprint_30m,
-        yo_yo_test: playerData.yo_yo_test,
-        vo2_max: playerData.vo2_max,
-        vertical_jump: playerData.vertical_jump,
-        body_fat: playerData.body_fat,
-        // Technical metrics
-        ball_control: playerData.ball_control,
-        passing_accuracy: playerData.passing_accuracy,
-        dribbling_success: playerData.dribbling_success,
-        shooting_accuracy: playerData.shooting_accuracy,
-        defensive_duels: playerData.defensive_duels,
-        // Tactical metrics
-        game_intelligence: playerData.game_intelligence,
-        positioning: playerData.positioning,
-        decision_making: playerData.decision_making,
-        // Psychological metrics
-        coachability: playerData.coachability,
-        mental_toughness: playerData.mental_toughness,
-        // Scores
-        overall_score: playerData.overall_score,
-        physical_score: playerData.physical_score,
-        technical_score: playerData.technical_score,
-        tactical_score: playerData.tactical_score,
-        psychological_score: playerData.psychological_score,
-        // Additional info
-        coach_notes: coachComment
-      };
-      
-      const response = await axios.post(`${API}/auth/save-benchmark`, benchmarkData, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-      });
-      
-      alert('✅ Benchmark saved successfully!');
-    } catch (error) {
-      console.error('Error saving benchmark:', error);
-      alert('Failed to save benchmark: ' + (error.response?.data?.detail || error.message));
-    }
-  };
-  
-  if (!playerData) {
+  if (!reportData) {
     return (
-      <Card className="w-full">
-        <CardContent className="p-8 text-center">
-          <p className="text-gray-500">No assessment data available</p>
-        </CardContent>
-      </Card>
+      <div className="p-8 text-center text-gray-500">
+        No report data available
+      </div>
     );
   }
   
-  // Calculate performance level
-  const overallScore = playerData.overall_score || 0;
-  let performanceLevel = 'DEVELOPING';
-  if (overallScore >= 80) performanceLevel = 'ELITE';
-  else if (overallScore >= 70) performanceLevel = 'ADVANCED';
-  else if (overallScore >= 60) performanceLevel = 'STANDARD';
+  const { player_name, age, position, overall_score, metrics } = reportData;
   
-  const assessmentDate = playerData.assessment_date 
-    ? new Date(playerData.assessment_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-    : new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  // Determine performance level
+  let performanceLevel = 'NEEDS DEVELOPMENT';
+  if (overall_score >= 90) performanceLevel = 'ELITE';
+  else if (overall_score >= 75) performanceLevel = 'ADVANCED';
+  else if (overall_score >= 60) performanceLevel = 'STANDARD';
+  
+  const handlePrint = () => window.print();
+  
+  const handleDownload = () => {
+    const content = `
+PLAYER PERFORMANCE REPORT
+========================
+
+Player: ${player_name}
+Age: ${age}
+Position: ${position}
+Overall Score: ${overall_score}/100
+Performance Level: ${performanceLevel}
+
+PERFORMANCE METRICS
+==================
+Sprint 30m: ${metrics.sprint_30m.score}s (${metrics.sprint_30m.percent_of_standard}% of standard)
+Agility: ${metrics.agility.score} (${metrics.agility.percent_of_standard}% of standard)
+Reaction Time: ${metrics.reaction_time.score_ms}ms (${metrics.reaction_time.percent_of_standard}% of standard)
+Endurance: ${metrics.endurance.score} (${metrics.endurance.percent_of_standard}% of standard)
+Ball Control: ${metrics.ball_control.score_1_to_10}/10 (${metrics.ball_control.percent_of_standard}% of standard)
+Passing Accuracy: ${metrics.passing_accuracy.score_percent}% (${metrics.passing_accuracy.percent_of_standard}% of standard)
+
+Generated by Yo-Yo Elite Soccer Player AI Coach
+    `;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Report_${player_name.replace(/\s/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
   
   return (
-    <div className="w-full max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-lg print:shadow-none">
-      {/* Header with Player Info */}
-      <div className="mb-8 pb-6 border-b-2 border-gray-200">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900 uppercase tracking-tight mb-2">
-              {playerData.player_name || 'Player Name'}
-            </h1>
-            <div className="flex gap-6 text-lg text-gray-600">
-              <span><strong>Age:</strong> {playerData.age || 'N/A'}</span>
-              <span><strong>Position:</strong> {playerData.position || 'N/A'}</span>
-              <span><strong>Date:</strong> {assessmentDate}</span>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-500 uppercase tracking-wide">Overall Score</div>
-            <div className="text-6xl font-bold text-gray-900">{Math.round(overallScore)}</div>
-            <div className="text-lg font-semibold text-blue-600 mt-1">{performanceLevel}</div>
+    <div className="w-full max-w-7xl mx-auto bg-white p-8 print:p-0">
+      {/* Close button */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full print:hidden"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      )}
+      
+      {/* Header */}
+      <div className="flex justify-between items-start mb-8 pb-6 border-b-2 border-gray-200">
+        <div>
+          <h1 className="text-4xl font-bold text-gray-900 uppercase tracking-tight mb-2">
+            {player_name}
+          </h1>
+          <p className="text-lg text-gray-600">
+            Age: {age} | Position: {position}
+          </p>
+        </div>
+        <div className="text-right">
+          <div className="text-sm text-gray-500 uppercase tracking-wide mb-1">Overall Score</div>
+          <div className="bg-gray-100 rounded-2xl px-6 py-4">
+            <div className="text-6xl font-bold text-gray-900">{overall_score}</div>
           </div>
         </div>
       </div>
       
-      {/* Performance Category Scores */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-3xl font-bold text-blue-600">{Math.round(playerData.physical_score || 0)}</div>
-            <div className="text-sm font-semibold text-gray-700 mt-1">Physical</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-3xl font-bold text-green-600">{Math.round(playerData.technical_score || 0)}</div>
-            <div className="text-sm font-semibold text-gray-700 mt-1">Technical</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-3xl font-bold text-purple-600">{Math.round(playerData.tactical_score || 0)}</div>
-            <div className="text-sm font-semibold text-gray-700 mt-1">Tactical</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-3xl font-bold text-orange-600">{Math.round(playerData.psychological_score || 0)}</div>
-            <div className="text-sm font-semibold text-gray-700 mt-1">Psychological</div>
-          </CardContent>
-        </Card>
+      {/* Performance Level */}
+      <div className="mb-8">
+        <div className="text-sm text-gray-500 uppercase tracking-wide mb-1">Performance Level</div>
+        <div className="text-3xl font-bold text-gray-900">{performanceLevel}</div>
       </div>
       
-      {/* Gauge Charts - Physical Metrics */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Physical Performance Metrics</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GaugeChart
-              value={playerData.sprint_30m || 0}
-              label="Sprint 30m"
-              max={6}
-              unit="s"
-              description="Lower is better (Elite: <4.5s)"
-              isLowerBetter={true}
-            />
-            <GaugeChart
-              value={playerData.yo_yo_test || 0}
-              label="Yo-Yo Test"
-              max={2400}
-              unit="m"
-              description="Endurance capacity"
-            />
-            <GaugeChart
-              value={playerData.vo2_max || 0}
-              label="VO₂ Max"
-              max={70}
-              unit=""
-              description="Aerobic fitness"
-            />
-            <GaugeChart
-              value={playerData.vertical_jump || 0}
-              label="Vertical Jump"
-              max={80}
-              unit="cm"
-              description="Explosive power"
-            />
-            <GaugeChart
-              value={playerData.body_fat || 0}
-              label="Body Fat"
-              max={20}
-              unit="%"
-              description="Body composition"
-            />
-          </div>
-        </CardContent>
-      </Card>
-      
-      {/* Gauge Charts - Technical & Tactical */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Technical & Tactical Skills</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GaugeChart
-              value={playerData.ball_control || 0}
-              label="Ball Control"
-              max={5}
-              unit="/5"
-              description="First touch & mastery"
-            />
-            <GaugeChart
-              value={playerData.passing_accuracy || 0}
-              label="Passing Accuracy"
-              max={100}
-              unit="%"
-              description="Successful passes"
-            />
-            <GaugeChart
-              value={playerData.dribbling_success || 0}
-              label="Dribbling"
-              max={100}
-              unit="%"
-              description="1v1 effectiveness"
-            />
-            <GaugeChart
-              value={playerData.shooting_accuracy || 0}
-              label="Shooting"
-              max={100}
-              unit="%"
-              description="Shots on target"
-            />
-            <GaugeChart
-              value={playerData.game_intelligence || 0}
-              label="Game Intelligence"
-              max={5}
-              unit="/5"
-              description="Tactical awareness"
-            />
-            <GaugeChart
-              value={playerData.positioning || 0}
-              label="Positioning"
-              max={5}
-              unit="/5"
-              description="Off-ball movement"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      {/* Performance Metrics Gauges */}
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">PERFORMANCE METRICS</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <SemicircleGauge
+            value={metrics.sprint_30m.score}
+            label="Sprint 30m"
+            percentOfStandard={metrics.sprint_30m.percent_of_standard}
+            description="30m sprint time. Measures acceleration and top-end speed."
+            unit=""
+          />
+          
+          <SemicircleGauge
+            value={metrics.agility.score}
+            label="Agility test"
+            percentOfStandard={metrics.agility.percent_of_standard}
+            description="Change-of-direction speed. Measures footwork and body control."
+            unit=""
+          />
+          
+          <SemicircleGauge
+            value={metrics.reaction_time.score_ms}
+            label="Reaction time"
+            percentOfStandard={metrics.reaction_time.percent_of_standard}
+            description="Measures neuromotor / cognitive response speed."
+            unit="ms"
+          />
+          
+          <SemicircleGauge
+            value={metrics.endurance.score}
+            label="Endurance Beep test"
+            percentOfStandard={metrics.endurance.percent_of_standard}
+            description="Yo Yo / Beep test level. Measures aerobic capacity."
+            unit=""
+          />
+          
+          <SemicircleGauge
+            value={metrics.ball_control.score_1_to_10}
+            label="Ball control"
+            percentOfStandard={metrics.ball_control.percent_of_standard}
+            description="1-10 rating of first touch and dribbling."
+            unit=""
+          />
+          
+          <SemicircleGauge
+            value={metrics.passing_accuracy.score_percent}
+            label="Passing Accuracy"
+            percentOfStandard={metrics.passing_accuracy.percent_of_standard}
+            description="Percentage of successful passes to a target."
+            unit="%"
+          />
+        </div>
+      </div>
       
       {/* Assessment Trend Chart */}
-      {assessmentHistory.length > 0 && (
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Performance Trend Over Time</CardTitle>
-            <p className="text-sm text-gray-600 mt-1">
-              Track your progress across multiple assessments
-            </p>
-          </CardHeader>
-          <CardContent>
-            {assessmentHistory.length === 1 ? (
-              <div className="text-center py-12 text-gray-500">
-                <p className="mb-2">This is your first assessment!</p>
-                <p className="text-sm">Complete more assessments to see your progress trend</p>
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height={350}>
-                <LineChart 
-                  data={assessmentHistory}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="#6b7280"
-                    style={{ fontSize: '12px' }}
-                  />
-                  <YAxis 
-                    domain={[0, 100]} 
-                    stroke="#6b7280"
-                    style={{ fontSize: '12px' }}
-                    label={{ value: 'Score', angle: -90, position: 'insideLeft' }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: '#ffffff', 
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px',
-                      padding: '12px'
-                    }}
-                    formatter={(value) => [`${Math.round(value)}/100`, '']}
-                  />
-                  <Legend 
-                    wrapperStyle={{ paddingTop: '20px' }}
-                    iconType="line"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="overall" 
-                    stroke="#2563eb" 
-                    strokeWidth={4} 
-                    name="Overall Score"
-                    dot={{ fill: '#2563eb', r: 5 }}
-                    activeDot={{ r: 7 }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="physical" 
-                    stroke="#0891b2" 
-                    strokeWidth={2} 
-                    name="Physical"
-                    dot={{ fill: '#0891b2', r: 4 }}
-                    strokeDasharray="5 5"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="technical" 
-                    stroke="#16a34a" 
-                    strokeWidth={2} 
-                    name="Technical"
-                    dot={{ fill: '#16a34a', r: 4 }}
-                    strokeDasharray="5 5"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="tactical" 
-                    stroke="#9333ea" 
-                    strokeWidth={2} 
-                    name="Tactical"
-                    dot={{ fill: '#9333ea', r: 4 }}
-                    strokeDasharray="5 5"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="psychological" 
-                    stroke="#f97316" 
-                    strokeWidth={2} 
-                    name="Psychological"
-                    dot={{ fill: '#f97316', r: 4 }}
-                    strokeDasharray="5 5"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            )}
-          </CardContent>
-        </Card>
+      {trendData.length > 1 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">ASSESSMENT TREND</h2>
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={trendData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#6b7280"
+                  style={{ fontSize: '12px' }}
+                />
+                <YAxis 
+                  domain={[0, 100]} 
+                  stroke="#6b7280"
+                  style={{ fontSize: '12px' }}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px'
+                  }}
+                />
+                <Legend />
+                <Line 
+                  type="monotone" 
+                  dataKey="overall" 
+                  stroke="#2563eb" 
+                  strokeWidth={3}
+                  name="Overall Score"
+                  dot={{ fill: '#2563eb', r: 4 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="sprint" 
+                  stroke="#ef4444" 
+                  strokeWidth={2}
+                  name="Sprint 30 m"
+                  dot={{ fill: '#ef4444', r: 3 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="passing" 
+                  stroke="#22c55e" 
+                  strokeWidth={2}
+                  name="Passing Accuracy"
+                  dot={{ fill: '#22c55e', r: 3 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       )}
       
-      {/* Analysis: Strengths, Weaknesses, Recommendations */}
+      {/* Strengths, Weaknesses, Recommendations */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="border-l-4 border-green-500">
-          <CardHeader>
-            <CardTitle className="text-green-700 flex items-center gap-2">
-              <span className="text-2xl">✓</span> Strengths
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {strengths.map((strength, index) => (
-                <li key={index} className="text-gray-700 text-sm">• {strength}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">STRENGTHS</h3>
+          <ul className="space-y-2 text-sm text-gray-700">
+            <li className="flex items-start">
+              <span className="text-green-600 mr-2">•</span>
+              YouYo / Beep test
+            </li>
+            <li className="flex items-start">
+              <span className="text-green-600 mr-2">•</span>
+              Neuromotor / cognitive speed
+            </li>
+            <li className="flex items-start">
+              <span className="text-green-600 mr-2">•</span>
+              Dribbling
+            </li>
+          </ul>
+        </div>
         
-        <Card className="border-l-4 border-red-500">
-          <CardHeader>
-            <CardTitle className="text-red-700 flex items-center gap-2">
-              <span className="text-2xl">!</span> Areas for Improvement
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {weaknesses.map((weakness, index) => (
-                <li key={index} className="text-gray-700 text-sm">• {weakness}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">WEAKNESSES</h3>
+          <ul className="space-y-2 text-sm text-gray-700">
+            <li className="flex items-start">
+              <span className="text-red-600 mr-2">•</span>
+              Acceleration
+            </li>
+            <li className="flex items-start">
+              <span className="text-red-600 mr-2">•</span>
+              Change-of-direction speed
+            </li>
+            <li className="flex items-start">
+              <span className="text-red-600 mr-2">•</span>
+              First touch
+            </li>
+          </ul>
+        </div>
         
-        <Card className="border-l-4 border-blue-500">
-          <CardHeader>
-            <CardTitle className="text-blue-700 flex items-center gap-2">
-              <span className="text-2xl">→</span> Recommendations
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {recommendations.map((recommendation, index) => (
-                <li key={index} className="text-gray-700 text-sm">• {recommendation}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+        <div>
+          <h3 className="text-xl font-bold text-gray-900 mb-4">RECOMMENDATIONS</h3>
+          <ul className="space-y-2 text-sm text-gray-700">
+            <li className="flex items-start">
+              <span className="text-blue-600 mr-2">•</span>
+              Improve sprint starts and acceleration
+            </li>
+            <li className="flex items-start">
+              <span className="text-blue-600 mr-2">•</span>
+              Include agility ladder and shuffle runs
+            </li>
+            <li className="flex items-start">
+              <span className="text-blue-600 mr-2">•</span>
+              Refine first touch under pressure
+            </li>
+          </ul>
+        </div>
       </div>
       
-      {/* Coach Comment Section */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5" />
-            Coach Comments
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Textarea
-            value={coachComment}
-            onChange={(e) => setCoachComment(e.target.value)}
-            placeholder="Add coach observations, feedback, or specific notes about this assessment..."
-            rows={4}
-            className="w-full"
-          />
-        </CardContent>
-      </Card>
-      
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-4 justify-center print:hidden">
+      <div className="flex gap-4 justify-center print:hidden pt-6 border-t">
         <Button onClick={handlePrint} variant="outline" className="flex items-center gap-2">
-          <Printer className="h-4 w-4" />
+          <Printer className="w-4 h-4" />
           Print Report
         </Button>
-        
-        <Button onClick={handleDownloadPDF} variant="outline" className="flex items-center gap-2">
-          <Download className="h-4 w-4" />
+        <Button onClick={handleDownload} variant="outline" className="flex items-center gap-2">
+          <Download className="w-4 h-4" />
           Download Report
         </Button>
-        
-        <Button onClick={handleSaveToProfile} variant="outline" className="flex items-center gap-2">
-          <Save className="h-4 w-4" />
-          Save to Profile
-        </Button>
-        
-        <Button onClick={handleSaveBenchmark} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700">
-          <Bookmark className="h-4 w-4" />
-          Save as Benchmark
-        </Button>
-        
-        {onClose && (
-          <Button onClick={onClose} variant="secondary">
-            Close
-          </Button>
-        )}
       </div>
       
       {/* Footer */}
-      <div className="mt-8 pt-6 border-t text-center text-sm text-gray-500">
-        <p>Generated by Yo-Yo Elite Soccer Player AI Coach</p>
-        <p className="mt-1">Professional Assessment & Training Platform</p>
+      <div className="mt-8 pt-4 border-t text-center text-sm text-gray-500">
+        Generated by Yo-Yo Elite Soccer Player AI Coach
       </div>
     </div>
   );
 };
 
-export default AssessmentReport;
+export default PlayerReport;
