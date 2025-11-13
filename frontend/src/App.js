@@ -26,6 +26,7 @@ import PlayerReport from "./components/PlayerReport";
 import AuthModal from "./components/AuthModal";
 import ForgotPasswordModal from "./components/ForgotPasswordModal";
 import SavedReports from "./components/SavedReports";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 import HomePage from "./components/HomePage";
 import AdminDashboard from "./components/AdminDashboard";
 import AchievementsDisplay from "./components/AchievementsDisplay";
