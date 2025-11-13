@@ -13,6 +13,14 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 import random
 import jwt
 
+# Import verify_token for authentication
+try:
+    from routes.auth_routes import verify_token
+except ImportError:
+    # Fallback if auth routes not available
+    def verify_token():
+        raise HTTPException(status_code=401, detail="Authentication not available")
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
