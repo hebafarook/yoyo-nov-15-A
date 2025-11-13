@@ -175,7 +175,24 @@ Report ID: ${report.id}
       setShowProgramForm(false);
       
       // Show success message
-      alert(`✅ Personalized ${programParams.duration_weeks}-week training program generated!\n\n${programParams.training_days_per_week} sessions per week\nTailored to your assessment results and recovery needs`);
+      alert(`✅ YOUR TRAINING PROGRAMS ARE READY!
+
+📋 COACH-GUIDED PROGRAM
+   • ${programParams.duration_weeks}-week structured plan
+   • ${programParams.training_days_per_week} sessions per week
+   • ${programParams.session_duration_minutes} minutes per session
+   • Position-specific drills for ${report.player_info.position}
+   • Based on coach recommendations
+
+🤖 AI-POWERED MODEL
+   • Machine learning optimized
+   • Dynamic difficulty scaling
+   • Performance tracking enabled
+   • Personalized to your skill level
+
+Both programs are now active in your Training Plan tab!
+
+🎯 START TRAINING TODAY!`);
       
     } catch (error) {
       console.error('Error generating training program:', error);
