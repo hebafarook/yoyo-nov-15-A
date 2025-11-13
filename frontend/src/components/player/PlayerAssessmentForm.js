@@ -5,7 +5,7 @@ import { CheckCircle, Info, AlertCircle } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const PlayerAssessmentForm = ({ onAssessmentComplete }) => {
+const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => {
   const { user, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     player_name: "",
