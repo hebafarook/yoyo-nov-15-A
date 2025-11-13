@@ -612,6 +612,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
