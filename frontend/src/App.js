@@ -1348,6 +1348,11 @@ const MainDashboard = () => {
     return <PlayerDashboard />;
   }
 
+  // If user is a club admin, show Club Portal Dashboard
+  if (user?.role === 'club') {
+    return <ClubPortalDashboard />;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Assessment Report Modal */}
