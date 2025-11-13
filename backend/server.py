@@ -993,6 +993,34 @@ async def create_assessment(assessment: AssessmentCreate):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.post("/assessments/authenticated", response_model=PlayerAssessment)
+async def create_authenticated_assessment(assessment: AssessmentCreate, current_user: dict = Depends(verify_token)):
+    """Create assessment with user authentication for proper user linking"""
+    try:
+        user_id = current_user.get('user_id')
+        assessment_dict = assessment.dict()
+        
+        # Add user_id to link assessment to authenticated user
+        assessment_dict["user_id"] = user_id
+        
+        # Calculate comprehensive scores based on Youth Handbook standards
+        scores = calculate_assessment_scores(assessment_dict, assessment.age)
+        assessment_dict["overall_score"] = scores["overall"]
+        assessment_dict["category_scores"] = {
+            "physical": scores["physical"],
+            "technical": scores["technical"],
+            "tactical": scores["tactical"],
+            "psychological": scores["psychological"]
+        }
+        
+        assessment_obj = PlayerAssessment(**assessment_dict)
+        assessment_data = prepare_for_mongo(assessment_obj.dict())
+        await db.assessments.insert_one(assessment_data)
+        
+        return assessment_obj
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @api_router.get("/assessments", response_model=List[PlayerAssessment])
 async def get_assessments(user_id: Optional[str] = None):
     try:
