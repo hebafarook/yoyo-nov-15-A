@@ -2300,6 +2300,14 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import relationship routes: {e}")
 
+# Import Messaging routes
+try:
+    from routes.messaging_routes import router as messaging_router
+    api_router.include_router(messaging_router, prefix="/messages", tags=["messaging"])
+    logging.info("✅ Messaging system routes loaded successfully (Inbox & Communication)")
+except ImportError as e:
+    logging.warning(f"Could not import messaging routes: {e}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
