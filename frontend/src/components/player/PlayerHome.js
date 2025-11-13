@@ -310,7 +310,7 @@ const PlayerHome = ({ onStartSession }) => {
       {/* Player Profile Card */}
       <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 shadow-lg border-2 border-yellow-400">
         <h3 className="text-xl font-bold text-white mb-4">📋 Player Profile</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
             <p className="text-xs text-purple-200">Height</p>
             <p className="text-lg font-bold text-white">{playerProfile?.height || user?.height || '175 cm'}</p>
@@ -324,11 +324,74 @@ const PlayerHome = ({ onStartSession }) => {
             <p className="text-lg font-bold text-white">{user?.position || 'Forward'}</p>
           </div>
           <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+            <p className="text-xs text-purple-200">Dominant Foot</p>
+            <p className="text-lg font-bold text-white">{user?.dominant_foot || playerProfile?.dominant_foot || 'Right'}</p>
+          </div>
+          <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
             <p className="text-xs text-purple-200">Date Joined</p>
             <p className="text-lg font-bold text-white">
               {user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Jan 2024'}
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Quick Performance Snapshot */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-indigo-200">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-indigo-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800">⚡ Quick Performance Snapshot</h3>
+          </div>
+          <button 
+            onClick={() => onTakeAssessment && onTakeAssessment()}
+            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition text-sm font-semibold"
+          >
+            Take Assessment
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="bg-purple-50 rounded-xl p-4 text-center">
+            <p className="text-sm text-purple-600 font-medium mb-1">Physical</p>
+            <p className="text-3xl font-bold text-purple-900">{lastAssessmentScore !== 'N/A' ? '85' : '--'}</p>
+            <p className="text-xs text-gray-500 mt-1">+5% this month</p>
+          </div>
+          <div className="bg-blue-50 rounded-xl p-4 text-center">
+            <p className="text-sm text-blue-600 font-medium mb-1">Technical</p>
+            <p className="text-3xl font-bold text-blue-900">{lastAssessmentScore !== 'N/A' ? '78' : '--'}</p>
+            <p className="text-xs text-gray-500 mt-1">+3% this month</p>
+          </div>
+          <div className="bg-green-50 rounded-xl p-4 text-center">
+            <p className="text-sm text-green-600 font-medium mb-1">Tactical</p>
+            <p className="text-3xl font-bold text-green-900">{lastAssessmentScore !== 'N/A' ? '82' : '--'}</p>
+            <p className="text-xs text-gray-500 mt-1">+7% this month</p>
+          </div>
+          <div className="bg-orange-50 rounded-xl p-4 text-center">
+            <p className="text-sm text-orange-600 font-medium mb-1">Mental</p>
+            <p className="text-3xl font-bold text-orange-900">{lastAssessmentScore !== 'N/A' ? '90' : '--'}</p>
+            <p className="text-xs text-gray-500 mt-1">+2% this month</p>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4">
+          <h4 className="font-bold text-gray-800 mb-2">🎯 Current Focus</h4>
+          <ul className="space-y-2 text-sm">
+            <li className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
+              <span className="text-gray-700">Improve passing accuracy (Target: 85%)</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-purple-600 rounded-full"></span>
+              <span className="text-gray-700">Enhance tactical positioning</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-pink-600 rounded-full"></span>
+              <span className="text-gray-700">Build endurance for full matches</span>
+            </li>
+          </ul>
         </div>
       </div>
 
