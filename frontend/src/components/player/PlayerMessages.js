@@ -61,7 +61,7 @@ const PlayerMessages = () => {
     return (
       <div className="max-w-4xl mx-auto h-screen flex flex-col bg-white">
         {/* Chat Header */}
-        <div className="p-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="p-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white border-b-2 border-yellow-400">
           <button
             onClick={() => setSelectedChat(null)}
             className="text-white/80 hover:text-white mb-2 text-sm"
@@ -69,7 +69,7 @@ const PlayerMessages = () => {
             ← Back
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-blue-600 font-bold text-lg">
+            <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center text-indigo-900 font-bold text-lg">
               {chat.avatar}
             </div>
             <div>
