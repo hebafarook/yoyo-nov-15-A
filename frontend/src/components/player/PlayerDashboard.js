@@ -70,7 +70,8 @@ const PlayerDashboard = () => {
 
   const handleAssessmentComplete = (assessment) => {
     console.log('Assessment completed:', assessment);
-    // Navigate to My Report tab to see the generated report
+    setIsFirstTime(false);
+    // Navigate to My Report tab to see the generated comprehensive report
     setActiveTab('report');
   };
 
