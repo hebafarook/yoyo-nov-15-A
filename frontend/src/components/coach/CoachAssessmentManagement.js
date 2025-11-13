@@ -169,6 +169,8 @@ const CoachAssessmentManagement = ({ onSelectAssessment }) => {
         return { icon: FileText, color: 'text-white/60', bg: 'bg-white/10', border: 'border-white/20' };
       case 'Completed':
         return { icon: CheckCircle, color: 'text-[#4DFF91]', bg: 'bg-[#4DFF91]/20', border: 'border-[#4DFF91]/30' };
+      case 'Archived':
+        return { icon: FileText, color: 'text-gray-500', bg: 'bg-gray-500/20', border: 'border-gray-500/30' };
       default:
         return { icon: FileText, color: 'text-white/60', bg: 'bg-white/10', border: 'border-white/20' };
     }
