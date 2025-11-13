@@ -1357,12 +1357,17 @@ const MainDashboard = () => {
               </div>
             </div>
             <div className="p-6">
-              <AssessmentReport
-                playerData={currentPlayer}
-                previousAssessments={previousAssessments}
-                showComparison={previousAssessments.length > 0}
-                isStartupReport={isStartupReport}
-              />
+              {/* Use new PlayerReport for milestone reports, keep old for startup */}
+              {isStartupReport ? (
+                <AssessmentReport
+                  playerData={currentPlayer}
+                  previousAssessments={previousAssessments}
+                  showComparison={previousAssessments.length > 0}
+                  isStartupReport={isStartupReport}
+                />
+              ) : (
+                <PlayerReport playerName={currentPlayer.playerName} />
+              )}
             </div>
           </div>
         </div>
