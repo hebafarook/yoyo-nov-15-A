@@ -107,7 +107,14 @@ async def register_user(user_data: UserCreate):
             is_coach=user_data.is_coach or (user_data.role == "coach"),
             player_id=player_id,
             age=user_data.age,
-            position=user_data.position
+            position=user_data.position,
+            gender=user_data.gender,
+            height=user_data.height,
+            weight=user_data.weight,
+            dominant_foot=user_data.dominant_foot,
+            current_injuries=user_data.current_injuries,
+            parent_email=user_data.parent_email,
+            coach_email=user_data.coach_email
         )
         
         # Save user to database
@@ -118,6 +125,20 @@ async def register_user(user_data: UserCreate):
         profile = UserProfile(user_id=user.id)
         profile_data = prepare_for_mongo(profile.dict())
         await db.user_profiles.insert_one(profile_data)
+        
+        # Send invitation emails to parent and coach if provided
+        if user_data.role == "player":
+            if user_data.parent_email:
+                # TODO: Send email invitation to parent
+                logger.info(f"Parent invitation queued for: {user_data.parent_email}")
+                # Create relationship link
+                await create_parent_relationship(user.id, user_data.parent_email)
+            
+            if user_data.coach_email:
+                # TODO: Send email invitation to coach
+                logger.info(f"Coach invitation queued for: {user_data.coach_email}")
+                # Create relationship link
+                await create_coach_relationship(user.id, user_data.coach_email)
         
         # Create access token
         access_token = create_access_token(user.id, user.username, user.role)
