@@ -1570,7 +1570,7 @@ const MainDashboard = () => {
                 className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
               >
                 <TrendingUp className="w-4 h-4" />
-                Progress
+                Performance Progress
               </button>
               <button 
                 onClick={() => setActiveTab("reports")}
