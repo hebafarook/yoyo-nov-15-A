@@ -176,9 +176,25 @@ You can now access all features in your Player Portal!`);
                 </li>
                 <li className="flex items-start gap-3 bg-white/10 p-3 rounded-lg">
                   <span className="text-yellow-400 font-bold text-lg min-w-[24px]">4.</span>
-                  <span>Your development roadmap will be ready - printable and saveable!</span>
+                  <div>
+                    <strong>View Professional Report</strong>
+                    <p className="text-white/80 text-xs mt-1">Comprehensive roadmap opens automatically - print, save, and share!</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3 bg-green-500/30 p-3 rounded-lg border-2 border-green-400">
+                  <span className="text-green-300 font-bold text-lg min-w-[24px]">5.</span>
+                  <div>
+                    <strong>🔓 All Features Unlocked!</strong>
+                    <p className="text-white/90 text-xs mt-1">Access Home, Training, Progress, History, and all Player Portal features</p>
+                  </div>
                 </li>
               </ul>
+              
+              <div className="mt-4 bg-yellow-400/20 border-2 border-yellow-400 rounded-lg p-3">
+                <p className="text-yellow-100 text-xs font-semibold text-center">
+                  ⏱️ Assessment takes 10-15 minutes • All fields required for accurate analysis
+                </p>
+              </div>
             </div>
           </div>
         )}
