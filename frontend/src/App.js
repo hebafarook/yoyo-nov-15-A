@@ -30,6 +30,7 @@ import AdminDashboard from "./components/AdminDashboard";
 import AchievementsDisplay from "./components/AchievementsDisplay";
 import AICoachDashboard from "./components/AICoachDashboard";
 import InboxDashboard from "./components/InboxDashboard";
+import ParentDashboard from "./components/parent/ParentDashboard";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
