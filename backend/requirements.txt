@@ -10,3 +10,4 @@ aiofiles>=23.2.0
 PyJWT>=2.8.0mediapipe==0.10.9
 opencv-python-headless==4.9.0.80
 emergentintegrations
+emergentintegrations==0.1.0
