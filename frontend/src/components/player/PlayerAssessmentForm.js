@@ -277,29 +277,23 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
           <div className="flex gap-4">
             <button
               onClick={() => {
-                setAssessmentSuccess(false);
-                setFormData({
-                  player_name: user?.username || "",
-                  age: user?.age || "",
-                  position: user?.position || "",
-                  height_cm: "",
-                  weight_kg: "",
-                  assessment_date: new Date().toISOString().split('T')[0],
-                  sprint_30m: "", yo_yo_test: "", vo2_max: "", vertical_jump: "", body_fat: "",
-                  ball_control: "", passing_accuracy: "", dribbling_success: "", shooting_accuracy: "", defensive_duels: "",
-                  game_intelligence: "", positioning: "", decision_making: "",
-                  coachability: "", mental_toughness: ""
-                });
+                const reportUrl = `/professional-report?assessment_id=${formData.lastAssessmentId || ''}`;
+                window.open(reportUrl, '_blank', 'width=1200,height=800');
+              }}
+              className="px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition flex items-center gap-2"
+            >
+              <Play className="w-5 h-5" />
+              View Professional Report
+            </button>
+            <button
+              onClick={() => {
+                if (onAssessmentComplete) {
+                  onAssessmentComplete();
+                }
               }}
               className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition"
             >
-              Take Another Assessment
-            </button>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-6 py-3 bg-gray-600 text-white rounded-xl font-semibold hover:bg-gray-700 transition"
-            >
-              View My Reports
+              Go to Dashboard
             </button>
           </div>
         </div>
