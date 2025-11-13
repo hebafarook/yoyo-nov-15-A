@@ -21,6 +21,7 @@ import TrainingDashboard from "./components/TrainingDashboard";
 import PerformanceHighlights from "./components/PerformanceHighlights";
 import PhysicalPerformanceMonitor from "./components/PhysicalPerformanceMonitor";
 import AssessmentReport from "./components/AssessmentReport";
+import PlayerReport from "./components/PlayerReport";
 import AuthModal from "./components/AuthModal";
 import ForgotPasswordModal from "./components/ForgotPasswordModal";
 import SavedReports from "./components/SavedReports";
