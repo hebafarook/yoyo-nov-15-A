@@ -630,10 +630,10 @@ agent_communication:
 
 metadata:
   created_by: "main_agent"
-  version: "1.1"
-  test_sequence: 1
+  version: "1.2"
+  test_sequence: 2
   run_ui: true
-  last_updated: "2025-01-13 Visual Dashboard Implementation"
+  last_updated: "2025-01-13 Player Portal Integration with AI Insights"
 
 test_plan:
   current_focus:
