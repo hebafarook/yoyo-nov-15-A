@@ -155,9 +155,9 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
         }
         
         if (benchmarkResponse.data.is_baseline) {
-          setAssessmentMessage('🎯 BASELINE ASSESSMENT SAVED!\n\nThis is your baseline benchmark - all future progress will be compared to this assessment. Your training program will be generated based on this data.\n\n✅ Report saved to My Reports\n✅ Training program will be generated');
+          setAssessmentMessage('🎯 BASELINE ASSESSMENT COMPLETE!\n\nYour assessment has been saved and processed:\n\n✅ Benchmark created for future comparisons\n✅ Comprehensive roadmap report generated with AI analysis\n✅ Coach recommendations and standards included\n✅ Personalized training program created\n✅ Report ready to view, print, and save\n\nClick "View My Report" to see your complete development roadmap!');
         } else {
-          setAssessmentMessage('📊 ASSESSMENT SAVED AS BENCHMARK!\n\nYour progress has been tracked. You can view your improvements in the Reports tab.\n\n✅ Report saved to My Reports\n✅ Training program updated');
+          setAssessmentMessage('📊 ASSESSMENT COMPLETE!\n\nYour progress assessment has been saved:\n\n✅ Progress tracked and benchmarked\n✅ Comprehensive roadmap updated\n✅ New coach recommendations generated\n✅ Training program adjusted\n✅ Updated report ready to view\n\nClick "View My Report" to see your updated roadmap!');
         }
         setAssessmentSuccess(true);
         
