@@ -262,6 +262,9 @@ const AssessmentForm = ({ onAssessmentCreated, setActiveTab }) => {
     player_name: "",
     age: "",
     position: "",
+    height_cm: "",
+    weight_kg: "",
+    assessment_date: new Date().toISOString().split('T')[0],
     // Physical metrics
     sprint_30m: "",
     yo_yo_test: "",
@@ -287,6 +290,18 @@ const AssessmentForm = ({ onAssessmentCreated, setActiveTab }) => {
   const [explanationVisibility, setExplanationVisibility] = useState({});
   const [assessmentSuccess, setAssessmentSuccess] = useState(false);
   const [assessmentMessage, setAssessmentMessage] = useState('');
+
+  // Auto-populate player data from user profile
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setFormData(prev => ({
+        ...prev,
+        player_name: user.role === 'player' ? user.username : prev.player_name,
+        age: user.age || prev.age,
+        position: user.position || prev.position,
+      }));
+    }
+  }, [isAuthenticated, user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
