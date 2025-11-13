@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -9,6 +10,8 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import AssessmentReport from './AssessmentReport';
 import BenchmarkHistory from './BenchmarkHistory';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const SavedReports = () => {
   const [activeTab, setActiveTab] = useState('reports'); // 'reports' or 'benchmarks'
