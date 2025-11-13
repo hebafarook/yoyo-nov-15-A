@@ -12,6 +12,7 @@ import AchievementsDisplay from '../AchievementsDisplay';
 import SavedReports from '../SavedReports';
 import InboxDashboard from '../InboxDashboard';
 import PlayerReportCard from './PlayerReportCard';
+import PlayerAssessmentForm from './PlayerAssessmentForm';
 import { Home, Activity, Calendar, FileText, TrendingUp, Heart, Trophy, BarChart3, Inbox, ClipboardCheck, LogOut } from 'lucide-react';
 
 const PlayerDashboard = () => {
