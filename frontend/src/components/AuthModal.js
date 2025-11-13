@@ -172,7 +172,19 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
         const result = await register(registrationData);
 
         if (result.success) {
-          onClose();
+          // Auto-login after successful registration
+          const loginResult = await login(formData.email, formData.password);
+          
+          if (loginResult.success) {
+            // Show success message
+            alert(`✅ Account created successfully! Welcome, ${formData.full_name}! Redirecting to your dashboard...`);
+            onClose();
+            // Page will auto-redirect based on user role
+          } else {
+            // Registration successful but auto-login failed - show login form
+            setMode('login');
+            setError('Account created! Please log in to continue.');
+          }
         } else {
           setError(result.error);
         }
