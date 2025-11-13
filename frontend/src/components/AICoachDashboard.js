@@ -12,7 +12,7 @@ export default function AICoachDashboard({ playerId, user }) {
   const [activeTab, setActiveTab] = useState('predictive');
   
   // Predictive Analysis State
-  const [predictiveData, setPredict iveData] = useState(null);
+  const [predictiveData, setPredictiveData] = useState(null);
   const [loadingPredictive, setLoadingPredictive] = useState(false);
   
   // Form Analysis State
