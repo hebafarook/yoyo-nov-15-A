@@ -1354,6 +1354,11 @@ const MainDashboard = () => {
     return <ClubPortalDashboard />;
   }
 
+  // If user is a system admin, show System Admin Portal
+  if (user?.role === 'admin') {
+    return <SystemAdminPortal />;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Assessment Report Modal */}
