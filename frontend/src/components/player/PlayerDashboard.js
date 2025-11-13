@@ -38,12 +38,18 @@ const PlayerDashboard = () => {
     { id: 'inbox', label: 'Inbox', icon: Inbox }
   ];
 
+  const handleAssessmentComplete = (assessment) => {
+    console.log('Assessment completed:', assessment);
+    // Navigate to My Report tab to see the generated report
+    setActiveTab('report');
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'home': return <PlayerHome onStartSession={() => setActiveTab('training')} onTakeAssessment={() => setActiveTab('take-assessment')} />;
       case 'training': return <PlayerTodaySession />;
       case 'plan': return <PlayerTrainingPlan />;
-      case 'take-assessment': return <TakeAssessmentView />;
+      case 'take-assessment': return <PlayerAssessmentForm onAssessmentComplete={handleAssessmentComplete} />;
       case 'assessments': return <PlayerAssessmentHistory />;
       case 'progress': return <PlayerProgress />;
       case 'recovery': return <PlayerRecovery />;
@@ -52,31 +58,6 @@ const PlayerDashboard = () => {
       case 'inbox': return <InboxDashboard />;
       default: return <PlayerHome onStartSession={() => setActiveTab('training')} onTakeAssessment={() => setActiveTab('take-assessment')} />;
     }
-  };
-
-  // Take Assessment View Component
-  const TakeAssessmentView = () => {
-    return (
-      <div className="max-w-6xl mx-auto">
-        <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-6 text-white shadow-lg border-2 border-yellow-400 mb-6">
-          <h2 className="text-3xl font-bold mb-2">📝 Take Assessment</h2>
-          <p className="text-white/90">Complete your performance assessment</p>
-        </div>
-        <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200">
-          <p className="text-gray-600 mb-4">The assessment form will be displayed here. This will redirect to the main assessment interface.</p>
-          <button 
-            onClick={() => {
-              // Redirect to main assessment tab
-              window.location.href = '/#assessment';
-              window.location.reload();
-            }}
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition"
-          >
-            Go to Assessment Form
-          </button>
-        </div>
-      </div>
-    );
   };
 
   return (
