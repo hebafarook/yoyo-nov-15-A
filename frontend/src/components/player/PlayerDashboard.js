@@ -81,8 +81,28 @@ const PlayerDashboard = () => {
   const handleAssessmentComplete = (assessment) => {
     console.log('Assessment completed:', assessment);
     setIsFirstTime(false);
-    // Navigate to My Report tab to see the generated comprehensive report
-    setActiveTab('report');
+    
+    // Show success message and guide to next steps
+    setTimeout(() => {
+      alert(`🎉 CONGRATULATIONS! Your baseline assessment is complete!
+
+✅ Your assessment has been saved as your BASELINE BENCHMARK
+✅ AI is analyzing your data and generating personalized programs
+✅ Your Professional Report is ready to view
+
+NEXT STEPS:
+1. View your Professional Report (opens in new tab)
+2. Generate your Training Program from the report
+3. Start tracking your progress!
+
+You can now access all features in your Player Portal!`);
+      
+      // Navigate to My Report tab to see the generated comprehensive report
+      setActiveTab('report');
+      
+      // Refresh the page to update sidebar state
+      window.location.reload();
+    }, 1000);
   };
 
   const renderContent = () => {
