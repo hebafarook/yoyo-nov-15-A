@@ -204,21 +204,58 @@ def analyze_assessment_with_llm(assessment: dict, previous_assessments: list, st
     ball_control_percent = (ball_control / standards['ball_control'] * 100) if ball_control > 0 else 0
     passing_percent = (passing / standards['passing_accuracy'] * 100) if passing > 0 else 0
     
-    # Overall Analysis (AI-generated comprehensive overview)
+    # Performance Metrics Gauges (matching exact system format)
+    performance_gauges = {
+        "sprint_30m": {
+            "score": sprint,
+            "percent_of_standard": round(sprint_percent, 1),
+            "description": "30m sprint time. Measures acceleration and top-end speed.",
+            "unit": "seconds"
+        },
+        "agility_test": {
+            "score": agility,
+            "percent_of_standard": round(agility_percent, 1),
+            "description": "Change-of-direction speed and body control.",
+            "unit": "meters"
+        },
+        "reaction_time": {
+            "score": round(reaction_time, 0),
+            "percent_of_standard": round(reaction_percent, 1),
+            "description": "Measures neuromotor and cognitive response speed.",
+            "unit": "ms"
+        },
+        "endurance_beep": {
+            "score": endurance,
+            "percent_of_standard": round(endurance_percent, 1),
+            "description": "Aerobic capacity and repeat-run endurance.",
+            "unit": "meters"
+        },
+        "ball_control": {
+            "score": ball_control,
+            "percent_of_standard": round(ball_control_percent, 1),
+            "description": "First touch, dribbling, and ball mastery.",
+            "unit": "/10"
+        },
+        "passing_accuracy": {
+            "score": passing,
+            "percent_of_standard": round(passing_percent, 1),
+            "description": "Percentage of accurate passes to target.",
+            "unit": "%"
+        }
+    }
+    
+    # Overall Analysis
     overall_analysis = f"""
-Based on comprehensive assessment data, {assessment.get('player_name')} demonstrates {level_desc}. 
-With an overall score of {overall:.1f}/100, the player shows {'consistent' if overall >= 70 else 'developing'} 
-capabilities across physical, technical, tactical, and psychological domains.
+PLAYER PERFORMANCE REPORT
 
-Physical Profile: {'Elite conditioning' if yo_yo > standards['yo_yo_test'] else 'Developing endurance base'} 
-with yo-yo test result of {yo_yo}m {'exceeding' if yo_yo > standards['yo_yo_test'] else 'approaching'} 
-the {standards['yo_yo_test']}m standard for age {assessment.get('age')}.
+Player: {assessment.get('player_name')}
+Age: {assessment.get('age')}
+Position: {assessment.get('position')}
 
-Technical Skills: Ball control rated at {ball_control}/5 and passing accuracy of {passing}% indicate 
-{'strong technical foundation' if ball_control >= 4 else 'technical skills requiring focused development'}.
+Overall Score: {overall:.1f}/100
+Performance Level: {perf_level}
 
-Tactical Intelligence: Game intelligence rated {game_intel}/5 shows 
-{'advanced understanding of positional play' if game_intel >= 4 else 'growing tactical awareness with room for improvement'}.
+{assessment.get('player_name')} demonstrates {level_desc} with an overall score of {overall:.1f}/100.
     """
     
     # Identify Strengths (AI analysis)
