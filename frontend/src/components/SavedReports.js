@@ -30,7 +30,7 @@ const SavedReports = () => {
   const loadSavedReports = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('auth_token');
       // Load AI-generated reports
       const response = await axios.get(`${BACKEND_URL}/api/reports/player/${user.username}/reports`, {
         headers: { 'Authorization': `Bearer ${token}` }
