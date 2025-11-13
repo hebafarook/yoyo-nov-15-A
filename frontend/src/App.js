@@ -1484,42 +1484,7 @@ const MainDashboard = () => {
             </>
           )}
           
-          {/* Common Tabs for all roles */}
-          {isAuthenticated && user?.role !== 'parent' && (
-            <>
-              <button 
-                onClick={() => setActiveTab("voice")}
-                className={`tab-trigger ${activeTab === "voice" ? "active" : ""}`}
-              >
-                <Mic className="w-4 h-4" />
-                {t('nav.voice')}
-              </button>
-              <button 
-                onClick={() => setActiveTab("highlights")}
-                className={`tab-trigger ${activeTab === "highlights" ? "active" : ""}`}
-              >
-                <Award className="w-4 h-4" />
-                Highlights
-              </button>
-              <button 
-                onClick={() => setActiveTab("body")}
-                className={`tab-trigger ${activeTab === "body" ? "active" : ""}`}
-              >
-                <Activity className="w-4 h-4" />
-                Body
-              </button>
-            </>
-          )}
-          
-          {isAuthenticated && user?.role !== 'coach' && (
-            <button 
-              onClick={() => setActiveTab("reports")}
-              className={`tab-trigger ${activeTab === "reports" ? "active" : ""}`}
-            >
-              <FileText className="w-4 h-4" />
-              My Reports
-            </button>
-          )}
+          {/* Removed common tabs - each role has specific tabs only */}
           
           {user && user.role === 'admin' && (
             <button 
