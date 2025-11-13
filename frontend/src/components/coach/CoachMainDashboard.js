@@ -61,9 +61,9 @@ const CoachMainDashboard = ({ onNavigate }) => {
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-[#4DFF91]/10 to-[#007BFF]/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-        <h2 className="text-3xl font-bold mb-2">Welcome Back, Coach</h2>
-        <p className="text-white/70">Here's what's happening with your players today</p>
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 shadow-sm border border-gray-200">
+        <h2 className="text-3xl font-bold mb-2 text-gray-800">Welcome Back, Coach</h2>
+        <p className="text-gray-600">Here's what's happening with your players today</p>
       </div>
 
       {/* Stats Cards */}
