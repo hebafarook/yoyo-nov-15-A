@@ -156,11 +156,14 @@ const PlayerTrainingPrograms = ({ onNavigateToAssessment }) => {
           <div className="text-center">
             <button 
               onClick={() => {
-                // Redirect to assessment tab
-                window.location.hash = 'take-assessment';
-                window.location.reload();
+                if (onNavigateToAssessment) {
+                  onNavigateToAssessment();
+                } else {
+                  // Fallback if callback not provided
+                  window.location.reload();
+                }
               }}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition shadow-lg"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition shadow-lg transform hover:scale-105"
             >
               <ClipboardCheck className="w-6 h-6" />
               Take Assessment Now
