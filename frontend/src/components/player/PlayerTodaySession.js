@@ -1,11 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckCircle, Play, ChevronDown, ChevronUp } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const PlayerTodaySession = () => {
+  const { user } = useAuth();
   const [expandedBlock, setExpandedBlock] = useState(null);
   const [completedDrills, setCompletedDrills] = useState([]);
+  const [currentRoutine, setCurrentRoutine] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const session = {
+  useEffect(() => {
+    if (user?.id) {
+      fetchTodayRoutine();
+    }
+  }, [user]);
+
+  const fetchTodayRoutine = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      const response = await axios.get(`${BACKEND_URL}/api/current-routine/${user.id}`, { headers });
+      setCurrentRoutine(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching today routine:', error);
+      setLoading(false);
+    }
+  };
+
+  const handleFinishSession = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      const progressData = {
+        player_id: user.id,
+        date: new Date().toISOString().split('T')[0],
+        routine_id: currentRoutine?.id || 'daily-routine',
+        completed_exercises: completedDrills.map(drillId => ({
+          exercise_name: drillId,
+          sets_completed: 1,
+          reps_completed: 1,
+          rating: 5,
+          notes: 'Completed',
+          player_id: user.id
+        })),
+        overall_rating: 5,
+        feedback: 'Session completed'
+      };
+      
+      await axios.post(`${BACKEND_URL}/api/daily-progress`, progressData, { headers });
+      alert('Session completed successfully! Great work!');
+      setCompletedDrills([]);
+    } catch (error) {
+      console.error('Error saving progress:', error);
+      alert('Error saving progress. Please try again.');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading today's session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If no routine, show default mock data
+  const session = currentRoutine || {
     title: "Today's Session",
     subtitle: "Built from your latest assessment",
     estimatedTime: "50 min",
