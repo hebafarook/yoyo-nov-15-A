@@ -33,6 +33,7 @@ import InboxDashboard from "./components/InboxDashboard";
 import ParentDashboard from "./components/parent/ParentDashboard";
 import CoachDashboard from "./components/coach/CoachDashboard";
 import PlayerDashboard from "./components/player/PlayerDashboard";
+import ProfessionalAssessmentReport from "./components/player/ProfessionalAssessmentReport";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
