@@ -83,6 +83,7 @@ class DynamicReportTester:
                 "position": "Forward",
                 "height_cm": 175.0,
                 "weight_kg": 70.0,
+                "assessment_date": datetime.now(timezone.utc).isoformat(),
                 # Physical metrics
                 "sprint_30m": 4.3,
                 "yo_yo_test": 1650,
