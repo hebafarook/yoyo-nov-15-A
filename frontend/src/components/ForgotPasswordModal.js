@@ -43,7 +43,22 @@ Token: ${data.reset_token}
 Copy this token and use it in the next step to reset your password.`);
         setStep(2);
       } else {
-        setError(data.detail || 'Failed to generate reset token');
+        // Handle different error formats
+        let errorMessage = 'Failed to generate reset token';
+        
+        if (data.detail) {
+          // Check if detail is a string or an array of validation errors
+          if (typeof data.detail === 'string') {
+            errorMessage = data.detail;
+          } else if (Array.isArray(data.detail)) {
+            // FastAPI validation errors
+            errorMessage = data.detail.map(err => err.msg || JSON.stringify(err)).join(', ');
+          } else if (typeof data.detail === 'object') {
+            errorMessage = JSON.stringify(data.detail);
+          }
+        }
+        
+        setError(errorMessage);
       }
     } catch (err) {
       setError('Failed to request password reset. Please try again.');
