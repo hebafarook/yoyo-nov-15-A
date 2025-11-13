@@ -2585,7 +2585,15 @@ try:
     api_router.include_router(club_ai_router, tags=["club-ai"])
     logging.info("✅ Club AI & Analytics routes loaded successfully")
 except ImportError as e:
-    logging.warning(f"Could not import messaging routes: {e}")
+    logging.warning(f"Could not import club AI routes: {e}")
+
+# Import System Admin routes
+try:
+    from routes.admin_routes import router as admin_router
+    api_router.include_router(admin_router, tags=["system-admin"])
+    logging.info("✅ System Admin routes loaded successfully (User Management)")
+except ImportError as e:
+    logging.warning(f"Could not import admin routes: {e}")
 
 # Import Report Generation routes
 try:
