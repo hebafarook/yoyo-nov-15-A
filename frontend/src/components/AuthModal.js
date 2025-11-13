@@ -12,6 +12,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [step, setStep] = useState('portal'); // 'portal' or 'form'
+  const [selectedPortal, setSelectedPortal] = useState(null);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -25,6 +27,46 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
   });
 
   const { login, register } = useAuth();
+  
+  const portals = [
+    {
+      id: 'player',
+      name: 'Player Portal',
+      icon: <User className="w-8 h-8" />,
+      color: 'blue',
+      bgColor: 'bg-blue-500',
+      hoverBg: 'hover:bg-blue-50',
+      description: 'For players to track their training and performance'
+    },
+    {
+      id: 'coach',
+      name: 'Coach Portal',
+      icon: <Users className="w-8 h-8" />,
+      color: 'green',
+      bgColor: 'bg-green-500',
+      hoverBg: 'hover:bg-green-50',
+      description: 'For coaches to manage teams and assess players'
+    },
+    {
+      id: 'parent',
+      name: 'Parent Portal',
+      icon: <Shield className="w-8 h-8" />,
+      color: 'purple',
+      bgColor: 'bg-purple-500',
+      hoverBg: 'hover:bg-purple-50',
+      description: 'For parents to monitor their child\'s progress'
+    }
+  ];
+  
+  const handlePortalSelect = (portalId) => {
+    setSelectedPortal(portalId);
+    setFormData(prev => ({
+      ...prev,
+      role: portalId,
+      is_coach: portalId === 'coach'
+    }));
+    setStep('form');
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
