@@ -345,55 +345,189 @@ const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
             </div>
             <h3 className="text-xl font-bold text-gray-800">⚡ Quick Performance Snapshot</h3>
           </div>
-          <button 
-            onClick={() => onTakeAssessment && onTakeAssessment()}
-            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition text-sm font-semibold"
-          >
-            Take Assessment
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => onTakeAssessment && onTakeAssessment()}
+              className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg hover:from-purple-700 hover:to-indigo-700 transition text-sm font-semibold"
+            >
+              Take Assessment
+            </button>
+          </div>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <div className="bg-purple-50 rounded-xl p-4 text-center">
-            <p className="text-sm text-purple-600 font-medium mb-1">Physical</p>
-            <p className="text-3xl font-bold text-purple-900">{lastAssessmentScore !== 'N/A' ? '85' : '--'}</p>
-            <p className="text-xs text-gray-500 mt-1">+5% this month</p>
-          </div>
-          <div className="bg-blue-50 rounded-xl p-4 text-center">
-            <p className="text-sm text-blue-600 font-medium mb-1">Technical</p>
-            <p className="text-3xl font-bold text-blue-900">{lastAssessmentScore !== 'N/A' ? '78' : '--'}</p>
-            <p className="text-xs text-gray-500 mt-1">+3% this month</p>
-          </div>
-          <div className="bg-green-50 rounded-xl p-4 text-center">
-            <p className="text-sm text-green-600 font-medium mb-1">Tactical</p>
-            <p className="text-3xl font-bold text-green-900">{lastAssessmentScore !== 'N/A' ? '82' : '--'}</p>
-            <p className="text-xs text-gray-500 mt-1">+7% this month</p>
-          </div>
-          <div className="bg-orange-50 rounded-xl p-4 text-center">
-            <p className="text-sm text-orange-600 font-medium mb-1">Mental</p>
-            <p className="text-3xl font-bold text-orange-900">{lastAssessmentScore !== 'N/A' ? '90' : '--'}</p>
-            <p className="text-xs text-gray-500 mt-1">+2% this month</p>
-          </div>
-        </div>
+        {performanceMetrics ? (
+          <>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              {/* Physical Score - Clickable */}
+              <button
+                onClick={() => setSelectedMetric({
+                  name: 'Physical',
+                  score: Math.round(performanceMetrics.physical_score * 20),
+                  strengths: performanceMetrics.physical_strengths || ['Sprint speed', 'Endurance'],
+                  weaknesses: performanceMetrics.physical_weaknesses || ['Upper body strength', 'Flexibility'],
+                  color: 'purple'
+                })}
+                className="bg-purple-50 hover:bg-purple-100 rounded-xl p-4 text-center transition cursor-pointer border-2 border-transparent hover:border-purple-300"
+              >
+                <p className="text-sm text-purple-600 font-medium mb-1">Physical</p>
+                <p className="text-3xl font-bold text-purple-900">{Math.round(performanceMetrics.physical_score * 20) || '--'}</p>
+                <p className="text-xs text-gray-500 mt-1">Click for details</p>
+              </button>
 
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4">
-          <h4 className="font-bold text-gray-800 mb-2">🎯 Current Focus</h4>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
-              <span className="text-gray-700">Improve passing accuracy (Target: 85%)</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-purple-600 rounded-full"></span>
-              <span className="text-gray-700">Enhance tactical positioning</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-pink-600 rounded-full"></span>
-              <span className="text-gray-700">Build endurance for full matches</span>
-            </li>
-          </ul>
-        </div>
+              {/* Technical Score - Clickable */}
+              <button
+                onClick={() => setSelectedMetric({
+                  name: 'Technical',
+                  score: Math.round(performanceMetrics.technical_score * 20),
+                  strengths: performanceMetrics.technical_strengths || ['Ball control', 'Dribbling'],
+                  weaknesses: performanceMetrics.technical_weaknesses || ['Weak foot', 'Long passing'],
+                  color: 'blue'
+                })}
+                className="bg-blue-50 hover:bg-blue-100 rounded-xl p-4 text-center transition cursor-pointer border-2 border-transparent hover:border-blue-300"
+              >
+                <p className="text-sm text-blue-600 font-medium mb-1">Technical</p>
+                <p className="text-3xl font-bold text-blue-900">{Math.round(performanceMetrics.technical_score * 20) || '--'}</p>
+                <p className="text-xs text-gray-500 mt-1">Click for details</p>
+              </button>
+
+              {/* Tactical Score - Clickable */}
+              <button
+                onClick={() => setSelectedMetric({
+                  name: 'Tactical',
+                  score: Math.round(performanceMetrics.tactical_score * 20),
+                  strengths: performanceMetrics.tactical_strengths || ['Positioning', 'Game reading'],
+                  weaknesses: performanceMetrics.tactical_weaknesses || ['Defensive awareness', 'Set piece positioning'],
+                  color: 'green'
+                })}
+                className="bg-green-50 hover:bg-green-100 rounded-xl p-4 text-center transition cursor-pointer border-2 border-transparent hover:border-green-300"
+              >
+                <p className="text-sm text-green-600 font-medium mb-1">Tactical</p>
+                <p className="text-3xl font-bold text-green-900">{Math.round(performanceMetrics.tactical_score * 20) || '--'}</p>
+                <p className="text-xs text-gray-500 mt-1">Click for details</p>
+              </button>
+
+              {/* Mental Score - Clickable */}
+              <button
+                onClick={() => setSelectedMetric({
+                  name: 'Mental',
+                  score: Math.round(performanceMetrics.psychological_score * 20),
+                  strengths: performanceMetrics.mental_strengths || ['Coachability', 'Focus'],
+                  weaknesses: performanceMetrics.mental_weaknesses || ['Pressure handling', 'Confidence'],
+                  color: 'orange'
+                })}
+                className="bg-orange-50 hover:bg-orange-100 rounded-xl p-4 text-center transition cursor-pointer border-2 border-transparent hover:border-orange-300"
+              >
+                <p className="text-sm text-orange-600 font-medium mb-1">Mental</p>
+                <p className="text-3xl font-bold text-orange-900">{Math.round(performanceMetrics.psychological_score * 20) || '--'}</p>
+                <p className="text-xs text-gray-500 mt-1">Click for details</p>
+              </button>
+            </div>
+
+            {/* Next Assessment Date */}
+            {performanceMetrics.last_assessment_date && (
+              <div className="bg-blue-50 rounded-lg p-3 mb-4">
+                <p className="text-sm text-blue-900">
+                  <strong>Last Assessment:</strong> {new Date(performanceMetrics.last_assessment_date).toLocaleDateString()}
+                  <span className="ml-4 text-blue-700">
+                    <strong>Next Recommended:</strong> {new Date(new Date(performanceMetrics.last_assessment_date).getTime() + 28*24*60*60*1000).toLocaleDateString()} (4 weeks)
+                  </span>
+                </p>
+              </div>
+            )}
+
+            <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4">
+              <h4 className="font-bold text-gray-800 mb-2">🎯 Current Focus Areas</h4>
+              <ul className="space-y-2 text-sm">
+                {performanceMetrics.focus_areas?.map((area, idx) => (
+                  <li key={idx} className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
+                    <span className="text-gray-700">{area}</span>
+                  </li>
+                )) || (
+                  <>
+                    <li className="flex items-center gap-2">
+                      <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
+                      <span className="text-gray-700">Complete assessment to get personalized focus areas</span>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </div>
+          </>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-gray-600 mb-4">No performance data yet. Complete your first assessment!</p>
+            <button 
+              onClick={() => onTakeAssessment && onTakeAssessment()}
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-900 transition"
+            >
+              Take Assessment Now
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Metric Detail Modal */}
+      {selectedMetric && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className={`bg-gradient-to-r from-${selectedMetric.color}-600 to-${selectedMetric.color}-800 p-6 text-white rounded-t-2xl`}>
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">{selectedMetric.name} Performance</h2>
+                <button
+                  onClick={() => setSelectedMetric(null)}
+                  className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition"
+                >
+                  <span className="text-2xl">×</span>
+                </button>
+              </div>
+              <div className="mt-4">
+                <p className="text-4xl font-bold">{selectedMetric.score}/100</p>
+                <p className="text-white/90 mt-1">Current Score</p>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Strengths */}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="text-2xl">💪</span> Strengths
+                </h3>
+                <div className="space-y-2">
+                  {selectedMetric.strengths.map((strength, idx) => (
+                    <div key={idx} className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">{strength}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Weaknesses / Areas for Improvement */}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="text-2xl">🎯</span> Areas for Improvement
+                </h3>
+                <div className="space-y-2">
+                  {selectedMetric.weaknesses.map((weakness, idx) => (
+                    <div key={idx} className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-start gap-2">
+                      <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">{weakness}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => setSelectedMetric(null)}
+                className="w-full px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Injury Reports */}
       <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-red-200">
