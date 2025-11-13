@@ -85,11 +85,23 @@ async def create_assessment(
         )
 
 @router.get("/", response_model=List[PlayerAssessment])
-async def get_all_assessments():
-    """Get all player assessments"""
+async def get_all_assessments(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get all player assessments (coaches only)"""
     try:
+        # Verify token and get user info
+        current_user = await verify_token(credentials.credentials)
+        
+        # Only coaches can view all assessments
+        if current_user.get('role') != 'coach':
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: Only coaches can view all assessments"
+            )
+        
         assessments = await db.assessments.find().sort("created_at", -1).to_list(1000)
         return [PlayerAssessment(**parse_from_mongo(assessment)) for assessment in assessments]
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error fetching assessments: {e}")
         raise HTTPException(
