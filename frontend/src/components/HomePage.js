@@ -13,7 +13,7 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const HomePage = ({ onNavigate }) => {
+const HomePage = ({ onNavigate, onOpenAuth }) => {
   const { user, isAuthenticated } = useAuth();
   const [stats, setStats] = useState({
     totalReports: 0,
