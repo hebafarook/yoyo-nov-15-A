@@ -103,7 +103,7 @@ const PlayerDashboard = () => {
       switch (activeTab) {
         case 'home': return <PlayerHome onStartSession={() => setActiveTab('training')} onTakeAssessment={() => setActiveTab('take-assessment')} />;
         case 'training': return <PlayerTodaySession />;
-        case 'plan': return <PlayerTrainingPlan />;
+        case 'training-program': return <PlayerTrainingPrograms />;
         case 'take-assessment': return <PlayerAssessmentForm onAssessmentComplete={handleAssessmentComplete} isFirstTime={isFirstTime} />;
         case 'assessments': return <PlayerAssessmentHistory />;
         case 'progress': return <PlayerProgress />;
