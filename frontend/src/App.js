@@ -1339,6 +1339,11 @@ const MainDashboard = () => {
     return <CoachDashboard />;
   }
 
+  // If user is a player, show new Player Dashboard
+  if (user?.role === 'player') {
+    return <PlayerDashboard />;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Assessment Report Modal */}
