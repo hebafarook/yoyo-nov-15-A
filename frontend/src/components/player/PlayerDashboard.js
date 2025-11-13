@@ -22,8 +22,17 @@ const PlayerDashboard = () => {
   const [checkingFirstTime, setCheckingFirstTime] = useState(true);
 
   const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      logout();
+    console.log('Logout button clicked');
+    try {
+      if (window.confirm('Are you sure you want to logout?')) {
+        console.log('User confirmed logout');
+        logout();
+      } else {
+        console.log('User cancelled logout');
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      alert('Error logging out. Please try again.');
     }
   };
 
