@@ -338,3 +338,61 @@ async def save_compatible_program(program_data: dict, request: DynamicProgramReq
     }
     
     await db.periodized_programs.insert_one(prepare_for_mongo(compatible_program))
+
+
+
+async def generate_coach_program(request: DynamicProgramRequest, intensity: str):
+    """Generate coach-guided program based on professional methodology"""
+    
+    coach_program = {
+        "id": str(uuid.uuid4()),
+        "player_id": request.player_id,
+        "player_name": request.player_name,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        
+        # Program parameters
+        "program_type": "coach_guided",
+        "duration_weeks": request.duration_weeks,
+        "training_days_per_week": request.training_days_per_week,
+        "session_duration_minutes": request.session_duration_minutes,
+        
+        # Player context
+        "age": request.age,
+        "position": request.position,
+        "performance_level": request.performance_level,
+        
+        # Methodology
+        "methodology": "Professional coaching methodology",
+        "structure": f"{request.training_days_per_week} sessions per week for {request.duration_weeks} weeks",
+        "focus_areas": request.coach_recommendations[:5],
+        
+        # Program details
+        "description": f"""Professional {request.duration_weeks}-week training program designed by experienced coaches.
+        
+Position: {request.position}
+Level: {request.performance_level}
+Focus: {', '.join(request.coach_recommendations[:3])}
+
+This program follows proven coaching principles with structured progression, position-specific drills, 
+and technical skill development. Each session is designed to build upon previous work while addressing 
+the specific needs identified in your assessment.
+
+Weekly Structure:
+- Technical skills development
+- Tactical understanding
+- Physical conditioning  
+- Position-specific training
+- Recovery and injury prevention
+
+Coach Recommendations Integrated:
+{chr(10).join(f"• {rec}" for rec in request.coach_recommendations[:5])}
+""",
+        
+        # Status
+        "status": "active",
+        "completed_sessions": 0,
+        "total_sessions": request.duration_weeks * request.training_days_per_week
+    }
+    
+    return coach_program
+
