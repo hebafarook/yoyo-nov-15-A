@@ -2292,6 +2292,14 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import AI coach routes: {e}")
 
+# Import Relationship Management routes
+try:
+    from routes.relationships_routes import router as relationships_router
+    api_router.include_router(relationships_router, prefix="/relationships", tags=["relationships"])
+    logging.info("✅ Relationship management routes loaded successfully (Parent-Child & Coach-Player)")
+except ImportError as e:
+    logging.warning(f"Could not import relationship routes: {e}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
