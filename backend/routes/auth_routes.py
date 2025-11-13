@@ -54,6 +54,22 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) 
             detail="Invalid token"
         )
 
+async def verify_token_async(token: str) -> dict:
+    """Async version of verify_token for compatibility"""
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired"
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token"
+        )
+
 @router.post("/register", response_model=dict)
 async def register_user(user_data: UserCreate):
     """Register a new user"""
