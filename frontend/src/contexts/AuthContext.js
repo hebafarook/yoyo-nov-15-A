@@ -104,13 +104,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setToken(null);
-    setUser(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('token');
-    // Reload to clear all state
-    window.location.href = '/';
+    console.log('AuthContext logout called');
+    try {
+      setToken(null);
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('token');
+      console.log('Tokens cleared, redirecting to homepage');
+      // Reload to clear all state
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Error in logout function:', error);
+    }
   };
 
   const saveReport = async (reportData) => {
