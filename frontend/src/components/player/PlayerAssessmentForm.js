@@ -57,8 +57,51 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const validateForm = () => {
+    const missing = [];
+    
+    // Basic info
+    if (!formData.player_name) missing.push("Player Name");
+    if (!formData.age) missing.push("Age");
+    if (!formData.position) missing.push("Position");
+    if (!formData.assessment_date) missing.push("Assessment Date");
+    
+    // Physical metrics
+    if (!formData.sprint_30m) missing.push("30m Sprint");
+    if (!formData.yo_yo_test) missing.push("Yo-Yo Test");
+    if (!formData.vo2_max) missing.push("VO2 Max");
+    if (!formData.vertical_jump) missing.push("Vertical Jump");
+    if (!formData.body_fat) missing.push("Body Fat %");
+    
+    // Technical metrics
+    if (!formData.ball_control) missing.push("Ball Control");
+    if (!formData.passing_accuracy) missing.push("Passing Accuracy");
+    if (!formData.dribbling_success) missing.push("Dribbling Success");
+    if (!formData.shooting_accuracy) missing.push("Shooting Accuracy");
+    if (!formData.defensive_duels) missing.push("Defensive Duels");
+    
+    // Tactical metrics
+    if (!formData.game_intelligence) missing.push("Game Intelligence");
+    if (!formData.positioning) missing.push("Positioning");
+    if (!formData.decision_making) missing.push("Decision Making");
+    
+    // Psychological metrics
+    if (!formData.coachability) missing.push("Coachability");
+    if (!formData.mental_toughness) missing.push("Mental Toughness");
+    
+    return missing;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate all required fields
+    const missingFields = validateForm();
+    if (missingFields.length > 0) {
+      alert(`⚠️ Please complete all required fields:\n\n${missingFields.join('\n• ')}\n\nAll metrics are required for accurate program generation.`);
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
