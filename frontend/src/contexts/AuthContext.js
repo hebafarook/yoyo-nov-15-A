@@ -108,6 +108,9 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setIsAuthenticated(false);
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('token');
+    // Reload to clear all state
+    window.location.href = '/';
   };
 
   const saveReport = async (reportData) => {
