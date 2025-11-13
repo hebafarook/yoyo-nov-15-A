@@ -44,7 +44,7 @@ async def create_assessment(
     """Create a new player assessment with automatic scoring"""
     try:
         # Verify token and get user info
-        current_user = await verify_token(credentials.credentials)
+        current_user = await verify_token_async(credentials.credentials)
         
         # Check if user has access to create assessment for this player
         if not await check_player_access(assessment.player_name, current_user):
@@ -89,7 +89,7 @@ async def get_all_assessments(credentials: HTTPAuthorizationCredentials = Depend
     """Get all player assessments (coaches only)"""
     try:
         # Verify token and get user info
-        current_user = await verify_token(credentials.credentials)
+        current_user = await verify_token_async(credentials.credentials)
         
         # Only coaches can view all assessments
         if current_user.get('role') != 'coach':
@@ -117,7 +117,7 @@ async def get_player_assessments(
     """Get all assessments for a specific player"""
     try:
         # Verify token and get user info
-        current_user = await verify_token(credentials.credentials)
+        current_user = await verify_token_async(credentials.credentials)
         
         # Check if user has access to this player's data
         if not await check_player_access(player_name, current_user):
@@ -148,7 +148,7 @@ async def get_latest_assessment(
     """Get the latest assessment for a specific player"""
     try:
         # Verify token and get user info
-        current_user = await verify_token(credentials.credentials)
+        current_user = await verify_token_async(credentials.credentials)
         
         # Check if user has access to this player's data
         if not await check_player_access(player_name, current_user):
@@ -182,7 +182,7 @@ async def get_assessment(
     """Get a specific assessment by ID"""
     try:
         # Verify token and get user info
-        current_user = await verify_token(credentials.credentials)
+        current_user = await verify_token_async(credentials.credentials)
         
         assessment = await db.assessments.find_one({"id": assessment_id})
         
@@ -219,7 +219,7 @@ async def update_assessment(
     """Update an existing assessment"""
     try:
         # Verify token and get user info
-        current_user = await verify_token(credentials.credentials)
+        current_user = await verify_token_async(credentials.credentials)
         
         # Get existing assessment to check permissions
         existing_assessment = await db.assessments.find_one({"id": assessment_id})
@@ -284,7 +284,7 @@ async def delete_assessment(
     """Delete an assessment"""
     try:
         # Verify token and get user info
-        current_user = await verify_token(credentials.credentials)
+        current_user = await verify_token_async(credentials.credentials)
         
         # Get existing assessment to check permissions
         existing_assessment = await db.assessments.find_one({"id": assessment_id})
@@ -327,7 +327,7 @@ async def get_player_analysis(
     """Get detailed analysis for a player including strengths, weaknesses, and recommendations"""
     try:
         # Verify token and get user info
-        current_user = await verify_token(credentials.credentials)
+        current_user = await verify_token_async(credentials.credentials)
         
         # Check if user has access to this player's data
         if not await check_player_access(player_name, current_user):
