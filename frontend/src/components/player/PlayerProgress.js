@@ -57,8 +57,8 @@ const PlayerProgress = () => {
             onClick={() => setActiveTab(tab)}
             className={`px-6 py-3 rounded-xl font-medium whitespace-nowrap transition ${
               activeTab === tab
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                ? 'bg-yellow-400 text-indigo-900 shadow-lg font-bold'
+                : 'bg-white text-gray-700 hover:bg-purple-50 border border-gray-200'
             }`}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
