@@ -37,9 +37,22 @@ async def check_player_access(player_name: str, current_user: dict) -> bool:
     return False
 
 @router.post("/", response_model=PlayerAssessment)
-async def create_assessment(assessment: AssessmentCreate):
+async def create_assessment(
+    assessment: AssessmentCreate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Create a new player assessment with automatic scoring"""
     try:
+        # Verify token and get user info
+        current_user = await verify_token(credentials.credentials)
+        
+        # Check if user has access to create assessment for this player
+        if not await check_player_access(assessment.player_name, current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: You don't have permission to create assessments for this player"
+            )
+        
         # Calculate overall score and performance level
         assessment_dict = assessment.dict()
         overall_score = calculate_overall_score(assessment_dict)
@@ -62,6 +75,8 @@ async def create_assessment(assessment: AssessmentCreate):
         logger.info(f"Assessment created for player: {assessment.player_name}")
         return player_assessment
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error creating assessment: {e}")
         raise HTTPException(
