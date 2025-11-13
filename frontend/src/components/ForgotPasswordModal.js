@@ -90,7 +90,22 @@ Copy this token and use it in the next step to reset your password.`);
           onClose();
         }, 2000);
       } else {
-        setError(data.detail || 'Failed to reset password. Please check your token and try again.');
+        // Handle different error formats
+        let errorMessage = 'Failed to reset password. Please check your token and try again.';
+        
+        if (data.detail) {
+          // Check if detail is a string or an array of validation errors
+          if (typeof data.detail === 'string') {
+            errorMessage = data.detail;
+          } else if (Array.isArray(data.detail)) {
+            // FastAPI validation errors
+            errorMessage = data.detail.map(err => err.msg || JSON.stringify(err)).join(', ');
+          } else if (typeof data.detail === 'object') {
+            errorMessage = JSON.stringify(data.detail);
+          }
+        }
+        
+        setError(errorMessage);
       }
     } catch (err) {
       setError('Failed to reset password. Please try again.');
