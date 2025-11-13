@@ -1,11 +1,92 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FileText, TrendingUp, TrendingDown, Play } from 'lucide-react';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const PlayerAssessmentHistory = () => {
+  const { user } = useAuth();
   const [selectedAssessment, setSelectedAssessment] = useState(null);
+  const [assessments, setAssessments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const assessments = [
+  useEffect(() => {
+    if (user?.id) {
+      fetchAssessments();
+    }
+  }, [user]);
+
+  const fetchAssessments = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      // Fetch benchmarks (saved assessments)
+      const response = await axios.get(`${BACKEND_URL}/api/auth/benchmarks`, { headers });
+      
+      // Transform benchmarks to assessment format
+      const transformedAssessments = (response.data || []).map(benchmark => ({
+        id: benchmark.id,
+        date: new Date(benchmark.benchmark_date).toLocaleDateString(),
+        type: benchmark.is_baseline ? 'Baseline Assessment' : 'Progress Assessment',
+        score: Math.round(benchmark.overall_score * 20) || 85, // Convert to 0-100 scale
+        status: 'Reviewed',
+        breakdown: {
+          physical: Math.round(benchmark.physical_score * 20),
+          technical: Math.round(benchmark.technical_score * 20),
+          tactical: Math.round(benchmark.tactical_score * 20),
+          psychological: Math.round(benchmark.psychological_score * 20),
+          speed: Math.round((benchmark.sprint_30m ? (5 - benchmark.sprint_30m) * 20 : 70)),
+          stamina: Math.round((benchmark.yo_yo_test || 2000) / 30)
+        },
+        aiSummary: benchmark.notes || 'Assessment completed successfully',
+        coachComments: 'Assessment recorded and analyzed',
+        videoUrl: null
+      }));
+      
+      setAssessments(transformedAssessments);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching assessments:', error);
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading assessments...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (assessments.length === 0) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 space-y-6">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
+          <h2 className="text-3xl font-bold mb-2">My Assessments</h2>
+          <p className="text-white/90">Track your progress and improvements</p>
+        </div>
+        <div className="bg-white rounded-2xl p-12 shadow-lg border border-gray-200 text-center">
+          <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-gray-800 mb-2">No Assessments Yet</h3>
+          <p className="text-gray-600 mb-6">Complete your first assessment to start tracking your progress!</p>
+          <button className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition">
+            Take Assessment
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Previous mock data as fallback (only used if no real data)
+  const mockAssessments = [
     {
       id: 1,
       date: '2024-03-15',
