@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 const ParentDashboard = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedChild, setSelectedChild] = useState(null);
   const [children, setChildren] = useState([]);
