@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, CheckCircle, Circle, Bell, TrendingUp, Calendar, Award, Flame } from 'lucide-react';
+import { Play, CheckCircle, Circle, Bell, TrendingUp, Calendar, Award, Flame, Heart, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
 
