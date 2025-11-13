@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const PlayerHome = ({ onStartSession }) => {
+const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
   const { user } = useAuth();
   const [currentRoutine, setCurrentRoutine] = useState(null);
   const [dailyProgress, setDailyProgress] = useState([]);
