@@ -262,6 +262,9 @@ class User(BaseModel):
     player_id: Optional[str] = None  # Links to player_name in assessments
     age: Optional[int] = None
     position: Optional[str] = None
+    height: Optional[str] = None  # e.g., "175cm"
+    weight: Optional[str] = None  # e.g., "68kg"
+    dominant_foot: Optional[str] = None  # "Left", "Right", "Both"
     # Coach/Parent management
     managed_players: List[str] = Field(default_factory=list)  # List of player_names or player_ids they can access
     profile_picture: Optional[str] = None
