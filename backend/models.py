@@ -262,9 +262,13 @@ class User(BaseModel):
     player_id: Optional[str] = None  # Links to player_name in assessments
     age: Optional[int] = None
     position: Optional[str] = None
+    gender: Optional[str] = None  # "male", "female", "other"
     height: Optional[str] = None  # e.g., "175cm"
     weight: Optional[str] = None  # e.g., "68kg"
     dominant_foot: Optional[str] = None  # "Left", "Right", "Both"
+    current_injuries: Optional[str] = None
+    parent_email: Optional[str] = None  # To link with parent portal
+    coach_email: Optional[str] = None  # To link with coach portal
     # Coach/Parent management
     managed_players: List[str] = Field(default_factory=list)  # List of player_names or player_ids they can access
     profile_picture: Optional[str] = None
