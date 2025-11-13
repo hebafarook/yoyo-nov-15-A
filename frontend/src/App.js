@@ -1362,35 +1362,42 @@ const MainDashboard = () => {
                 className={`tab-trigger ${activeTab === "assessment" ? "active" : ""}`}
               >
                 <BarChart3 className="w-4 h-4" />
-                {t('nav.assessment')}
+                My Assessments
               </button>
               <button 
                 onClick={() => setActiveTab("training")}
                 className={`tab-trigger ${activeTab === "training" ? "active" : ""}`}
               >
                 <Zap className="w-4 h-4" />
-                {t('nav.training')}
-              </button>
-              <button 
-                onClick={() => setActiveTab("aicoach")}
-                className={`tab-trigger ${activeTab === "aicoach" ? "active" : ""}`}
-              >
-                <span className="w-4 h-4">🤖</span>
-                {t('nav.aicoach')}
+                Training
               </button>
               <button 
                 onClick={() => setActiveTab("progress")}
                 className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
               >
                 <TrendingUp className="w-4 h-4" />
-                {t('nav.progress')}
+                Progress
               </button>
               <button 
                 onClick={() => setActiveTab("trophies")}
                 className={`tab-trigger ${activeTab === "trophies" ? "active" : ""}`}
               >
                 <Trophy className="w-4 h-4" />
-                {t('nav.trophies')}
+                Achievements
+              </button>
+              <button 
+                onClick={() => setActiveTab("inbox")}
+                className={`tab-trigger ${activeTab === "inbox" ? "active" : ""}`}
+              >
+                <Inbox className="w-4 h-4" />
+                Inbox
+              </button>
+              <button 
+                onClick={() => setActiveTab("reports")}
+                className={`tab-trigger ${activeTab === "reports" ? "active" : ""}`}
+              >
+                <FileText className="w-4 h-4" />
+                My Reports
               </button>
             </>
           )}
