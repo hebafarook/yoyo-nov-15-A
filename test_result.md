@@ -648,6 +648,20 @@ agent_communication:
 
   - task: "Three Portal System (Player, Coach, Parent) with Role-Based Navigation"
     implemented: true
+
+
+  - task: "New Player Portal Integration with Real APIs and AI Insights"
+    implemented: true
+    working: "pending_testing"
+    file: "frontend/src/App.js, frontend/src/components/player/*, backend/routes/ai_coach_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "NEW PLAYER PORTAL INTEGRATION COMPLETED: Integrated the new player-centric dashboard into the main app and connected all components to backend APIs. MAJOR CHANGES: 1) APP.JS INTEGRATION - Added conditional rendering for player role (similar to parent/coach portals at line 1333-1344), players now automatically see the new PlayerDashboard instead of the old tabbed interface, maintains backward compatibility for parent and coach roles. 2) PLAYEROME COMPONENT - Connected to real backend APIs: GET /api/current-routine/{player_id} for today's training session, GET /api/daily-progress/{player_id} for last 7 days history, GET /api/performance-metrics/{player_id} for stats, POST /api/ai-coach/player-insights for AI-powered personalized insights. Dynamic data: streak calculation from daily progress, 7-day completion rate from training logs, quick stats from performance metrics, today's focus from current routine. Added loading states and error handling. 3) AI INSIGHTS FEATURE - Created new backend endpoint POST /api/ai-coach/player-insights in ai_coach_routes.py, uses Emergent LLM (GPT-4o-mini) to analyze player data and generate: key insights (2-3 sentences about progress patterns), 3-4 specific recommendations for next week, motivational message to keep player engaged. Fetches player's benchmarks, daily progress (14 days), training program from database. Beautiful gradient card UI with lightbulb icon and structured sections. 4) PLAYERTODAYSESSION COMPONENT - Connected to GET /api/current-routine/{player_id} to fetch real training session, added POST /api/daily-progress to save completed sessions, handleFinishSession function saves all completed drills with proper player_id, loading states and error handling added. 5) PLAYERTRAININGPLAN COMPONENT - Connected to GET /api/periodized-programs/{player_id} for full training program, dynamically calculates current week based on program start date, displays macro/micro cycles and daily routines from real data, shows focus areas and coach notes from program. 6) PLAYERASSESSMENTHISTORY COMPONENT - Connected to GET /api/auth/benchmarks for saved assessments, transforms benchmark data to assessment format with radar chart data, shows baseline vs progress assessments, displays when no assessments exist with CTA button, calculates scores on 0-100 scale from benchmark data. 7) TECHNICAL IMPLEMENTATION - Uses emergentintegrations library (already installed), Emergent LLM key (sk-emergent-c7aD05cFa66225cEa3) already in .env, proper authentication with JWT tokens from localStorage, all axios calls include Authorization headers, graceful error handling with console.log (not breaking UI), loading spinners for all data fetches. 8) BACKEND CHANGES - Added player-insights endpoint in ai_coach_routes.py (line 434-588), uses LLM to generate personalized insights from player data, falls back to mock response if key not configured, properly formats response with insights/recommendations/motivation sections. READY FOR TESTING: Test player login and verify new dashboard loads, test AI insights card displays with personalized content, test today's session loads real routine data, test training plan shows program structure, test assessment history shows saved benchmarks, test finish session button saves progress correctly, verify all components have proper loading states, check that parent/coach portals still work correctly."
+
     working: "pending_testing"
     file: "frontend/src/components/HomePage.js, frontend/src/App.js"
     stuck_count: 0
