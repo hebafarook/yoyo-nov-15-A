@@ -62,6 +62,15 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
       bgColor: 'bg-purple-500',
       hoverBg: 'hover:bg-purple-50',
       description: 'For parents to monitor their child\'s progress'
+    },
+    {
+      id: 'club',
+      name: 'Club Portal',
+      icon: <Shield className="w-8 h-8" />,
+      color: 'orange',
+      bgColor: 'bg-orange-500',
+      hoverBg: 'hover:bg-orange-50',
+      description: 'For club administrators to manage teams, staff, and performance'
     }
   ];
   
