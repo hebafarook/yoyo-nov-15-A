@@ -24,7 +24,23 @@ const PlayerReportCard = () => {
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      // Fetch latest benchmark/assessment
+      // Try to fetch comprehensive roadmap report first
+      try {
+        const roadmapRes = await axios.get(`${BACKEND_URL}/api/reports/my-roadmap`, { headers });
+        if (roadmapRes.data && roadmapRes.data.report_data) {
+          const roadmap = roadmapRes.data.report_data;
+          setReport({
+            ...roadmap,
+            isComprehensive: true
+          });
+          setLoading(false);
+          return;
+        }
+      } catch (roadmapError) {
+        console.log('No comprehensive roadmap found, using benchmark data');
+      }
+
+      // Fallback to benchmark data
       const benchmarksRes = await axios.get(`${BACKEND_URL}/api/auth/benchmarks`, { headers });
       
       if (benchmarksRes.data && benchmarksRes.data.length > 0) {
