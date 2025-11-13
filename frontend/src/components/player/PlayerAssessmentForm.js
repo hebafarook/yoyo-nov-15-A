@@ -200,9 +200,57 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
         }
         
         if (benchmarkResponse.data.is_baseline) {
-          setAssessmentMessage('🎯 BASELINE ASSESSMENT COMPLETE!\n\nYour assessment has been saved and processed:\n\n✅ Benchmark created for future comparisons\n✅ Comprehensive roadmap report generated with AI analysis\n✅ Coach recommendations and standards included\n✅ Personalized training program created\n✅ Report ready to view, print, and save\n\nClick "View Professional Report" to see your complete development roadmap in a new window!');
+          setAssessmentMessage(`🎯 BASELINE ASSESSMENT COMPLETE!
+
+Your comprehensive assessment has been processed:
+
+📊 DATA SUBMITTED TO:
+✅ AI Analysis Module - Generating insights
+✅ LLM Processing Engine - Creating recommendations  
+✅ Coach Review System - Professional evaluation
+✅ Performance Database - Benchmark saved
+
+📋 PROGRAMS BEING GENERATED:
+
+1️⃣ COACH-GUIDED PROGRAM
+   • Professional training plan
+   • Position-specific drills
+   • Skill development focus
+   • Weekly progression structure
+
+2️⃣ AI-POWERED MODEL PROGRAM  
+   • Machine learning optimization
+   • Personalized exercise selection
+   • Dynamic difficulty adjustment
+   • Performance prediction tracking
+
+⏱️ Processing Time: 2-3 minutes
+
+Click "View Professional Report" to see your complete development roadmap and generate your training programs!`);
         } else {
-          setAssessmentMessage('📊 ASSESSMENT COMPLETE!\n\nYour progress assessment has been saved:\n\n✅ Progress tracked and benchmarked\n✅ Comprehensive roadmap updated\n✅ New coach recommendations generated\n✅ Training program adjusted\n✅ Updated report ready to view\n\nClick "View Professional Report" to see your updated roadmap!');
+          setAssessmentMessage(`📊 PROGRESS ASSESSMENT COMPLETE!
+
+Your assessment update has been processed:
+
+📊 DATA SUBMITTED TO:
+✅ AI Analysis Module - Comparing progress
+✅ LLM Processing - Updated recommendations
+✅ Coach Review System - Progress evaluation
+✅ Performance Database - New benchmark
+
+📈 PROGRAMS UPDATED:
+
+1️⃣ COACH-GUIDED PROGRAM
+   • Adjusted for your progress
+   • New focus areas identified
+   • Updated drill difficulty
+
+2️⃣ AI-POWERED MODEL PROGRAM
+   • Refined based on results
+   • Optimized training path
+   • Performance targets adjusted
+
+Click "View Professional Report" to see your updated analysis!`);
         }
         setAssessmentSuccess(true);
         
