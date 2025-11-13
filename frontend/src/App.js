@@ -35,6 +35,7 @@ import CoachDashboard from "./components/coach/CoachDashboard";
 import PlayerDashboard from "./components/player/PlayerDashboard";
 import ProfessionalAssessmentReport from "./components/player/ProfessionalAssessmentReport";
 import ClubPortalDashboard from "./components/club/ClubPortalDashboard";
+import SystemAdminPortal from "./components/admin/SystemAdminPortal";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
