@@ -139,17 +139,155 @@ const HomePage = ({ onNavigate }) => {
     }
   ];
 
+  // Portal Selection for Non-Authenticated Users
+  const [selectedPortal, setSelectedPortal] = useState('player');
+  
+  const portals = [
+    {
+      id: 'player',
+      name: 'Player Portal',
+      icon: <Trophy className="w-8 h-8" />,
+      color: 'blue',
+      bgGradient: 'from-blue-500 to-blue-600',
+      borderColor: 'border-blue-500',
+      hoverBg: 'hover:bg-blue-50',
+      description: 'Track your performance, training, and progress',
+      features: ['Personal Assessments', 'Training Programs', 'Progress Tracking']
+    },
+    {
+      id: 'coach',
+      name: 'Coach Portal',
+      icon: <Users className="w-8 h-8" />,
+      color: 'green',
+      bgGradient: 'from-green-500 to-green-600',
+      borderColor: 'border-green-500',
+      hoverBg: 'hover:bg-green-50',
+      description: 'Manage players, assessments, and team analytics',
+      features: ['Team Management', 'Player Assessments', 'Performance Analytics']
+    },
+    {
+      id: 'parent',
+      name: 'Parent Portal',
+      icon: <Activity className="w-8 h-8" />,
+      color: 'purple',
+      bgGradient: 'from-purple-500 to-purple-600',
+      borderColor: 'border-purple-500',
+      hoverBg: 'hover:bg-purple-50',
+      description: 'Monitor your child\'s development and communicate',
+      features: ['View Child Progress', 'Coach Communication', 'Training Reports']
+    }
+  ];
+  
+  const currentPortal = portals.find(p => p.id === selectedPortal);
+
   if (!isAuthenticated) {
     return (
       <div className="max-w-7xl mx-auto p-6">
-        <Card>
-          <CardContent className="p-12 text-center">
-            <h2 className="text-2xl font-bold mb-4">Welcome to Yo-Yo Elite Soccer AI Coach</h2>
-            <p className="text-gray-600 mb-6">Please log in or register to start your player assessment and training journey</p>
-            <div className="flex gap-4 justify-center">
-              <Button onClick={() => onNavigate('assessment')} size="lg">
-                Get Started
-              </Button>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Yo-Yo Elite Soccer AI Coach
+          </h1>
+          <p className="text-lg text-gray-600">
+            Professional Training & Assessment Platform
+          </p>
+        </div>
+
+        {/* Portal Tabs */}
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex bg-gray-100 rounded-lg p-1">
+            {portals.map((portal) => (
+              <button
+                key={portal.id}
+                onClick={() => setSelectedPortal(portal.id)}
+                className={`
+                  px-6 py-3 rounded-md font-semibold transition-all flex items-center gap-2
+                  ${selectedPortal === portal.id 
+                    ? `bg-white shadow-md text-${portal.color}-600` 
+                    : 'text-gray-600 hover:text-gray-900'
+                  }
+                `}
+              >
+                {portal.icon}
+                {portal.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Portal Content */}
+        <Card className={`border-t-4 ${currentPortal.borderColor}`}>
+          <CardContent className="p-12">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              {/* Left Side - Portal Info */}
+              <div>
+                <div className={`inline-flex p-4 rounded-full bg-gradient-to-br ${currentPortal.bgGradient} text-white mb-6`}>
+                  {currentPortal.icon}
+                </div>
+                <h2 className="text-3xl font-bold mb-4">{currentPortal.name}</h2>
+                <p className="text-gray-600 text-lg mb-6">{currentPortal.description}</p>
+                
+                <div className="space-y-3 mb-8">
+                  <p className="font-semibold text-gray-900">Key Features:</p>
+                  {currentPortal.features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <CheckCircle className={`w-5 h-5 text-${currentPortal.color}-500`} />
+                      <span className="text-gray-700">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex gap-4">
+                  <Button 
+                    onClick={() => onNavigate('assessment')} 
+                    size="lg"
+                    className={`bg-gradient-to-r ${currentPortal.bgGradient} hover:opacity-90`}
+                  >
+                    Get Started
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Right Side - Visual Representation */}
+              <div className="hidden md:block">
+                <div className={`bg-gradient-to-br ${currentPortal.bgGradient} rounded-2xl p-8 text-white`}>
+                  <h3 className="text-2xl font-bold mb-4">Welcome!</h3>
+                  <p className="mb-6 opacity-90">
+                    {selectedPortal === 'player' && 'Take control of your soccer development with AI-powered assessments and personalized training programs.'}
+                    {selectedPortal === 'coach' && 'Elevate your coaching with comprehensive player analytics, team management tools, and data-driven insights.'}
+                    {selectedPortal === 'parent' && 'Stay connected with your child\'s soccer journey. Track their progress and communicate with coaches effortlessly.'}
+                  </p>
+                  <div className="space-y-4">
+                    <div className="bg-white bg-opacity-20 rounded-lg p-4">
+                      <div className="flex items-center gap-3">
+                        <Target className="w-6 h-6" />
+                        <div>
+                          <p className="font-semibold">Advanced Analytics</p>
+                          <p className="text-sm opacity-90">AI-powered performance insights</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-white bg-opacity-20 rounded-lg p-4">
+                      <div className="flex items-center gap-3">
+                        <Brain className="w-6 h-6" />
+                        <div>
+                          <p className="font-semibold">Personalized Training</p>
+                          <p className="text-sm opacity-90">Customized programs for every player</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-white bg-opacity-20 rounded-lg p-4">
+                      <div className="flex items-center gap-3">
+                        <Trophy className="w-6 h-6" />
+                        <div>
+                          <p className="font-semibold">Track Progress</p>
+                          <p className="text-sm opacity-90">Monitor improvements over time</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
