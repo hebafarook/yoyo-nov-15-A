@@ -365,13 +365,48 @@ const AssessmentForm = ({ onAssessmentCreated, setActiveTab }) => {
         };
         
         console.log('Saving as benchmark:', benchmarkData);
-        const benchmarkResponse = await axios.post(`${API}/auth/save-benchmark`, benchmarkData);
+        const token = localStorage.getItem('token');
+        const benchmarkResponse = await axios.post(`${API}/auth/save-benchmark`, benchmarkData, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
         console.log('Benchmark saved:', benchmarkResponse.data);
         
+        // Auto-generate and save assessment report
+        try {
+          const reportData = {
+            player_name: formData.player_name,
+            title: `Assessment Report - ${new Date().toLocaleDateString()}`,
+            report_type: 'milestone',
+            report_data: {
+              playerData: {
+                ...formData,
+                overall_score: overallScore,
+                physical_score: createdAssessment.physical_score || 0,
+                technical_score: createdAssessment.technical_score || 0,
+                tactical_score: createdAssessment.tactical_score || 0,
+                psychological_score: createdAssessment.psychological_score || 0,
+                assessment_date: new Date().toISOString()
+              },
+              assessmentDate: new Date().toISOString(),
+              overallScore: overallScore,
+              performanceLevel: performanceLevel
+            },
+            notes: `Completed on ${new Date().toLocaleDateString()}`
+          };
+          
+          console.log('Auto-saving assessment report:', reportData);
+          await axios.post(`${API}/auth/save-report`, reportData, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          console.log('Assessment report auto-saved successfully');
+        } catch (reportError) {
+          console.error('Error auto-saving report (non-critical):', reportError);
+        }
+        
         if (benchmarkResponse.data.is_baseline) {
-          setAssessmentMessage('🎯 BASELINE ASSESSMENT SAVED!\n\nThis is your baseline benchmark - all future progress will be compared to this assessment. Your data is securely saved and ready for training program generation.');
+          setAssessmentMessage('🎯 BASELINE ASSESSMENT SAVED!\n\nThis is your baseline benchmark - all future progress will be compared to this assessment. Your data is securely saved and ready for training program generation.\n\n✅ Report automatically saved to My Reports');
         } else {
-          setAssessmentMessage('📊 ASSESSMENT SAVED AS BENCHMARK!\n\nSaved for progress tracking. Your data is securely saved and you can view your progress in the Reports tab.');
+          setAssessmentMessage('📊 ASSESSMENT SAVED AS BENCHMARK!\n\nSaved for progress tracking. Your data is securely saved and you can view your progress in the Reports tab.\n\n✅ Report automatically saved to My Reports');
         }
         setAssessmentSuccess(true);
       } catch (benchmarkError) {
