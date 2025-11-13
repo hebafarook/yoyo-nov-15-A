@@ -19,6 +19,9 @@ const PlayerHome = ({ onStartSession }) => {
   }, [user]);
 
   const [aiInsights, setAiInsights] = useState(null);
+  const [playerProfile, setPlayerProfile] = useState(null);
+  const [coachComments, setCoachComments] = useState([]);
+  const [injuryReports, setInjuryReports] = useState([]);
 
   const fetchPlayerData = async () => {
     try {
