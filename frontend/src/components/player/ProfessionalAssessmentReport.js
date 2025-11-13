@@ -403,11 +403,31 @@ Report ID: ${report.id}
 
         {/* Action Section */}
         <div className="bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-8 text-white shadow-xl print:hidden">
-          <h2 className="text-3xl font-bold mb-4">Next Steps: Generate Your Training Program</h2>
-          <p className="text-green-100 mb-6 text-lg">
-            Based on this comprehensive assessment, we can now create your personalized 12-week training program. 
-            This program will be specifically designed to improve your identified areas while maintaining your strengths.
+          <h2 className="text-3xl font-bold mb-4">🚀 Generate Your Personalized Training Programs</h2>
+          <p className="text-green-100 mb-4 text-lg">
+            Based on your comprehensive assessment, we'll create TWO powerful training programs designed specifically for you:
           </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+              <h3 className="font-bold text-lg mb-2">🏆 Coach-Guided Program</h3>
+              <ul className="text-sm space-y-1 text-green-50">
+                <li>• Professional training methodology</li>
+                <li>• Position-specific drills</li>
+                <li>• Structured weekly progression</li>
+                <li>• Coach recommendations integrated</li>
+              </ul>
+            </div>
+            <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+              <h3 className="font-bold text-lg mb-2">🤖 AI-Powered Model</h3>
+              <ul className="text-sm space-y-1 text-green-50">
+                <li>• Machine learning optimization</li>
+                <li>• Dynamic difficulty adjustment</li>
+                <li>• Performance prediction</li>
+                <li>• Personalized exercise selection</li>
+              </ul>
+            </div>
+          </div>
           
           <div className="flex gap-4">
             {!programGenerated ? (
