@@ -464,4 +464,249 @@ async def get_report(
             detail=f"Failed to fetch report: {str(e)}"
         )
 
-from datetime import timedelta
+
+@router.get("/generate-dynamic/{player_name}")
+async def generate_dynamic_report(
+    player_name: str,
+    current_user: dict = Depends(verify_token)
+):
+    """
+    Generate dynamic player performance report with visual metrics and AI analysis.
+    Returns JSON structure optimized for frontend gauges, charts, and insights.
+    """
+    try:
+        user_id = current_user.get('user_id')
+        
+        # Get latest assessment for the player
+        latest_assessment = await db.assessments.find_one(
+            {"player_name": player_name, "user_id": user_id},
+            sort=[("created_at", -1)]
+        )
+        
+        if not latest_assessment:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No assessment found for player: {player_name}"
+            )
+        
+        age = latest_assessment.get('age', 16)
+        position = latest_assessment.get('position', 'Midfielder')
+        
+        # Get age-appropriate standards
+        standards = get_standards_for_age(age)
+        
+        # Extract raw metrics from assessment
+        sprint_30m = latest_assessment.get('sprint_30m', 0)
+        yo_yo = latest_assessment.get('yo_yo_test', 0)
+        vo2_max = latest_assessment.get('vo2_max', 0)
+        ball_control = latest_assessment.get('ball_control', 0)
+        passing_accuracy = latest_assessment.get('passing_accuracy', 0)
+        overall_score = latest_assessment.get('overall_score', 0)
+        
+        # Calculate percent of standard for each metric
+        sprint_percent = round((standards['sprint_30m'] / sprint_30m * 100) if sprint_30m > 0 else 0, 1)
+        agility_percent = round((yo_yo / standards['yo_yo_test'] * 100) if yo_yo > 0 else 0, 1)
+        reaction_time_ms = int(vo2_max * 5) if vo2_max > 0 else 320
+        reaction_percent = round((300 / reaction_time_ms * 100) if reaction_time_ms > 0 else 100, 1)
+        endurance_percent = round((yo_yo / standards['yo_yo_test'] * 100) if yo_yo > 0 else 0, 1)
+        ball_control_percent = round((ball_control / 10 * 100) if ball_control > 0 else 0, 1)
+        passing_percent = round(passing_accuracy if passing_accuracy > 0 else 0, 1)
+        
+        # Build metrics object
+        metrics = {
+            "sprint_30m": {
+                "score": round(sprint_30m, 2),
+                "percent_of_standard": sprint_percent
+            },
+            "agility": {
+                "score": round(yo_yo / 100, 1),
+                "percent_of_standard": agility_percent
+            },
+            "reaction_time": {
+                "score_ms": reaction_time_ms,
+                "percent_of_standard": reaction_percent
+            },
+            "endurance": {
+                "score": round(yo_yo / 100, 1),
+                "percent_of_standard": endurance_percent
+            },
+            "ball_control": {
+                "score_1_to_10": round(ball_control, 1),
+                "percent_of_standard": ball_control_percent
+            },
+            "passing_accuracy": {
+                "score_percent": round(passing_accuracy, 1),
+                "percent_of_standard": passing_percent
+            }
+        }
+        
+        # Get assessment history for trends (last 5)
+        assessment_history = await db.assessments.find(
+            {"player_name": player_name, "user_id": user_id}
+        ).sort("created_at", 1).limit(5).to_list(length=5)
+        
+        trend_dates = []
+        trend_overall = []
+        trend_sprint = []
+        trend_passing = []
+        
+        for assessment in assessment_history:
+            created_at = assessment.get('created_at')
+            if isinstance(created_at, str):
+                date_obj = datetime.fromisoformat(created_at)
+            else:
+                date_obj = created_at
+            trend_dates.append(date_obj.strftime('%Y-%m-%d'))
+            trend_overall.append(round(assessment.get('overall_score', 0)))
+            
+            # Calculate sprint and passing percent for trend
+            s = assessment.get('sprint_30m', 0)
+            p = assessment.get('passing_accuracy', 0)
+            sprint_trend = round((standards['sprint_30m'] / s * 100) if s > 0 else 0)
+            trend_sprint.append(sprint_trend)
+            trend_passing.append(round(p))
+        
+        trend = {
+            "dates": trend_dates,
+            "overall_scores": trend_overall,
+            "sprint_30m_scores": trend_sprint,
+            "passing_accuracy_scores": trend_passing
+        }
+        
+        # Prepare assessment JSON for LLM
+        assessment_json = {
+            "player_name": player_name,
+            "age": age,
+            "position": position,
+            "overall_score": round(overall_score),
+            "metrics": metrics,
+            "trend": trend
+        }
+        
+        # Call LLM for AI analysis
+        ai_analysis = await generate_ai_analysis(assessment_json)
+        
+        # Return complete report
+        return {
+            "success": True,
+            "player_name": player_name,
+            "age": age,
+            "position": position,
+            "overall_score": round(overall_score),
+            "performance_level": ai_analysis.get('performance_level', 'Standard'),
+            "metrics": metrics,
+            "trend": trend,
+            "strengths": ai_analysis.get('strengths', []),
+            "weaknesses": ai_analysis.get('weaknesses', []),
+            "recommendations": ai_analysis.get('recommendations', [])
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating dynamic report: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate report: {str(e)}"
+        )
+
+
+async def generate_ai_analysis(assessment_json: dict) -> dict:
+    """Generate AI analysis using LLM with the provided prompt structure"""
+    
+    overall_score = assessment_json['overall_score']
+    
+    # Determine performance level
+    if overall_score >= 90:
+        performance_level = "Elite"
+    elif overall_score >= 75:
+        performance_level = "Advanced"
+    elif overall_score >= 60:
+        performance_level = "Standard"
+    else:
+        performance_level = "Needs Development"
+    
+    # If LLM is available, use it for analysis
+    if llm_client:
+        try:
+            system_prompt = """You are a professional sports performance reporting engine.
+You receive a single JSON object called `assessment_json` that contains a soccer player's test results and trend data.
+Your job is to generate a clean, modern, standardized Soccer Assessment Milestone Report.
+
+Always:
+- Read ONLY from the provided JSON.
+- Never invent random numbers.
+- Use short, clear labels.
+
+From the metrics, identify:
+1. STRENGTHS: Pick the top 3 percent_of_standard values and explain why they're strong
+2. WEAKNESSES: Pick the bottom 2-3 percent_of_standard values and explain what needs improvement
+3. RECOMMENDATIONS: Give 4-6 specific, professional training recommendations tailored to the player's lowest metrics and position
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "strengths": ["strength 1", "strength 2", "strength 3"],
+  "weaknesses": ["weakness 1", "weakness 2"],
+  "recommendations": ["rec 1", "rec 2", "rec 3", "rec 4"]
+}"""
+
+            user_prompt = f"Analyze this assessment data:\n\n{json.dumps(assessment_json, indent=2)}"
+            
+            response = llm_client.generate(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                temperature=0.7,
+                max_tokens=800
+            )
+            
+            # Parse LLM response
+            content = response.get('choices', [{}])[0].get('message', {}).get('content', '{}')
+            ai_result = json.loads(content)
+            
+            return {
+                "performance_level": performance_level,
+                "strengths": ai_result.get('strengths', []),
+                "weaknesses": ai_result.get('weaknesses', []),
+                "recommendations": ai_result.get('recommendations', [])
+            }
+            
+        except Exception as e:
+            logger.error(f"LLM analysis failed: {str(e)}, using fallback")
+    
+    # Fallback analysis if LLM not available
+    metrics = assessment_json['metrics']
+    
+    # Calculate metric performances
+    metric_list = [
+        ("Endurance", metrics['endurance']['percent_of_standard'], "Outstanding aerobic capacity"),
+        ("Reaction Time", metrics['reaction_time']['percent_of_standard'], "Quick neuromotor response"),
+        ("Sprint 30m", metrics['sprint_30m']['percent_of_standard'], "Strong acceleration ability"),
+        ("Agility", metrics['agility']['percent_of_standard'], "Good change-of-direction speed"),
+        ("Ball Control", metrics['ball_control']['percent_of_standard'], "Solid technical base"),
+        ("Passing Accuracy", metrics['passing_accuracy']['percent_of_standard'], "Accurate distribution")
+    ]
+    
+    # Sort by performance
+    metric_list.sort(key=lambda x: x[1], reverse=True)
+    
+    strengths = [f"{m[0]} — {m[1]:.0f}% of standard ({m[2]})" for m in metric_list[:3]]
+    weaknesses = [f"{m[0]} — {m[1]:.0f}% of standard (needs improvement)" for m in metric_list[-2:]]
+    
+    recommendations = [
+        "Implement acceleration-focused training with 10-20m sprints 3x per week",
+        "Daily ball mastery sessions focusing on first touch and close control",
+        "Progressive passing sequences to improve accuracy under pressure",
+        "Tactical education through video analysis and decision-making drills",
+        "Maintain strength training in areas of excellence",
+        "Integrated match-realistic training scenarios"
+    ]
+    
+    return {
+        "performance_level": performance_level,
+        "strengths": strengths,
+        "weaknesses": weaknesses,
+        "recommendations": recommendations[:4]
+    }
