@@ -25,12 +25,29 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
   const [hasAssessment, setHasAssessment] = useState(false);
   const [hasProgram, setHasProgram] = useState(false);
 
+  const [assessmentStatus, setAssessmentStatus] = useState(null);
+
   useEffect(() => {
     if (isAuthenticated && user) {
       loadDashboardStats();
       checkUserProgress();
+      if (user.role === 'player') {
+        loadAssessmentStatus();
+      }
     }
   }, [isAuthenticated, user]);
+
+  const loadAssessmentStatus = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/assessments/player/${user.username}/status`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setAssessmentStatus(response.data);
+    } catch (error) {
+      console.error('Error loading assessment status:', error);
+    }
+  };
 
   const checkUserProgress = async () => {
     if (!user) return;
