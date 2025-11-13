@@ -64,17 +64,17 @@ const CoachDashboard = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-[#0C1A2A] to-[#1a2332] text-white">
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <div className={`${
         sidebarOpen ? 'w-64' : 'w-0'
-      } bg-[#0C1A2A]/80 backdrop-blur-xl border-r border-white/10 transition-all duration-300 overflow-hidden`}>
+      } bg-white border-r border-gray-200 transition-all duration-300 overflow-hidden shadow-sm`}>
         <div className="p-6">
           <div className="mb-8">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-[#4DFF91] to-[#007BFF] bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold text-gray-800">
               YoYo Elite AI
             </h1>
-            <p className="text-sm text-white/60 mt-1">Coach Portal</p>
+            <p className="text-sm text-gray-600 mt-1">Coach Portal</p>
           </div>
 
           <nav className="space-y-2">
@@ -84,10 +84,10 @@ const CoachDashboard = () => {
                 <button
                   key={item.id}
                   onClick={() => setActiveScreen(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
                     activeScreen === item.id || (activeScreen === 'player-profile' && item.id === 'players') || (activeScreen === 'assessment-report' && item.id === 'assessments')
-                      ? 'bg-gradient-to-r from-[#4DFF91]/20 to-[#007BFF]/20 border border-[#4DFF91]/30 text-[#4DFF91] shadow-lg shadow-[#4DFF91]/20'
-                      : 'text-white/70 hover:bg-white/5 hover:text-white'
+                      ? 'bg-blue-50 text-blue-600 shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-50'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -102,45 +102,45 @@ const CoachDashboard = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <div className="bg-[#0C1A2A]/60 backdrop-blur-xl border-b border-white/10 px-6 py-4">
+        <div className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="p-2 hover:bg-white/10 rounded-lg transition"
+                className="p-2 hover:bg-gray-100 rounded-lg transition"
               >
-                {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                {sidebarOpen ? <X className="w-5 h-5 text-gray-600" /> : <Menu className="w-5 h-5 text-gray-600" />}
               </button>
 
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/40" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search players, drills, assessments..."
-                  className="bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#4DFF91]/50 w-80"
+                  className="bg-gray-50 border border-gray-300 rounded-lg pl-10 pr-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-80"
                 />
               </div>
             </div>
 
             <div className="flex items-center gap-4">
-              <button className="relative p-2 hover:bg-white/10 rounded-lg transition">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-[#4DFF91] rounded-full"></span>
+              <button className="relative p-2 hover:bg-gray-100 rounded-lg transition">
+                <Bell className="w-5 h-5 text-gray-600" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
               </button>
 
               <div className="flex items-center gap-3">
                 <div className="text-right">
-                  <p className="text-sm font-medium">{user?.full_name || 'Coach'}</p>
-                  <p className="text-xs text-white/60">Head Coach</p>
+                  <p className="text-sm font-medium text-gray-800">{user?.full_name || 'Coach'}</p>
+                  <p className="text-xs text-gray-600">Head Coach</p>
                 </div>
-                <div className="w-10 h-10 bg-gradient-to-br from-[#4DFF91] to-[#007BFF] rounded-full flex items-center justify-center text-[#0C1A2A] font-bold">
+                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
                   {user?.full_name?.[0] || 'C'}
                 </div>
               </div>
 
               <button
                 onClick={logout}
-                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition border border-white/20"
+                className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition"
                 title="Logout"
               >
                 <LogOut className="w-4 h-4" />
@@ -151,7 +151,7 @@ const CoachDashboard = () => {
         </div>
 
         {/* Screen Content */}
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 overflow-auto p-6 bg-gray-50">
           {renderScreen()}
         </div>
       </div>
