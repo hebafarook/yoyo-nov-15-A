@@ -51,7 +51,7 @@ export default function AICoachDashboard({ playerId, user }) {
       });
       
       if (response.data.success) {
-        setPredict iveData(response.data.analysis);
+        setPredictiveData(response.data.analysis);
       }
     } catch (error) {
       console.error('Error loading predictive analysis:', error);
