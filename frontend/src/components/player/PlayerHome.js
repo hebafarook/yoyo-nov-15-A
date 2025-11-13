@@ -22,6 +22,7 @@ const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
   const [playerProfile, setPlayerProfile] = useState(null);
   const [coachComments, setCoachComments] = useState([]);
   const [injuryReports, setInjuryReports] = useState([]);
+  const [selectedMetric, setSelectedMetric] = useState(null);
 
   const fetchPlayerData = async () => {
     try {
