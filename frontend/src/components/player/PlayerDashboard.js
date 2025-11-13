@@ -12,11 +12,17 @@ import AchievementsDisplay from '../AchievementsDisplay';
 import SavedReports from '../SavedReports';
 import InboxDashboard from '../InboxDashboard';
 import PlayerReportCard from './PlayerReportCard';
-import { Home, Activity, Calendar, FileText, TrendingUp, Heart, Trophy, BarChart3, Inbox, ClipboardCheck } from 'lucide-react';
+import { Home, Activity, Calendar, FileText, TrendingUp, Heart, Trophy, BarChart3, Inbox, ClipboardCheck, LogOut } from 'lucide-react';
 
 const PlayerDashboard = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('home');
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      logout();
+    }
+  };
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
