@@ -18,12 +18,42 @@ import { Home, Activity, Calendar, FileText, TrendingUp, Heart, Trophy, BarChart
 const PlayerDashboard = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('home');
+  const [isFirstTime, setIsFirstTime] = useState(false);
+  const [checkingFirstTime, setCheckingFirstTime] = useState(true);
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
       logout();
     }
   };
+
+  // Check if this is first-time player (no assessments)
+  useEffect(() => {
+    const checkFirstTimePlayer = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+        const response = await fetch(`${BACKEND_URL}/api/auth/benchmarks`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const benchmarks = await response.json();
+        
+        if (!benchmarks || benchmarks.length === 0) {
+          // First-time player - no assessments yet
+          setIsFirstTime(true);
+          setActiveTab('take-assessment');
+        }
+        setCheckingFirstTime(false);
+      } catch (error) {
+        console.error('Error checking first-time status:', error);
+        setCheckingFirstTime(false);
+      }
+    };
+
+    if (user?.id) {
+      checkFirstTimePlayer();
+    }
+  }, [user]);
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
