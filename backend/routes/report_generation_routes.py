@@ -383,6 +383,7 @@ Track progress through: Weekly training logs, video analysis, and informal skill
     
     return {
         'overall_analysis': overall_analysis.strip(),
+        'performance_gauges': performance_gauges,
         'strengths': strengths,
         'weaknesses': weaknesses,
         'comparison': comparison,
