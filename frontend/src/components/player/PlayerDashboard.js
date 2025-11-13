@@ -92,6 +92,7 @@ const PlayerDashboard = () => {
                   <span>📅 Age: {user?.age || 17}</span>
                   <span>📏 Height: {user?.height || '175cm'}</span>
                   <span>⚖️ Weight: {user?.weight || '68kg'}</span>
+                  <span>🦶 Dominant Foot: {user?.dominant_foot || 'Right'}</span>
                 </div>
               </div>
             </div>
