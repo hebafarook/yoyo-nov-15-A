@@ -2358,6 +2358,16 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import report generation routes: {e}")
 
+
+# Import Dynamic Training Program routes
+try:
+    from routes.dynamic_training_routes import router as dynamic_training_router
+    api_router.include_router(dynamic_training_router, prefix="/training", tags=["dynamic-training"])
+    logging.info("✅ Dynamic AI-Powered Training Program routes loaded successfully")
+except ImportError as e:
+    logging.warning(f"Could not import dynamic training routes: {e}")
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
