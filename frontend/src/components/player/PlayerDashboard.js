@@ -138,17 +138,27 @@ You can now access all features in your Player Portal!`);
     return (
       <>
         {isFirstTime && activeTab === 'take-assessment' && (
-          <div className="mb-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 text-white shadow-lg">
-            <h2 className="text-2xl font-bold mb-2">🎉 Welcome to Your Soccer Development Journey!</h2>
-            <p className="text-white/90 mb-4">
-              Let's start by completing your first assessment. This will help us create a personalized training program and comprehensive roadmap for your development.
+          <div className="mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-2xl border-4 border-yellow-400">
+            <div className="text-center mb-4">
+              <h2 className="text-3xl font-bold mb-2">🎯 BASELINE ASSESSMENT REQUIRED</h2>
+              <div className="inline-block bg-yellow-400 text-gray-900 px-6 py-2 rounded-full font-bold text-sm mb-3">
+                STEP 1 OF YOUR JOURNEY
+              </div>
+            </div>
+            <p className="text-white/95 mb-4 text-center text-lg">
+              Complete your first assessment to establish your BASELINE BENCHMARK and unlock all Player Portal features!
             </p>
-            <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
-              <h3 className="font-bold mb-2">What happens next:</h3>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start gap-2">
-                  <span className="text-yellow-400 font-bold">1.</span>
-                  <span>Complete your assessment with all your current metrics</span>
+            <div className="bg-white/15 rounded-lg p-5 backdrop-blur-sm border-2 border-white/30">
+              <h3 className="font-bold mb-3 text-lg flex items-center gap-2">
+                <span className="text-yellow-400">🚀</span> Your Development Pipeline:
+              </h3>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-3 bg-white/10 p-3 rounded-lg">
+                  <span className="text-yellow-400 font-bold text-lg min-w-[24px]">1.</span>
+                  <div>
+                    <strong>Complete Assessment</strong>
+                    <p className="text-white/80 text-xs mt-1">Fill all physical, technical, tactical, and mental metrics</p>
+                  </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-yellow-400 font-bold">2.</span>
