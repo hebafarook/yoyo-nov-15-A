@@ -66,8 +66,8 @@ const PlayerDashboard = () => {
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
-    { id: 'training', label: 'Training', icon: Activity },
-    { id: 'plan', label: 'Plan', icon: Calendar },
+    { id: 'training', label: 'Today Session', icon: Activity },
+    { id: 'training-program', label: 'Training Program', icon: Calendar },
     { id: 'take-assessment', label: 'Take Assessment', icon: ClipboardCheck },
     { id: 'assessments', label: 'History', icon: FileText },
     { id: 'progress', label: 'Progress', icon: TrendingUp },
