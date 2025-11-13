@@ -38,9 +38,14 @@ const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
       const progressRes = await axios.get(`${BACKEND_URL}/api/daily-progress/${user.id}`, { headers });
       setDailyProgress(progressRes.data || []);
 
-      // Fetch performance metrics
-      const metricsRes = await axios.get(`${BACKEND_URL}/api/performance-metrics/${user.id}`, { headers });
-      setPerformanceMetrics(metricsRes.data);
+      // Fetch performance summary with strengths/weaknesses from assessment
+      try {
+        const summaryRes = await axios.get(`${BACKEND_URL}/api/player-performance-summary/${user.id}`, { headers });
+        setPerformanceMetrics(summaryRes.data);
+      } catch (err) {
+        console.log('Performance summary not available:', err);
+        setPerformanceMetrics(null);
+      }
 
       // Fetch AI insights
       try {
