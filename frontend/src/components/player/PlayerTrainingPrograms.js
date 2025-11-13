@@ -5,7 +5,7 @@ import { Calendar, Activity, CheckCircle, Clock, Target, Zap, TrendingUp, Award 
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-const PlayerTrainingPrograms = () => {
+const PlayerTrainingPrograms = ({ onNavigateToAssessment }) => {
   const { user } = useAuth();
   const [programs, setPrograms] = useState({ ai: null, coach: null });
   const [loading, setLoading] = useState(true);
