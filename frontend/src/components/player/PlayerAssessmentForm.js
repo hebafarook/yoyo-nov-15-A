@@ -125,21 +125,33 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
         });
         console.log('Benchmark saved:', benchmarkResponse.data);
         
-        // Auto-generate intelligent report using LLM engine
+        // Auto-generate comprehensive roadmap report
         try {
-          console.log('Triggering AI report generation for assessment:', createdAssessment.id);
-          const reportGenResponse = await axios.post(`${BACKEND_URL}/api/reports/generate-report`, {
-            assessment_id: createdAssessment.id,
-            include_comparison: true,
-            include_training_plan: true
-          }, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
+          console.log('Generating comprehensive roadmap for assessment:', createdAssessment.id);
+          const roadmapResponse = await axios.post(
+            `${BACKEND_URL}/api/reports/generate-comprehensive-roadmap?assessment_id=${createdAssessment.id}`,
+            {},
+            { headers: { 'Authorization': `Bearer ${token}` }}
+          );
           
-          console.log('AI-powered report generated successfully:', reportGenResponse.data);
+          console.log('✅ Comprehensive roadmap generated:', roadmapResponse.data);
+          
+          // Also generate training program
+          try {
+            const programResponse = await axios.post(`${BACKEND_URL}/api/reports/generate-report`, {
+              assessment_id: createdAssessment.id,
+              include_comparison: true,
+              include_training_plan: true
+            }, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            console.log('✅ Training program generated:', programResponse.data);
+          } catch (programError) {
+            console.error('Training program generation error (non-critical):', programError);
+          }
           
         } catch (reportError) {
-          console.error('Error generating AI report (non-critical):', reportError);
+          console.error('Error generating roadmap (non-critical):', reportError);
         }
         
         if (benchmarkResponse.data.is_baseline) {
