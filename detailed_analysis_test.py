@@ -8,7 +8,7 @@ import asyncio
 import aiohttp
 import json
 
-BACKEND_URL = "https://elite-soccer-ai-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://yo-yo-coach-dash.preview.emergentagent.com/api"
 
 class DetailedAnalysisTester:
     def __init__(self):

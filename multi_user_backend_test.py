@@ -20,7 +20,7 @@ import sys
 import os
 
 # Backend URL from environment
-BACKEND_URL = "https://elite-soccer-ai-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://yo-yo-coach-dash.preview.emergentagent.com/api"
 
 class MultiUserTester:
     def __init__(self):
