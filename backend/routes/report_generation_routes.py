@@ -2,13 +2,24 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List, Optional
 from pydantic import BaseModel
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from utils.database import db, prepare_for_mongo
 from routes.auth_routes import verify_token
 import uuid
+import os
+import json
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+# LLM Integration
+try:
+    from emergentintegrations import LLM
+    EMERGENT_KEY = os.environ.get('EMERGENT_LLM_KEY')
+    llm_client = LLM(api_key=EMERGENT_KEY) if EMERGENT_KEY else None
+except ImportError:
+    llm_client = None
+    logger.warning("emergentintegrations not installed - LLM features will be limited")
 
 class ReportGenerationRequest(BaseModel):
     assessment_id: str
