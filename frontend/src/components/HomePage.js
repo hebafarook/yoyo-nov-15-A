@@ -254,17 +254,42 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-purple-500">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Active Players</p>
-                <p className="text-3xl font-bold text-purple-600">{stats.activePlayers}</p>
+        {/* Show Active Players only for coaches and parents */}
+        {user?.role !== 'player' && (
+          <Card className="border-l-4 border-l-purple-500">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">
+                    {user?.role === 'coach' ? 'Managed Players' : 'Children'}
+                  </p>
+                  <p className="text-3xl font-bold text-purple-600">{stats.activePlayers}</p>
+                </div>
+                <Users className="w-12 h-12 text-purple-500 opacity-20" />
               </div>
-              <Users className="w-12 h-12 text-purple-500 opacity-20" />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* Show Personal Best for players */}
+        {user?.role === 'player' && (
+          <Card className="border-l-4 border-l-purple-500">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Personal Best</p>
+                  <p className="text-3xl font-bold text-purple-600">
+                    {stats.recentAssessments?.[0]?.overall_score 
+                      ? Math.round(stats.recentAssessments[0].overall_score) 
+                      : '--'}
+                  </p>
+                  <p className="text-xs text-gray-500">Overall Score</p>
+                </div>
+                <Trophy className="w-12 h-12 text-purple-500 opacity-20" />
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="border-l-4 border-l-orange-500">
           <CardContent className="p-6">
