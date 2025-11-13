@@ -9,6 +9,7 @@ import { UserPlus, LogIn, X, Eye, EyeOff, Shield, Users, User } from 'lucide-rea
 import { useAuth } from '../contexts/AuthContext';
 
 const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword }) => {
+  const { t } = useTranslation();
   const [mode, setMode] = useState(defaultMode);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
