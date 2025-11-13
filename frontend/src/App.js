@@ -1327,6 +1327,11 @@ const MainDashboard = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // If user is a parent, show Parent Dashboard
+  if (user?.role === 'parent') {
+    return <ParentDashboard />;
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Assessment Report Modal */}
