@@ -61,72 +61,103 @@ const PlayerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      {/* Top Navigation - Main App Colors */}
-      <div className="bg-white border-b-2 border-blue-200 shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* User Header with Player Info */}
-          <div className="flex items-center justify-between py-3 border-b border-gray-200">
-            <div className="flex items-center space-x-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
-                {(user?.username || 'P').substring(0, 1).toUpperCase()}
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">
-                  {user?.full_name || user?.username || 'Player Dashboard'}
-                </h1>
-                <div className="flex items-center space-x-4 text-xs text-gray-600">
-                  <span>⚡ Position: {user?.position || 'Forward'}</span>
-                  <span>📅 Age: {user?.age || 17}</span>
-                  <span>📏 Height: {user?.height || '175cm'}</span>
-                  <span>⚖️ Weight: {user?.weight || '68kg'}</span>
-                  <span>🦶 Dominant Foot: {user?.dominant_foot || 'Right'}</span>
-                </div>
-              </div>
+    <div className="flex h-screen bg-gray-50">
+      {/* Elegant Sidebar - 2 Color Design */}
+      <div className="w-64 bg-white border-r border-gray-200 flex flex-col shadow-lg">
+        {/* User Profile Section */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center space-x-3 mb-4">
+            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              {(user?.username || 'P').substring(0, 1).toUpperCase()}
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-xs text-gray-500">Joined</p>
-                <p className="text-sm font-semibold text-blue-600">
-                  {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Jan 2024'}
-                </p>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold text-sm"
-              >
-                <LogOut className="w-4 h-4" />
-                Logout
-              </button>
+            <div className="flex-1">
+              <h2 className="text-sm font-bold text-gray-900 truncate">
+                {user?.full_name || user?.username || 'Player'}
+              </h2>
+              <p className="text-xs text-gray-500">{user?.position || 'Forward'}</p>
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="text-gray-600">
+              <span className="block text-gray-400">Age</span>
+              <span className="font-semibold text-gray-900">{user?.age || 17}</span>
+            </div>
+            <div className="text-gray-600">
+              <span className="block text-gray-400">Height</span>
+              <span className="font-semibold text-gray-900">{user?.height || '175cm'}</span>
+            </div>
+            <div className="text-gray-600">
+              <span className="block text-gray-400">Weight</span>
+              <span className="font-semibold text-gray-900">{user?.weight || '68kg'}</span>
+            </div>
+            <div className="text-gray-600">
+              <span className="block text-gray-400">Foot</span>
+              <span className="font-semibold text-gray-900">{user?.dominant_foot || 'Right'}</span>
+            </div>
+          </div>
+        </div>
 
-          {/* Tabs Navigation - Main App Style */}
-          <div className="flex space-x-1 overflow-x-auto py-2">
+        {/* Navigation Menu */}
+        <nav className="flex-1 overflow-y-auto py-4">
+          <div className="px-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
+                  className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     activeTab === item.id
                       ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <span className="truncate">{item.label}</span>
                 </button>
               );
             })}
           </div>
+        </nav>
+
+        {/* Logout Button */}
+        <div className="p-4 border-t border-gray-200">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium text-sm"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {renderContent()}
+      {/* Main Content Area */}
+      <div className="flex-1 overflow-auto">
+        {/* Top Header Bar */}
+        <div className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-10 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {navItems.find(item => item.id === activeTab)?.label || 'Dashboard'}
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                Welcome back, {user?.full_name || user?.username || 'Player'}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-gray-500">Member since</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Jan 2024'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          {renderContent()}
+        </div>
       </div>
     </div>
   );
