@@ -236,9 +236,22 @@ async def delete_assessment(assessment_id: str):
         )
 
 @router.get("/player/{player_name}/analysis")
-async def get_player_analysis(player_name: str):
+async def get_player_analysis(
+    player_name: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Get detailed analysis for a player including strengths, weaknesses, and recommendations"""
     try:
+        # Verify token and get user info
+        current_user = await verify_token(credentials.credentials)
+        
+        # Check if user has access to this player's data
+        if not await check_player_access(player_name, current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: You don't have permission to view this player's analysis"
+            )
+        
         # Get latest assessment
         assessment = await db.assessments.find_one(
             {"player_name": player_name},
