@@ -63,17 +63,115 @@ const PlayerTrainingPrograms = () => {
   if (!programs.ai && !programs.coach) {
     return (
       <div className="max-w-6xl mx-auto p-6">
-        <div className="bg-white rounded-2xl p-12 shadow-lg border-2 border-blue-200 text-center">
-          <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Calendar className="w-10 h-10 text-blue-600" />
+        <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-12 shadow-xl border-2 border-blue-300">
+          <div className="text-center mb-8">
+            <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <Calendar className="w-12 h-12 text-white" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">🎯 Your Training Programs Await!</h2>
+            <p className="text-lg text-gray-700 mb-2">
+              You haven't generated your training programs yet.
+            </p>
+            <p className="text-gray-600 mb-8">
+              Complete your assessment first to unlock your personalized training programs!
+            </p>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">No Training Programs Yet</h2>
-          <p className="text-gray-600 mb-6">
-            Complete your assessment to generate personalized training programs
-          </p>
-          <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-blue-900 transition">
-            Take Assessment
-          </button>
+
+          {/* Steps to Generate */}
+          <div className="bg-white rounded-xl p-6 mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">📋 How to Get Your Programs</h3>
+            <div className="space-y-4">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                  1
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900">Complete Your Assessment</h4>
+                  <p className="text-sm text-gray-600">Fill in all your physical, technical, tactical, and mental metrics</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                  2
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900">Review Your Professional Report</h4>
+                  <p className="text-sm text-gray-600">Get AI analysis, coach recommendations, and development roadmap</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                  3
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900">Generate Your Programs</h4>
+                  <p className="text-sm text-gray-600">Get both Coach-Guided and AI-Powered training programs</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                  4
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900">Start Training!</h4>
+                  <p className="text-sm text-gray-600">Access your programs here and begin your development journey</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* What You'll Get */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-200">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                  <Award className="w-6 h-6 text-white" />
+                </div>
+                <h4 className="font-bold text-gray-900">Coach-Guided Program</h4>
+              </div>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li>✓ Professional coaching methodology</li>
+                <li>✓ Position-specific training</li>
+                <li>✓ Structured weekly progression</li>
+                <li>✓ Based on coach recommendations</li>
+              </ul>
+            </div>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-200">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <h4 className="font-bold text-gray-900">AI-Powered Model</h4>
+              </div>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li>✓ Machine learning optimization</li>
+                <li>✓ Dynamic difficulty adjustment</li>
+                <li>✓ Performance prediction</li>
+                <li>✓ Personalized exercise selection</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center">
+            <button 
+              onClick={() => {
+                // Redirect to assessment tab
+                window.location.hash = 'take-assessment';
+                window.location.reload();
+              }}
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition shadow-lg"
+            >
+              <ClipboardCheck className="w-6 h-6" />
+              Take Assessment Now
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            <p className="text-sm text-gray-500 mt-4">
+              ⏱️ Takes about 10-15 minutes to complete
+            </p>
+          </div>
         </div>
       </div>
     );
