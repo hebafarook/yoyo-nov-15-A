@@ -629,10 +629,12 @@ async def generate_ai_analysis(assessment_json: dict) -> dict:
         performance_level = "Needs Development"
     
     # If LLM is available, use it for analysis
-    if llm_client:
+    if llm_available:
         try:
+            EMERGENT_KEY = os.environ.get('EMERGENT_LLM_KEY')
+            
             system_prompt = """You are a professional sports performance reporting engine.
-You receive a single JSON object called `assessment_json` that contains a soccer player's test results and trend data.
+You receive a single JSON object that contains a soccer player's test results and trend data.
 Your job is to generate a clean, modern, standardized Soccer Assessment Milestone Report.
 
 Always:
@@ -651,22 +653,24 @@ Return ONLY a valid JSON object with this exact structure:
   "weaknesses": ["weakness 1", "weakness 2"],
   "recommendations": ["rec 1", "rec 2", "rec 3", "rec 4"]
 }"""
-
-            user_prompt = f"Analyze this assessment data:\n\n{json.dumps(assessment_json, indent=2)}"
             
-            response = llm_client.generate(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                temperature=0.7,
-                max_tokens=800
+            # Initialize chat
+            chat = LlmChat(
+                api_key=EMERGENT_KEY,
+                session_id=f"report_{assessment_json.get('player_name', 'player')}_{datetime.now().timestamp()}",
+                system_message=system_prompt
+            ).with_model("openai", "gpt-4o-mini")
+            
+            # Create user message
+            user_message = UserMessage(
+                text=f"Analyze this assessment data:\n\n{json.dumps(assessment_json, indent=2)}"
             )
             
-            # Parse LLM response
-            content = response.get('choices', [{}])[0].get('message', {}).get('content', '{}')
-            ai_result = json.loads(content)
+            # Send message and get response
+            response_text = await chat.send_message(user_message)
+            
+            # Parse JSON from response
+            ai_result = json.loads(response_text.strip())
             
             return {
                 "performance_level": performance_level,
