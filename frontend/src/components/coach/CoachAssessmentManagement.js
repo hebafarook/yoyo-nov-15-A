@@ -1,11 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Filter, Play, FileText, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const CoachAssessmentManagement = ({ onSelectAssessment }) => {
+  const { user } = useAuth();
   const [filterStatus, setFilterStatus] = useState('all');
+  const [assessments, setAssessments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock assessments data
-  const assessments = [
+  useEffect(() => {
+    if (user?.id) {
+      fetchRealAssessments();
+    }
+  }, [user]);
+
+  const fetchRealAssessments = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      // Fetch coach's players
+      const playersRes = await axios.get(`${BACKEND_URL}/api/relationships/my-players`, { headers });
+      const players = playersRes.data || [];
+
+      // Fetch assessments for all players
+      const assessmentsData = [];
+      for (const playerRel of players) {
+        try {
+          const benchmarksRes = await axios.get(`${BACKEND_URL}/api/auth/benchmarks`, { 
+            headers,
+            params: { user_id: playerRel.child_id }
+          });
+          
+          const benchmarks = benchmarksRes.data || [];
+          benchmarks.forEach(benchmark => {
+            const daysAgo = Math.floor((Date.now() - new Date(benchmark.saved_at)) / (1000 * 60 * 60 * 24));
+            assessmentsData.push({
+              id: benchmark.id,
+              playerName: benchmark.player_name,
+              playerId: playerRel.child_id,
+              type: 'Full Performance Assessment',
+              status: daysAgo < 7 ? 'Review Needed' : daysAgo < 30 ? 'Completed' : 'Archived',
+              score: benchmark.overall_score ? Math.round(benchmark.overall_score) : null,
+              date: new Date(benchmark.saved_at).toLocaleDateString(),
+              saved_at: benchmark.saved_at,
+              assessment_data: benchmark.assessment_data,
+              aiSummary: generateAISummary(benchmark.assessment_data)
+            });
+          });
+        } catch (err) {
+          console.log(`No benchmarks for player ${playerRel.child_id}`);
+        }
+      }
+
+      // Sort by date (newest first)
+      assessmentsData.sort((a, b) => new Date(b.saved_at) - new Date(a.saved_at));
+      setAssessments(assessmentsData);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching assessments:', error);
+      setLoading(false);
+    }
+  };
+
+  const generateAISummary = (data) => {
+    if (!data) return 'Assessment data available';
+    
+    const strengths = [];
+    const improvements = [];
+    
+    if (data.ball_control >= 4) strengths.push('excellent ball control');
+    if (data.passing_accuracy >= 80) strengths.push('high passing accuracy');
+    if (data.sprint_30m <= 4.3) strengths.push('good speed');
+    if (data.yo_yo_test >= 1700) strengths.push('strong endurance');
+    
+    if (data.ball_control < 3) improvements.push('ball control');
+    if (data.passing_accuracy < 65) improvements.push('passing accuracy');
+    if (data.shooting_accuracy < 60) improvements.push('shooting accuracy');
+    if (data.mental_toughness < 3) improvements.push('mental strength');
+    
+    let summary = '';
+    if (strengths.length > 0) summary += `Strengths: ${strengths.join(', ')}. `;
+    if (improvements.length > 0) summary += `Focus areas: ${improvements.join(', ')}.`;
+    
+    return summary || 'Balanced performance across all areas';
+  };
+
+  // REMOVED MOCK DATA - Now using real data from database
+  const mockAssessments_REMOVED = [
     {
       id: 1,
       playerName: 'Marcus Silva',
