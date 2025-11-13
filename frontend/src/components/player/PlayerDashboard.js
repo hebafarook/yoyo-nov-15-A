@@ -8,7 +8,10 @@ import PlayerProgress from './PlayerProgress';
 import PlayerRecovery from './PlayerRecovery';
 import PlayerMessages from './PlayerMessages';
 import PlayerProfile from './PlayerProfile';
-import { Home, Activity, Calendar, FileText, TrendingUp, Heart, MessageSquare, User } from 'lucide-react';
+import AchievementsDisplay from '../AchievementsDisplay';
+import SavedReports from '../SavedReports';
+import InboxDashboard from '../InboxDashboard';
+import { Home, Activity, Calendar, FileText, TrendingUp, Heart, Trophy, BarChart3, Inbox } from 'lucide-react';
 
 const PlayerDashboard = () => {
   const { user } = useAuth();
@@ -21,8 +24,9 @@ const PlayerDashboard = () => {
     { id: 'assessments', label: 'Assessments', icon: FileText },
     { id: 'progress', label: 'Progress', icon: TrendingUp },
     { id: 'recovery', label: 'Recovery', icon: Heart },
-    { id: 'messages', label: 'Chat', icon: MessageSquare },
-    { id: 'profile', label: 'Profile', icon: User }
+    { id: 'achievements', label: 'Achievements', icon: Trophy },
+    { id: 'reports', label: 'Reports', icon: BarChart3 },
+    { id: 'inbox', label: 'Inbox', icon: Inbox }
   ];
 
   const renderContent = () => {
@@ -33,42 +37,58 @@ const PlayerDashboard = () => {
       case 'assessments': return <PlayerAssessmentHistory />;
       case 'progress': return <PlayerProgress />;
       case 'recovery': return <PlayerRecovery />;
-      case 'messages': return <PlayerMessages />;
-      case 'profile': return <PlayerProfile />;
+      case 'achievements': return <AchievementsDisplay />;
+      case 'reports': return <SavedReports />;
+      case 'inbox': return <InboxDashboard />;
       default: return <PlayerHome onStartSession={() => setActiveTab('training')} />;
     }
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto pb-20">
-        {renderContent()}
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Top Navigation - Old Style */}
+      <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                {(user?.username || 'P').substring(0, 1).toUpperCase()}
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">
+                  {user?.full_name || user?.username || 'Player Dashboard'}
+                </h1>
+                <p className="text-sm text-gray-500">Welcome back!</p>
+              </div>
+            </div>
+          </div>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-around items-center py-2">
+          {/* Tabs Navigation - Old Style */}
+          <div className="flex space-x-1 overflow-x-auto pb-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition ${
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-all ${
                     activeTab === item.id
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
-                  <Icon className="w-5 h-5" />
-                  <span className="text-xs font-medium">{item.label}</span>
+                  <Icon className="w-4 h-4" />
+                  <span>{item.label}</span>
                 </button>
               );
             })}
           </div>
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {renderContent()}
       </div>
     </div>
   );
