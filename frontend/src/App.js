@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import "./App.css";
+import "./i18n/config"; // Initialize i18n
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import axios from "axios";
 import { Button } from "./components/ui/button";
