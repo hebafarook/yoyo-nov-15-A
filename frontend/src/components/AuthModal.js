@@ -120,8 +120,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
 
         // Validate player-specific fields
         if (formData.role === 'player') {
-          if (!formData.age || !formData.position) {
-            setError('Age and position are required for player accounts');
+          if (!formData.age || !formData.position || !formData.height || !formData.weight) {
+            setError('Age, position, height, and weight are required for player accounts');
             setLoading(false);
             return;
           }
@@ -140,6 +140,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
         if (formData.role === 'player') {
           registrationData.age = parseInt(formData.age);
           registrationData.position = formData.position;
+          registrationData.gender = formData.gender;
+          registrationData.height = `${formData.height}cm`;
+          registrationData.weight = `${formData.weight}kg`;
+          registrationData.dominant_foot = formData.dominant_foot;
+          registrationData.current_injuries = formData.current_injuries || 'None';
+          registrationData.parent_email = formData.parent_email;
+          registrationData.coach_email = formData.coach_email;
         }
 
         const result = await register(registrationData);
