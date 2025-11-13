@@ -19,7 +19,7 @@ class DynamicReportTester:
     def __init__(self):
         self.session = None
         self.test_user_token = None
-        self.test_player_name = "Report Test Player"
+        self.test_player_name = "Flow Test Player"  # Use existing player name
         self.test_results = []
         
     async def setup_session(self):
