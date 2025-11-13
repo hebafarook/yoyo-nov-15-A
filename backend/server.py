@@ -37,6 +37,9 @@ class PlayerAssessment(BaseModel):
     player_name: str
     age: int
     position: str
+    height_cm: Optional[float] = None
+    weight_kg: Optional[float] = None
+    bmi: Optional[float] = None
     
     # PHYSICAL PERFORMANCE METRICS (20% weight)
     sprint_30m: float  # seconds - 30m sprint test
