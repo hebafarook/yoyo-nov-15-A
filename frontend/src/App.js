@@ -1189,6 +1189,7 @@ const MainApp = () => {
           <Routes>
             <Route path="/" element={<MainDashboard />} />
             <Route path="/professional-report" element={<ProfessionalAssessmentReport />} />
+            <Route path="/club-portal" element={<ClubPortalDashboard />} />
           </Routes>
         </div>
       </BrowserRouter>
