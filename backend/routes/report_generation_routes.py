@@ -14,11 +14,13 @@ logger = logging.getLogger(__name__)
 
 # LLM Integration
 try:
-    from emergentintegrations import LLM
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    from dotenv import load_dotenv
+    load_dotenv()
     EMERGENT_KEY = os.environ.get('EMERGENT_LLM_KEY')
-    llm_client = LLM(api_key=EMERGENT_KEY) if EMERGENT_KEY else None
+    llm_available = True if EMERGENT_KEY else False
 except ImportError:
-    llm_client = None
+    llm_available = False
     logger.warning("emergentintegrations not installed - LLM features will be limited")
 
 class ReportGenerationRequest(BaseModel):
