@@ -220,19 +220,33 @@ const PlayerProgress = () => {
       {/* Technical Tab */}
       {activeTab === 'technical' && (
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Technical Scores Over Time</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={technicalData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="assessment" />
-              <YAxis domain={[0, 100]} />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="dribbling" fill="#3b82f6" />
-              <Bar dataKey="passing" fill="#8b5cf6" />
-              <Bar dataKey="shooting" fill="#10b981" />
-            </BarChart>
-          </ResponsiveContainer>
+          {technicalData.length === 0 ? (
+            <div className="text-center py-12">
+              <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">No Technical Data Yet</h3>
+              <p className="text-gray-600">Complete assessments to track your technical progress</p>
+            </div>
+          ) : (
+            <>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Technical Skills Over Time</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Tracking {technicalData.length} assessment{technicalData.length > 1 ? 's' : ''}
+              </p>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={technicalData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="ballControl" name="Ball Control" fill="#3b82f6" />
+                  <Bar dataKey="passing" name="Passing" fill="#8b5cf6" />
+                  <Bar dataKey="dribbling" name="Dribbling" fill="#10b981" />
+                  <Bar dataKey="shooting" name="Shooting" fill="#f59e0b" />
+                </BarChart>
+              </ResponsiveContainer>
+            </>
+          )}
         </div>
       )}
 
