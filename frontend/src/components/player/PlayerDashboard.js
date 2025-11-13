@@ -213,18 +213,25 @@ You can now access all features in your Player Portal!`);
           <div className="px-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
+              const isDisabled = isFirstTime && item.id !== 'take-assessment';
+              
               return (
                 <button
                   key={item.id}
-                  onClick={() => setActiveTab(item.id)}
+                  onClick={() => !isDisabled && setActiveTab(item.id)}
+                  disabled={isDisabled}
                   className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     activeTab === item.id
                       ? 'bg-blue-600 text-white shadow-md'
+                      : isDisabled
+                      ? 'text-gray-400 cursor-not-allowed opacity-50'
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
+                  title={isDisabled ? 'Complete your first assessment to unlock this feature' : ''}
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
                   <span className="truncate">{item.label}</span>
+                  {isDisabled && <span className="ml-auto text-xs">🔒</span>}
                 </button>
               );
             })}
