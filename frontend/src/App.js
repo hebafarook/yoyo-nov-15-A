@@ -1194,6 +1194,7 @@ const MainApp = () => {
             <Route path="/professional-report" element={<ProfessionalAssessmentReport />} />
             <Route path="/club-portal" element={<ClubPortalDashboard />} />
           </Routes>
+          <LanguageSwitcher />
         </div>
       </BrowserRouter>
     </LanguageProvider>
