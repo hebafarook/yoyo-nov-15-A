@@ -20,6 +20,12 @@ import {
 const CoachDashboard = () => {
   const { user, logout } = useAuth();
   const [activeScreen, setActiveScreen] = useState('main');
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      logout();
+    }
+  };
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [selectedAssessment, setSelectedAssessment] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
