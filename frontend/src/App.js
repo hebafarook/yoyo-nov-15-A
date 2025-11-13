@@ -1187,6 +1187,7 @@ const MainApp = () => {
         <div className="min-h-screen">
           <Routes>
             <Route path="/" element={<MainDashboard />} />
+            <Route path="/professional-report" element={<ProfessionalAssessmentReport />} />
           </Routes>
         </div>
       </BrowserRouter>
