@@ -421,6 +421,7 @@ class AICoachPlayerInsightsTest:
             "player_name": player_name,
             "age": 18,
             "position": "Forward",
+            "assessment_date": datetime.now(timezone.utc).isoformat(),
             # Moderate performance levels
             "sprint_30m": 4.3,
             "yo_yo_test": 1600,
