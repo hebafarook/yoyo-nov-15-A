@@ -2314,6 +2314,14 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import messaging routes: {e}")
 
+# Import Report Generation routes
+try:
+    from routes.report_generation_routes import router as report_gen_router
+    api_router.include_router(report_gen_router, prefix="/reports", tags=["report-generation"])
+    logging.info("✅ Report Generation (LLM Engine) routes loaded successfully")
+except ImportError as e:
+    logging.warning(f"Could not import report generation routes: {e}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
