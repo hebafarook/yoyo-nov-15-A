@@ -70,6 +70,74 @@ async def verify_token_async(token: str) -> dict:
             detail="Invalid token"
         )
 
+
+
+async def create_parent_relationship(player_id: str, parent_email: str):
+    """Create or queue parent-player relationship"""
+    try:
+        # Check if parent exists
+        parent = await db.users.find_one({"email": parent_email, "role": "parent"})
+        
+        if parent:
+            # Parent exists, create relationship
+            relationship = {
+                "id": str(uuid.uuid4()),
+                "parent_id": parent["id"],
+                "player_id": player_id,
+                "status": "active",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.parent_player_relationships.insert_one(prepare_for_mongo(relationship))
+            logger.info(f"Parent relationship created: {parent_email} -> {player_id}")
+        else:
+            # Queue invitation for when parent registers
+            invitation = {
+                "id": str(uuid.uuid4()),
+                "email": parent_email,
+                "player_id": player_id,
+                "type": "parent",
+                "status": "pending",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.relationship_invitations.insert_one(prepare_for_mongo(invitation))
+            logger.info(f"Parent invitation queued: {parent_email}")
+    except Exception as e:
+        logger.error(f"Error creating parent relationship: {e}")
+
+
+async def create_coach_relationship(player_id: str, coach_email: str):
+    """Create or queue coach-player relationship"""
+    try:
+        # Check if coach exists
+        coach = await db.users.find_one({"email": coach_email, "role": "coach"})
+        
+        if coach:
+            # Coach exists, create relationship
+            relationship = {
+                "id": str(uuid.uuid4()),
+                "coach_id": coach["id"],
+                "player_id": player_id,
+                "status": "active",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.coach_player_relationships.insert_one(prepare_for_mongo(relationship))
+            logger.info(f"Coach relationship created: {coach_email} -> {player_id}")
+        else:
+            # Queue invitation for when coach registers
+            invitation = {
+                "id": str(uuid.uuid4()),
+                "email": coach_email,
+                "player_id": player_id,
+                "type": "coach",
+                "status": "pending",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.relationship_invitations.insert_one(prepare_for_mongo(invitation))
+            logger.info(f"Coach invitation queued: {coach_email}")
+    except Exception as e:
+        logger.error(f"Error creating coach relationship: {e}")
+
+
 @router.post("/register", response_model=dict)
 async def register_user(user_data: UserCreate):
     """Register a new user"""
