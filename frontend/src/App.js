@@ -1480,6 +1480,48 @@ const MainDashboard = () => {
           )}
         </TabsContent>
 
+        <TabsContent value="aicoach">
+          {currentPlayer ? (
+            <AICoachDashboard 
+              playerId={currentPlayer.player_name} 
+              user={user}
+            />
+          ) : (
+            <Card className="professional-card text-center p-12">
+              <CardContent>
+                <span className="text-6xl mb-4 block">🤖</span>
+                <h3 className="text-2xl font-semibold mb-2">AI Coach & Analysis</h3>
+                <p className="text-[--text-muted] mb-6">
+                  Advanced AI-powered features including predictive modeling, computer vision form analysis, and personalized coaching feedback.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <div className="font-semibold mb-2">📊 Predictive Analytics</div>
+                    <ul className="text-sm space-y-1 text-gray-600">
+                      <li>• Injury risk prediction</li>
+                      <li>• Performance forecasting</li>
+                      <li>• Match readiness scoring</li>
+                      <li>• Optimal training load</li>
+                    </ul>
+                  </div>
+                  <div className="p-4 bg-green-50 rounded-lg">
+                    <div className="font-semibold mb-2">👁️ Computer Vision</div>
+                    <ul className="text-sm space-y-1 text-gray-600">
+                      <li>• Real-time pose detection</li>
+                      <li>• Form analysis (squat, lunge, sprint)</li>
+                      <li>• Automatic rep counting</li>
+                      <li>• Video analysis</li>
+                    </ul>
+                  </div>
+                </div>
+                <Button onClick={() => setActiveTab('assessment')} className="mt-6">
+                  Complete Assessment to Unlock
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
         <TabsContent value="progress">
           {currentPlayer ? (
             <ProgressTracker playerData={currentPlayer} />
