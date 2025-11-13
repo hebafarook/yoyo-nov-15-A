@@ -275,22 +275,12 @@ Performance Level: {perf_level}
     if not strengths:
         strengths = ["Solid foundation established", "Consistent performance", "Good work ethic"]
     
-    # Identify Weaknesses (AI analysis)
-    weaknesses = []
-    if sprint > standards['sprint_30m'] * 1.1:
-        weaknesses.append(f"Speed development needed - 30m sprint ({sprint}s) below target of {standards['sprint_30m']}s")
-    if yo_yo < standards['yo_yo_test'] * 0.9:
-        weaknesses.append(f"Endurance conditioning required - Yo-Yo result ({yo_yo}m) below {standards['yo_yo_test']}m standard")
-    if ball_control < standards['ball_control']:
-        weaknesses.append(f"Ball control refinement - Current rating ({ball_control}/5) below {standards['ball_control']} target")
-    if passing < standards['passing_accuracy']:
-        weaknesses.append(f"Passing accuracy improvement - Current {passing}% below {standards['passing_accuracy']}% benchmark")
-    if game_intel < standards['game_intelligence']:
-        weaknesses.append(f"Tactical development focus - Game intelligence ({game_intel}/5) needs enhancement")
+    # Identify Weaknesses (Lowest 2-3 metrics)
+    weaknesses = [item[2].replace("Exceptional", "Needs improvement in").replace("Strong", "Focus on").replace("Outstanding", "Develop") 
+                  for item in metric_performances[-3:] if item[1] < 80]
     
     if not weaknesses:
-        weaknesses.append("Minor refinements in consistency under pressure")
-        weaknesses.append("Continued development of match-specific decision making")
+        weaknesses = ["Minor refinements in consistency under pressure", "Continued development of match-specific decision making"]
     
     # Comparison with previous assessments
     comparison = None
