@@ -75,7 +75,10 @@ class DynamicReportTester:
     async def create_test_assessment(self):
         """Create a test assessment for the player"""
         try:
-            headers = {"Authorization": f"Bearer {self.test_user_token}"}
+            # First, decode the JWT to get user_id
+            import jwt
+            payload = jwt.decode(self.test_user_token, options={"verify_signature": False})
+            user_id = payload.get('user_id')
             
             assessment_data = {
                 "player_name": self.test_player_name,
@@ -105,11 +108,56 @@ class DynamicReportTester:
                 "mental_toughness": 4
             }
             
-            async with self.session.post(f"{API_BASE}/assessments", json=assessment_data, headers=headers) as response:
+            # Create assessment without authentication first
+            async with self.session.post(f"{API_BASE}/assessments", json=assessment_data) as response:
                 if response.status == 200:
                     data = await response.json()
-                    self.log_test("Assessment Creation", True, f"Created assessment for {self.test_player_name}")
-                    return True
+                    assessment_id = data.get('id')
+                    
+                    # Now update the assessment to add user_id using direct database access
+                    # Since we can't access the database directly, let's try a different approach
+                    # Let's create a benchmark instead which links to the user
+                    
+                    headers = {"Authorization": f"Bearer {self.test_user_token}"}
+                    benchmark_data = {
+                        "player_name": self.test_player_name,
+                        "assessment_id": assessment_id,
+                        "age": 17,
+                        "position": "Forward",
+                        # Physical metrics
+                        "sprint_30m": 4.3,
+                        "yo_yo_test": 1650,
+                        "vo2_max": 56.5,
+                        "vertical_jump": 48,
+                        "body_fat": 11.2,
+                        # Technical metrics
+                        "ball_control": 4,
+                        "passing_accuracy": 78.5,
+                        "dribbling_success": 65.0,
+                        "shooting_accuracy": 68.0,
+                        "defensive_duels": 72.0,
+                        # Tactical metrics
+                        "game_intelligence": 4,
+                        "positioning": 3,
+                        "decision_making": 4,
+                        # Psychological metrics
+                        "coachability": 5,
+                        "mental_toughness": 4,
+                        # Calculated metrics
+                        "overall_score": data.get('overall_score', 3.5),
+                        "performance_level": "Standard",
+                        "notes": "Test assessment for dynamic report"
+                    }
+                    
+                    # Save as benchmark to link to user
+                    async with self.session.post(f"{API_BASE}/auth/save-benchmark", json=benchmark_data, headers=headers) as bench_response:
+                        if bench_response.status == 200:
+                            self.log_test("Assessment Creation", True, f"Created assessment and benchmark for {self.test_player_name}")
+                            return True
+                        else:
+                            bench_error = await bench_response.text()
+                            self.log_test("Assessment Creation", False, f"Benchmark creation failed: {bench_error}")
+                            return False
                 else:
                     error_text = await response.text()
                     self.log_test("Assessment Creation", False, f"Status: {response.status}, Error: {error_text}")
