@@ -1353,70 +1353,144 @@ const MainDashboard = () => {
             <Target className="w-4 h-4" />
             {t('nav.home')}
           </button>
-          <button 
-            onClick={() => setActiveTab("assessment")}
-            className={`tab-trigger ${activeTab === "assessment" ? "active" : ""}`}
-          >
-            <BarChart3 className="w-4 h-4" />
-            {t('nav.assessment')}
-          </button>
-          <button 
-            onClick={() => setActiveTab("training")}
-            className={`tab-trigger ${activeTab === "training" ? "active" : ""}`}
-          >
-            <Zap className="w-4 h-4" />
-            {t('nav.training')}
-          </button>
-          <button 
-            onClick={() => setActiveTab("aicoach")}
-            className={`tab-trigger ${activeTab === "aicoach" ? "active" : ""}`}
-          >
-            <span className="w-4 h-4">🤖</span>
-            {t('nav.aicoach')}
-          </button>
-          <button 
-            onClick={() => setActiveTab("progress")}
-            className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
-          >
-            <TrendingUp className="w-4 h-4" />
-            {t('nav.progress')}
-          </button>
-          <button 
-            onClick={() => setActiveTab("voice")}
-            className={`tab-trigger ${activeTab === "voice" ? "active" : ""}`}
-          >
-            <Mic className="w-4 h-4" />
-            {t('nav.voice')}
-          </button>
-          <button 
-            onClick={() => setActiveTab("trophies")}
-            className={`tab-trigger ${activeTab === "trophies" ? "active" : ""}`}
-          >
-            <Trophy className="w-4 h-4" />
-            {t('nav.trophies')}
-          </button>
-          <button 
-            onClick={() => setActiveTab("group")}
-            className={`tab-trigger ${activeTab === "group" ? "active" : ""}`}
-          >
-            <Users className="w-4 h-4" />
-            {t('nav.group')}
-          </button>
-          <button 
-            onClick={() => setActiveTab("highlights")}
-            className={`tab-trigger ${activeTab === "highlights" ? "active" : ""}`}
-          >
-            <Award className="w-4 h-4" />
-            Highlights
-          </button>
-          <button 
-            onClick={() => setActiveTab("body")}
-            className={`tab-trigger ${activeTab === "body" ? "active" : ""}`}
-          >
-            <Activity className="w-4 h-4" />
-            Body
-          </button>
-          {isAuthenticated && (
+          
+          {/* Player Portal Tabs */}
+          {(!user?.role || user?.role === 'player') && (
+            <>
+              <button 
+                onClick={() => setActiveTab("assessment")}
+                className={`tab-trigger ${activeTab === "assessment" ? "active" : ""}`}
+              >
+                <BarChart3 className="w-4 h-4" />
+                {t('nav.assessment')}
+              </button>
+              <button 
+                onClick={() => setActiveTab("training")}
+                className={`tab-trigger ${activeTab === "training" ? "active" : ""}`}
+              >
+                <Zap className="w-4 h-4" />
+                {t('nav.training')}
+              </button>
+              <button 
+                onClick={() => setActiveTab("aicoach")}
+                className={`tab-trigger ${activeTab === "aicoach" ? "active" : ""}`}
+              >
+                <span className="w-4 h-4">🤖</span>
+                {t('nav.aicoach')}
+              </button>
+              <button 
+                onClick={() => setActiveTab("progress")}
+                className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
+              >
+                <TrendingUp className="w-4 h-4" />
+                {t('nav.progress')}
+              </button>
+              <button 
+                onClick={() => setActiveTab("trophies")}
+                className={`tab-trigger ${activeTab === "trophies" ? "active" : ""}`}
+              >
+                <Trophy className="w-4 h-4" />
+                {t('nav.trophies')}
+              </button>
+            </>
+          )}
+          
+          {/* Coach Portal Tabs */}
+          {user?.role === 'coach' && (
+            <>
+              <button 
+                onClick={() => setActiveTab("group")}
+                className={`tab-trigger ${activeTab === "group" ? "active" : ""}`}
+              >
+                <Users className="w-4 h-4" />
+                Team Management
+              </button>
+              <button 
+                onClick={() => setActiveTab("assessment")}
+                className={`tab-trigger ${activeTab === "assessment" ? "active" : ""}`}
+              >
+                <BarChart3 className="w-4 h-4" />
+                Player Assessments
+              </button>
+              <button 
+                onClick={() => setActiveTab("progress")}
+                className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
+              >
+                <TrendingUp className="w-4 h-4" />
+                Analytics
+              </button>
+              <button 
+                onClick={() => setActiveTab("training")}
+                className={`tab-trigger ${activeTab === "training" ? "active" : ""}`}
+              >
+                <Zap className="w-4 h-4" />
+                Training Programs
+              </button>
+            </>
+          )}
+          
+          {/* Parent Portal Tabs */}
+          {user?.role === 'parent' && (
+            <>
+              <button 
+                onClick={() => setActiveTab("progress")}
+                className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
+              >
+                <TrendingUp className="w-4 h-4" />
+                Child Progress
+              </button>
+              <button 
+                onClick={() => setActiveTab("reports")}
+                className={`tab-trigger ${activeTab === "reports" ? "active" : ""}`}
+              >
+                <FileText className="w-4 h-4" />
+                Reports
+              </button>
+              <button 
+                onClick={() => setActiveTab("voice")}
+                className={`tab-trigger ${activeTab === "voice" ? "active" : ""}`}
+              >
+                <Mic className="w-4 h-4" />
+                Communication
+              </button>
+              <button 
+                onClick={() => setActiveTab("trophies")}
+                className={`tab-trigger ${activeTab === "trophies" ? "active" : ""}`}
+              >
+                <Trophy className="w-4 h-4" />
+                Achievements
+              </button>
+            </>
+          )}
+          
+          {/* Common Tabs for all roles */}
+          {isAuthenticated && user?.role !== 'parent' && (
+            <>
+              <button 
+                onClick={() => setActiveTab("voice")}
+                className={`tab-trigger ${activeTab === "voice" ? "active" : ""}`}
+              >
+                <Mic className="w-4 h-4" />
+                {t('nav.voice')}
+              </button>
+              <button 
+                onClick={() => setActiveTab("highlights")}
+                className={`tab-trigger ${activeTab === "highlights" ? "active" : ""}`}
+              >
+                <Award className="w-4 h-4" />
+                Highlights
+              </button>
+              <button 
+                onClick={() => setActiveTab("body")}
+                className={`tab-trigger ${activeTab === "body" ? "active" : ""}`}
+              >
+                <Activity className="w-4 h-4" />
+                Body
+              </button>
+            </>
+          )}
+          
+          {isAuthenticated && user?.role !== 'coach' && (
             <button 
               onClick={() => setActiveTab("reports")}
               className={`tab-trigger ${activeTab === "reports" ? "active" : ""}`}
@@ -1425,13 +1499,14 @@ const MainDashboard = () => {
               My Reports
             </button>
           )}
+          
           {user && user.role === 'admin' && (
             <button 
               onClick={() => setActiveTab("admin")}
               className={`tab-trigger ${activeTab === "admin" ? "active" : ""}`}
               style={{ backgroundColor: activeTab === "admin" ? "#dc2626" : "", color: activeTab === "admin" ? "white" : "" }}
             >
-              <Users className="w-4 h-4" />
+              <Shield className="w-4 h-4" />
               Admin
             </button>
           )}
