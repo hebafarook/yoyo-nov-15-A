@@ -681,19 +681,31 @@ Click "View Professional Report" to see your updated analysis!`);
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-center">
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border-2 border-green-200">
+          <div className="text-center mb-4">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Ready to Generate Your Programs?</h3>
+            <p className="text-gray-600 text-sm">
+              Your assessment will be analyzed by AI and coaches to create two personalized training programs
+            </p>
+          </div>
           <button
             type="submit"
             disabled={isLoading}
-            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-blue-900 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-blue-900 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
           >
             {isLoading ? (
-              <span className="flex items-center gap-2">
+              <span className="flex items-center justify-center gap-2">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                Processing Assessment...
+                Submitting to AI & Coach Analysis...
               </span>
             ) : (
-              'Submit Assessment & Generate Program'
+              <>
+                <div className="flex items-center justify-center gap-2">
+                  <CheckCircle className="w-6 h-6" />
+                  <span>Submit Assessment & Generate Programs</span>
+                </div>
+                <div className="text-xs mt-1 font-normal">Creates: Coach Program + AI Model Training</div>
+              </>
             )}
           </button>
         </div>
