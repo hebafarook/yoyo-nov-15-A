@@ -412,19 +412,19 @@ Report ID: ${report.id}
           <div className="flex gap-4">
             {!programGenerated ? (
               <button
-                onClick={handleGenerateTrainingProgram}
+                onClick={() => setShowProgramForm(true)}
                 disabled={generatingProgram}
                 className="px-8 py-4 bg-white text-green-700 rounded-xl font-bold text-lg hover:bg-green-50 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3"
               >
                 {generatingProgram ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-700"></div>
-                    Generating Program...
+                    Generating AI-Powered Program...
                   </>
                 ) : (
                   <>
                     <Play className="w-6 h-6" />
-                    Generate Training Program
+                    Generate Personalized Program
                   </>
                 )}
               </button>
