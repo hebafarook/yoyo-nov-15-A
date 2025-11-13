@@ -263,9 +263,30 @@ async def update_assessment(
         )
 
 @router.delete("/{assessment_id}")
-async def delete_assessment(assessment_id: str):
+async def delete_assessment(
+    assessment_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Delete an assessment"""
     try:
+        # Verify token and get user info
+        current_user = await verify_token(credentials.credentials)
+        
+        # Get existing assessment to check permissions
+        existing_assessment = await db.assessments.find_one({"id": assessment_id})
+        if not existing_assessment:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Assessment not found"
+            )
+        
+        player_name = existing_assessment.get("player_name")
+        if not await check_player_access(player_name, current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: You don't have permission to delete this assessment"
+            )
+        
         result = await db.assessments.delete_one({"id": assessment_id})
         
         if result.deleted_count == 0:
