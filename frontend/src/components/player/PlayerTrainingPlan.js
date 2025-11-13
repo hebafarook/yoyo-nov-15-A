@@ -1,11 +1,74 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, CheckCircle, Circle, Activity, Zap, Heart } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const PlayerTrainingPlan = () => {
-  const weekPlan = {
-    weekNumber: 12,
-    focus: 'Speed & First Touch',
-    coachNotes: 'Important match on Saturday! Focus on quick ball control.',
+  const { user } = useAuth();
+  const [trainingProgram, setTrainingProgram] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchTrainingProgram();
+    }
+  }, [user]);
+
+  const fetchTrainingProgram = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      const response = await axios.get(`${BACKEND_URL}/api/periodized-programs/${user.id}`, { headers });
+      setTrainingProgram(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching training program:', error);
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your training plan...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Calculate current week based on program start date
+  const getCurrentWeek = () => {
+    if (!trainingProgram?.created_at) return 1;
+    const startDate = new Date(trainingProgram.created_at);
+    const today = new Date();
+    const weeksPassed = Math.floor((today - startDate) / (7 * 24 * 60 * 60 * 1000));
+    return Math.min(weeksPassed + 1, trainingProgram.total_duration_weeks || 14);
+  };
+
+  const weekPlan = trainingProgram ? {
+    weekNumber: getCurrentWeek(),
+    focus: trainingProgram.focus_areas?.join(', ') || 'Overall Development',
+    coachNotes: trainingProgram.notes || 'Follow the plan and track your progress!',
+    days: trainingProgram.macro_cycles?.[0]?.micro_cycles?.[0]?.daily_routines?.map((routine, idx) => ({
+      day: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][routine.day_number - 1],
+      date: new Date().toISOString().split('T')[0],
+      type: routine.focus || 'Training',
+      title: routine.exercises?.[0]?.name || 'Training Session',
+      duration: `${routine.duration || 60} min`,
+      objective: routine.exercises?.[0]?.purpose || 'Skill development',
+      completed: false,
+      icon: Activity
+    })) || []
+  } : {
+    weekNumber: 1,
+    focus: 'Getting Started',
+    coachNotes: 'Complete your assessment to get a personalized training plan!',
     days: [
       {
         day: 'Monday',
