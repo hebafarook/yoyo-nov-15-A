@@ -125,6 +125,7 @@ class AICoachPlayerInsightsTest:
                     "player_name": player_name,
                     "age": age,
                     "position": position,
+                    "assessment_date": datetime.now(timezone.utc).isoformat(),
                     # Physical metrics
                     "sprint_30m": 4.5,
                     "yo_yo_test": 1800,
