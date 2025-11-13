@@ -23,6 +23,13 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
     role: 'parent',
     age: '',
     position: '',
+    gender: 'male',
+    height: '',
+    weight: '',
+    dominant_foot: 'Right',
+    current_injuries: '',
+    parent_email: '',
+    coach_email: '',
     is_coach: false
   });
 
