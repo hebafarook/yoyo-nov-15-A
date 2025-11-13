@@ -15,6 +15,19 @@ const ProfessionalAssessmentReport = () => {
   const [loading, setLoading] = useState(true);
   const [generatingProgram, setGeneratingProgram] = useState(false);
   const [programGenerated, setProgramGenerated] = useState(false);
+  const [showProgramForm, setShowProgramForm] = useState(false);
+  const [programParams, setProgramParams] = useState({
+    training_days_per_week: 4,
+    duration_weeks: 12,
+    session_duration_minutes: 60,
+    gender: user?.gender || 'male',
+    has_injuries: false,
+    injury_details: '',
+    recovery_priority: 'moderate',
+    availability: 'after_school',
+    goals: '',
+    equipment_available: 'full'
+  });
 
   useEffect(() => {
     // Get assessment ID from URL params or location state
