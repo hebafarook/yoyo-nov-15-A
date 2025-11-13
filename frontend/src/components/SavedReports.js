@@ -31,14 +31,19 @@ const SavedReports = () => {
 
   const loadSavedReports = async () => {
     setLoading(true);
-    const result = await getSavedReports();
-    if (result.success) {
-      // Ensure we only show reports belonging to the current user
-      const userReports = result.reports.filter(report => report.user_id === user?.id);
-      setSavedReports(userReports);
-      console.log(`Loaded ${userReports.length} reports for user: ${user?.username}`);
-    } else {
-      console.error('Failed to load saved reports:', result.error);
+    try {
+      const token = localStorage.getItem('token');
+      // Load AI-generated reports
+      const response = await axios.get(`${BACKEND_URL}/api/reports/player/${user.username}/reports`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.data.success) {
+        setSavedReports(response.data.reports || []);
+      }
+    } catch (error) {
+      console.error('Error loading reports:', error);
+      setSavedReports([]);
     }
     setLoading(false);
   };
