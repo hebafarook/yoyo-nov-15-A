@@ -87,10 +87,16 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
     }
     
     try {
+      const token = localStorage.getItem('token');
+      
       // Load user's saved reports and benchmarks
       const [reportsRes, benchmarksRes] = await Promise.allSettled([
-        axios.get(`${API}/auth/saved-reports`),
-        axios.get(`${API}/auth/benchmarks`)
+        axios.get(`${API}/auth/saved-reports`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        axios.get(`${API}/auth/benchmarks`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
       ]);
       
       const reports = reportsRes.status === 'fulfilled' ? reportsRes.value.data : [];
@@ -100,6 +106,7 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
         totalReports: reports?.length || 0,
         totalBenchmarks: benchmarks?.length || 0,
         recentAssessments: benchmarks?.slice(0, 5) || [],
+        recentReports: reports?.slice(0, 3) || [],
         activePlayers: [...new Set((benchmarks || []).map(b => b.player_name))].length
       });
     } catch (error) {
