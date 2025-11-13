@@ -373,6 +373,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
                     {formData.role === 'player' && 'Create self-assessments and track your own development'}
                   </p>
                 </div>
+                )}
 
                 {/* Player-specific fields */}
                 {formData.role === 'player' && (
