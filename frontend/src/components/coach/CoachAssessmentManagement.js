@@ -147,6 +147,17 @@ const CoachAssessmentManagement = ({ onSelectAssessment }) => {
   const filteredAssessments = filterStatus === 'all' 
     ? assessments 
     : assessments.filter(a => a.status === filterStatus);
+  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
+          <p className="text-white">Loading assessments...</p>
+        </div>
+      </div>
+    );
+  }
 
   const getStatusConfig = (status) => {
     switch (status) {
