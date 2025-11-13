@@ -21,6 +21,12 @@ import {
 const ParentDashboard = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      logout();
+    }
+  };
   const [selectedChild, setSelectedChild] = useState(null);
   const [children, setChildren] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
