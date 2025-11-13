@@ -444,18 +444,18 @@ const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
             <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4">
               <h4 className="font-bold text-gray-800 mb-2">🎯 Current Focus Areas</h4>
               <ul className="space-y-2 text-sm">
-                {performanceMetrics.focus_areas?.map((area, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
-                    <span className="text-gray-700">{area}</span>
-                  </li>
-                )) || (
-                  <>
-                    <li className="flex items-center gap-2">
+                {performanceMetrics.focus_areas && performanceMetrics.focus_areas.length > 0 ? (
+                  performanceMetrics.focus_areas.map((area, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
                       <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
-                      <span className="text-gray-700">Complete assessment to get personalized focus areas</span>
+                      <span className="text-gray-700">{area}</span>
                     </li>
-                  </>
+                  ))
+                ) : (
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
+                    <span className="text-gray-700">Complete assessment to get personalized focus areas</span>
+                  </li>
                 )}
               </ul>
             </div>
