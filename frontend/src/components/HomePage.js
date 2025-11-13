@@ -108,10 +108,22 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
     }
   };
 
+  // Calculate next assessment date (typically 4-6 weeks from last assessment)
+  const getNextAssessmentDate = () => {
+    if (stats.recentAssessments && stats.recentAssessments.length > 0) {
+      const lastAssessment = stats.recentAssessments[0];
+      const lastDate = new Date(lastAssessment.assessment_date || lastAssessment.created_at);
+      const nextDate = new Date(lastDate);
+      nextDate.setDate(nextDate.getDate() + 35); // 5 weeks
+      return nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+    return 'Start your journey';
+  };
+
   const quickActions = [
     {
       title: hasAssessment ? 'New Assessment' : 'Start Assessment',
-      description: hasAssessment ? 'Evaluate player performance' : 'Complete your first assessment',
+      description: hasAssessment ? `Next recommended: ${getNextAssessmentDate()}` : 'Complete your first assessment',
       icon: <BarChart3 className="w-6 h-6" />,
       color: 'bg-blue-500',
       action: () => onNavigate('assessment')
@@ -121,7 +133,7 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
       description: hasProgram ? 'Resume your training program' : 'Access training programs',
       icon: <PlayCircle className="w-6 h-6" />,
       color: 'bg-green-500',
-      action: handleGetStarted
+      action: () => onNavigate('training')
     },
     {
       title: 'My Reports',
@@ -132,7 +144,7 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
     },
     {
       title: 'Progress Tracker',
-      description: 'Monitor improvements',
+      description: 'Compare past assessments',
       icon: <TrendingUp className="w-6 h-6" />,
       color: 'bg-orange-500',
       action: () => onNavigate('progress')
