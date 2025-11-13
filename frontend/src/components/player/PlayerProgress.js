@@ -1,46 +1,148 @@
-import React, { useState } from 'react';
-import { TrendingUp, Award } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { TrendingUp, Award, Calendar } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const PlayerProgress = () => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overall');
+  const [benchmarks, setBenchmarks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [consistencyData, setConsistencyData] = useState([]);
+  const [technicalData, setTechnicalData] = useState([]);
+  const [skillProfile, setSkillProfile] = useState([]);
+  const [dailyProgress, setDailyProgress] = useState([]);
 
-  const consistencyData = [
-    { week: 'W1', completion: 80 },
-    { week: 'W2', completion: 85 },
-    { week: 'W3', completion: 90 },
-    { week: 'W4', completion: 75 },
-    { week: 'W5', completion: 95 },
-    { week: 'W6', completion: 88 }
-  ];
+  useEffect(() => {
+    if (user?.id) {
+      fetchProgressData();
+    }
+  }, [user]);
 
-  const technicalData = [
-    { assessment: 'Jan', dribbling: 85, passing: 80, shooting: 75 },
-    { assessment: 'Feb', dribbling: 88, passing: 85, shooting: 80 },
-    { assessment: 'Mar', dribbling: 92, passing: 88, shooting: 85 }
-  ];
+  const fetchProgressData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
 
-  const skillProfile = [
-    { skill: 'Speed', current: 92, threeMonthsAgo: 85 },
-    { skill: 'Agility', current: 90, threeMonthsAgo: 82 },
-    { skill: 'Stamina', current: 88, threeMonthsAgo: 85 },
-    { skill: 'Technical', current: 95, threeMonthsAgo: 88 },
-    { skill: 'Tactical', current: 85, threeMonthsAgo: 78 },
-    { skill: 'Mental', current: 90, threeMonthsAgo: 85 }
-  ];
+      // Fetch all benchmarks (assessments)
+      const benchmarksRes = await axios.get(`${BACKEND_URL}/api/auth/benchmarks`, { headers });
+      const allBenchmarks = benchmarksRes.data || [];
+      
+      // Sort by date
+      allBenchmarks.sort((a, b) => new Date(a.saved_at) - new Date(b.saved_at));
+      setBenchmarks(allBenchmarks);
 
-  const achievements = [
-    { id: 1, title: '7-Day Streak', icon: '🔥', earned: '2024-03-15' },
-    { id: 2, title: 'Speed Milestone', icon: '⚡', earned: '2024-03-10' },
-    { id: 3, title: '80%+ Month', icon: '🏆', earned: '2024-02-28' },
-    { id: 4, title: 'First Touch Master', icon: '⚽', earned: '2024-02-15' }
-  ];
+      // Fetch daily progress for consistency tracking
+      try {
+        const progressRes = await axios.get(`${BACKEND_URL}/api/daily-progress/${user.id}`, { headers });
+        setDailyProgress(progressRes.data || []);
+      } catch (err) {
+        console.log('Daily progress not available:', err);
+      }
+
+      // Process benchmarks into chart data
+      if (allBenchmarks.length > 0) {
+        // Technical data over time
+        const techData = allBenchmarks.map(benchmark => {
+          const data = benchmark.assessment_data || {};
+          return {
+            date: new Date(benchmark.saved_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            ballControl: (data.ball_control || 3) * 20,
+            passing: data.passing_accuracy || 60,
+            dribbling: data.dribbling_success || 60,
+            shooting: data.shooting_accuracy || 55
+          };
+        });
+        setTechnicalData(techData);
+
+        // Skill profile comparison (latest vs first)
+        if (allBenchmarks.length >= 1) {
+          const latest = allBenchmarks[allBenchmarks.length - 1].assessment_data || {};
+          const first = allBenchmarks[0].assessment_data || {};
+          
+          const profile = [
+            { 
+              skill: 'Speed', 
+              current: latest.sprint_30m ? Math.max(0, 100 - (latest.sprint_30m - 4.0) * 20) : 70,
+              baseline: first.sprint_30m ? Math.max(0, 100 - (first.sprint_30m - 4.0) * 20) : 65
+            },
+            { 
+              skill: 'Endurance', 
+              current: latest.yo_yo_test ? (latest.yo_yo_test / 2000) * 100 : 70,
+              baseline: first.yo_yo_test ? (first.yo_yo_test / 2000) * 100 : 65
+            },
+            { 
+              skill: 'Ball Control', 
+              current: (latest.ball_control || 3) * 20,
+              baseline: (first.ball_control || 3) * 20
+            },
+            { 
+              skill: 'Passing', 
+              current: latest.passing_accuracy || 65,
+              baseline: first.passing_accuracy || 60
+            },
+            { 
+              skill: 'Tactical', 
+              current: (latest.positioning || 3) * 20,
+              baseline: (first.positioning || 3) * 20
+            },
+            { 
+              skill: 'Mental', 
+              current: (latest.mental_toughness || 3) * 20,
+              baseline: (first.mental_toughness || 3) * 20
+            }
+          ];
+          setSkillProfile(profile);
+        }
+
+        // Training consistency from daily progress
+        if (dailyProgress.length > 0) {
+          const weeklyData = dailyProgress.slice(0, 6).reverse().map((day, idx) => {
+            const completed = day.completed_exercises?.filter(ex => ex.completed).length || 0;
+            const total = day.completed_exercises?.length || 1;
+            return {
+              week: `W${idx + 1}`,
+              completion: Math.round((completed / total) * 100)
+            };
+          });
+          setConsistencyData(weeklyData);
+        }
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching progress data:', error);
+      setLoading(false);
+    }
+  };
+
+  const achievements = benchmarks.map((benchmark, idx) => ({
+    id: benchmark.id,
+    title: `Assessment #${idx + 1}`,
+    icon: idx === 0 ? '🎯' : '📈',
+    earned: new Date(benchmark.saved_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }));
 
   const coachFeedback = [
-    '"Your left foot has improved dramatically!" - Coach Mike',
-    '"Great work on tactical awareness" - Coach Sarah',
-    '"Keep up the consistency!" - Coach Mike'
+    '"Keep up the consistent training!" - AI Coach',
+    '"Great improvement in your weak areas" - AI Coach',
+    '"Remember to focus on recovery" - AI Coach'
   ];
+
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your progress...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
