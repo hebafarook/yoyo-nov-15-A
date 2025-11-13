@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import ParentOverview from './ParentOverview';
+import { LogOut } from 'lucide-react';
 import ParentTrainingPlan from './ParentTrainingPlan';
 import ParentAssessments from './ParentAssessments';
 import ParentPerformance from './ParentPerformance';
