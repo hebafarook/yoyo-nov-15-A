@@ -1509,7 +1509,7 @@ const MainDashboard = () => {
                 className={`tab-trigger ${activeTab === "reports" ? "active" : ""}`}
               >
                 <FileText className="w-4 h-4" />
-                My Reports
+                Player Reports
               </button>
             </>
           )}
