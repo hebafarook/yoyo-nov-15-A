@@ -38,6 +38,7 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
   const [isLoading, setIsLoading] = useState(false);
   const [assessmentSuccess, setAssessmentSuccess] = useState(false);
   const [assessmentMessage, setAssessmentMessage] = useState('');
+  const [lastAssessmentId, setLastAssessmentId] = useState(null);
 
   // Auto-populate player data from user profile
   useEffect(() => {
