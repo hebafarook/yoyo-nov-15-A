@@ -182,19 +182,27 @@ def analyze_assessment_with_llm(assessment: dict, previous_assessments: list, st
     passing = assessment.get('passing_accuracy', 0)
     overall = assessment.get('overall_score', 0)
     
-    # Performance level determination
-    if overall >= 80:
+    # Performance level determination (as per system requirements)
+    if overall >= 90:
         perf_level = "Elite"
         level_desc = "exceptional performance across all areas"
-    elif overall >= 70:
+    elif overall >= 75:
         perf_level = "Advanced"
         level_desc = "strong performance with room for refinement"
     elif overall >= 60:
-        perf_level = "Intermediate"
+        perf_level = "Standard"
         level_desc = "solid foundation with clear development opportunities"
     else:
-        perf_level = "Developing"
+        perf_level = "Needs Development"
         level_desc = "building fundamental skills and fitness"
+    
+    # Calculate % of standard for each metric
+    sprint_percent = (standards['sprint_30m'] / sprint * 100) if sprint > 0 else 0
+    agility_percent = (agility / standards['yo_yo_test'] * 100) if agility > 0 else 0
+    reaction_percent = 100 if reaction_time < 300 else (300 / reaction_time * 100) if reaction_time > 0 else 0
+    endurance_percent = (endurance / standards['yo_yo_test'] * 100) if endurance > 0 else 0
+    ball_control_percent = (ball_control / standards['ball_control'] * 100) if ball_control > 0 else 0
+    passing_percent = (passing / standards['passing_accuracy'] * 100) if passing > 0 else 0
     
     # Overall Analysis (AI-generated comprehensive overview)
     overall_analysis = f"""
