@@ -125,7 +125,12 @@ export const AuthProvider = ({ children }) => {
 
   const getSavedReports = async () => {
     try {
-      const response = await axios.get(`${API}/auth/saved-reports`);
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API}/auth/saved-reports`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       return { success: true, reports: response.data };
     } catch (error) {
       console.error('Failed to fetch saved reports:', error);
@@ -138,7 +143,12 @@ export const AuthProvider = ({ children }) => {
 
   const deleteSavedReport = async (reportId) => {
     try {
-      await axios.delete(`${API}/auth/saved-reports/${reportId}`);
+      const token = localStorage.getItem('token');
+      await axios.delete(`${API}/auth/saved-reports/${reportId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       return { success: true };
     } catch (error) {
       console.error('Failed to delete report:', error);
