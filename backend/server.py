@@ -77,6 +77,9 @@ class AssessmentCreate(BaseModel):
     player_name: str
     age: int
     position: str
+    height_cm: Optional[float] = None
+    weight_kg: Optional[float] = None
+    assessment_date: Optional[str] = None
     # Physical metrics
     sprint_30m: float
     yo_yo_test: int
