@@ -200,7 +200,7 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
       <Card className="w-full max-w-md">
         <CardHeader className="relative">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
           >
             <X className="w-5 h-5" />
