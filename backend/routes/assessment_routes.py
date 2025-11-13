@@ -183,6 +183,66 @@ async def get_latest_assessment(
             detail="Failed to fetch latest assessment"
         )
 
+@router.get("/player/{player_name}/status")
+async def get_assessment_status(
+    player_name: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Get assessment status including latest assessment and next due date"""
+    try:
+        from datetime import timedelta
+        
+        # Verify token and get user info
+        current_user = await verify_token_async(credentials.credentials)
+        
+        # Check if user has access to this player's data
+        if not await check_player_access(player_name, current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied"
+            )
+        
+        # Get latest assessment
+        assessment = await db.assessments.find_one(
+            {"player_name": player_name},
+            sort=[("created_at", -1)]
+        )
+        
+        if not assessment:
+            return {
+                "has_assessment": False,
+                "message": "No assessment found. Complete your first assessment to get started."
+            }
+        
+        # Calculate next assessment date (6-8 weeks based on performance level)
+        assessment_date = assessment.get('created_at')
+        overall_score = assessment.get('overall_score', 0)
+        weeks_until_next = 6 if overall_score < 70 else 8
+        
+        next_date = assessment_date + timedelta(weeks=weeks_until_next)
+        is_due = datetime.now(timezone.utc) >= next_date
+        
+        return {
+            "has_assessment": True,
+            "latest_assessment_id": assessment.get('id'),
+            "latest_assessment_date": assessment_date.isoformat(),
+            "overall_score": overall_score,
+            "performance_level": assessment.get('performance_level'),
+            "next_assessment_due": next_date.isoformat(),
+            "is_due": is_due,
+            "days_until_due": (next_date - datetime.now(timezone.utc)).days,
+            "can_create_new": is_due
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching assessment status: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch assessment status"
+        )
+
 @router.get("/{assessment_id}", response_model=PlayerAssessment)
 async def get_assessment(
     assessment_id: str,
