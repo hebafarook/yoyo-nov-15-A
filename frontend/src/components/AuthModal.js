@@ -173,6 +173,25 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
     setSelectedPortal(null);
     setError('');
   };
+  
+  const handleClose = () => {
+    // Reset to portal selection when closing
+    setStep('portal');
+    setSelectedPortal(null);
+    setError('');
+    setFormData({
+      username: '',
+      email: '',
+      full_name: '',
+      password: '',
+      confirmPassword: '',
+      role: 'parent',
+      age: '',
+      position: '',
+      is_coach: false
+    });
+    onClose();
+  };
 
   if (!isOpen) return null;
 
