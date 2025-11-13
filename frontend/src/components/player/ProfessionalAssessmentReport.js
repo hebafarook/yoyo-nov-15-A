@@ -444,7 +444,10 @@ Report ID: ${report.id}
                 ) : (
                   <>
                     <Play className="w-6 h-6" />
-                    Generate Personalized Program
+                    <div>
+                      <div>Generate Both Programs Now</div>
+                      <div className="text-xs font-normal mt-1">Coach Program + AI Model Training</div>
+                    </div>
                   </>
                 )}
               </button>
