@@ -160,15 +160,15 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
       action: () => onNavigate('training')
     },
     {
-      title: 'My Reports',
-      description: 'View saved assessments',
+      title: 'Player Reports',
+      description: 'View AI-generated reports',
       icon: <FileText className="w-6 h-6" />,
       color: 'bg-purple-500',
       action: () => onNavigate('reports')
     },
     {
-      title: 'Progress Tracker',
-      description: 'Compare past assessments',
+      title: 'Performance Progress',
+      description: 'Track improvements over time',
       icon: <TrendingUp className="w-6 h-6" />,
       color: 'bg-orange-500',
       action: () => onNavigate('progress')
