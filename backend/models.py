@@ -284,6 +284,9 @@ class UserCreate(BaseModel):
     # Player-specific fields (optional, for when role="player")
     age: Optional[int] = None
     position: Optional[str] = None
+    height: Optional[str] = None
+    weight: Optional[str] = None
+    dominant_foot: Optional[str] = None
 
 class UserLogin(BaseModel):
     username: str
