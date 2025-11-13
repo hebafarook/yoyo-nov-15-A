@@ -601,59 +601,124 @@ const AssessmentForm = ({ onAssessmentCreated, setActiveTab }) => {
           
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <Label htmlFor="player_name" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
-                  Player Name
-                </Label>
-                <input
-                  id="player_name"
-                  name="player_name"
-                  value={formData.player_name}
-                  onChange={handleChange}
-                  required
-                  className="input-field"
-                  placeholder="Enter player name"
-                />
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold text-gray-900">Player Information</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <Label htmlFor="player_name" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
+                    Player Name {user?.role === 'player' && <span className="text-xs text-gray-500">(Auto-filled)</span>}
+                  </Label>
+                  <input
+                    id="player_name"
+                    name="player_name"
+                    value={formData.player_name}
+                    onChange={handleChange}
+                    required
+                    readOnly={user?.role === 'player'}
+                    className={`input-field ${user?.role === 'player' ? 'bg-gray-100' : ''}`}
+                    placeholder="Enter player name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="age" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
+                    Age {user?.age && <span className="text-xs text-gray-500">(Auto-filled)</span>}
+                  </Label>
+                  <input
+                    id="age"
+                    name="age"
+                    type="number"
+                    min="12"
+                    max="25"
+                    value={formData.age}
+                    onChange={handleChange}
+                    required
+                    className="input-field"
+                    placeholder="Player age"
+                  />
+                  {formData.age && (
+                    <span className="badge-good mt-2 inline-block">
+                      Age Group: {getAgeCategory(parseInt(formData.age))}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="position" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
+                    Position {user?.position && <span className="text-xs text-gray-500">(Auto-filled)</span>}
+                  </Label>
+                  <Select 
+                    value={formData.position}
+                    onValueChange={(value) => setFormData({...formData, position: value})}
+                  >
+                    <SelectTrigger className="input-field">
+                      <SelectValue placeholder="Select position" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="goalkeeper">Goalkeeper</SelectItem>
+                      <SelectItem value="defender">Defender</SelectItem>
+                      <SelectItem value="midfielder">Midfielder</SelectItem>
+                      <SelectItem value="forward">Forward</SelectItem>
+                      <SelectItem value="striker">Striker</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div>
-                <Label htmlFor="age" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
-                  Age
-                </Label>
-                <input
-                  id="age"
-                  name="age"
-                  type="number"
-                  min="12"
-                  max="25"
-                  value={formData.age}
-                  onChange={handleChange}
-                  required
-                  className="input-field"
-                  placeholder="Player age"
-                />
-                {formData.age && (
-                  <span className="badge-good mt-2 inline-block">
-                    Age Group: {getAgeCategory(parseInt(formData.age))}
-                  </span>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="position" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
-                  Position
-                </Label>
-                <Select onValueChange={(value) => setFormData({...formData, position: value})}>
-                  <SelectTrigger className="input-field">
-                    <SelectValue placeholder="Select position" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="goalkeeper">Goalkeeper</SelectItem>
-                    <SelectItem value="defender">Defender</SelectItem>
-                    <SelectItem value="midfielder">Midfielder</SelectItem>
-                    <SelectItem value="forward">Forward</SelectItem>
-                    <SelectItem value="striker">Striker</SelectItem>
-                  </SelectContent>
-                </Select>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <Label htmlFor="height_cm" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
+                    Height (cm) *
+                  </Label>
+                  <input
+                    id="height_cm"
+                    name="height_cm"
+                    type="number"
+                    min="140"
+                    max="220"
+                    value={formData.height_cm}
+                    onChange={handleChange}
+                    required
+                    className="input-field"
+                    placeholder="e.g., 175"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="weight_kg" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
+                    Weight (kg) *
+                  </Label>
+                  <input
+                    id="weight_kg"
+                    name="weight_kg"
+                    type="number"
+                    min="40"
+                    max="120"
+                    step="0.1"
+                    value={formData.weight_kg}
+                    onChange={handleChange}
+                    required
+                    className="input-field"
+                    placeholder="e.g., 70"
+                  />
+                  {formData.height_cm && formData.weight_kg && (
+                    <span className="text-xs text-gray-600 mt-1 block">
+                      BMI: {(formData.weight_kg / ((formData.height_cm / 100) ** 2)).toFixed(1)}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="assessment_date" className="text-base font-medium mb-2 block" style={{color: 'var(--text-black)'}}>
+                    Assessment Date
+                  </Label>
+                  <input
+                    id="assessment_date"
+                    name="assessment_date"
+                    type="date"
+                    value={formData.assessment_date}
+                    onChange={handleChange}
+                    required
+                    className="input-field"
+                  />
+                </div>
               </div>
             </div>
 
