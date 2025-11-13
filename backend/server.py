@@ -2571,6 +2571,22 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import messaging routes: {e}")
 
+# Import Club Portal routes
+try:
+    from routes.club_routes import router as club_router
+    api_router.include_router(club_router, tags=["club-portal"])
+    logging.info("✅ Club Portal routes loaded successfully (Full Administrative System)")
+except ImportError as e:
+    logging.warning(f"Could not import club routes: {e}")
+
+# Import Club AI routes  
+try:
+    from routes.club_routes_ai import router as club_ai_router
+    api_router.include_router(club_ai_router, tags=["club-ai"])
+    logging.info("✅ Club AI & Analytics routes loaded successfully")
+except ImportError as e:
+    logging.warning(f"Could not import messaging routes: {e}")
+
 # Import Report Generation routes
 try:
     from routes.report_generation_routes import router as report_gen_router
