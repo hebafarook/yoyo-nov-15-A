@@ -1542,6 +1542,10 @@ const MainDashboard = () => {
           )}
         </TabsContent>
 
+        <TabsContent value="inbox">
+          <InboxDashboard />
+        </TabsContent>
+
         <TabsContent value="aicoach">
           {currentPlayer ? (
             <AICoachDashboard 
