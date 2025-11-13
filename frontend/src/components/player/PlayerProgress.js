@@ -171,32 +171,49 @@ const PlayerProgress = () => {
       {/* Overall Tab */}
       {activeTab === 'overall' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Training Consistency</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={consistencyData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="week" />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Line type="monotone" dataKey="completion" stroke="#3b82f6" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          {benchmarks.length === 0 ? (
+            <div className="bg-white rounded-2xl p-12 shadow-lg border border-gray-200 text-center">
+              <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-800 mb-2">No Progress Data Yet</h3>
+              <p className="text-gray-600 mb-4">Complete your first assessment to start tracking your progress!</p>
+            </div>
+          ) : (
+            <>
+              {consistencyData.length > 0 && (
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Training Consistency</h3>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <LineChart data={consistencyData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="week" />
+                      <YAxis domain={[0, 100]} />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="completion" stroke="#3b82f6" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
 
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Skill Profile Comparison</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart data={skillProfile}>
-                <PolarGrid stroke="#e5e7eb" />
-                <PolarAngleAxis dataKey="skill" />
-                <PolarRadiusAxis domain={[0, 100]} />
-                <Radar name="Now" dataKey="current" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} />
-                <Radar name="3 Months Ago" dataKey="threeMonthsAgo" stroke="#9ca3af" fill="#9ca3af" fillOpacity={0.2} />
-                <Legend />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
+              {skillProfile.length > 0 && (
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Skill Profile Comparison</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Latest vs Baseline • {benchmarks.length} assessment{benchmarks.length > 1 ? 's' : ''} completed
+                  </p>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <RadarChart data={skillProfile}>
+                      <PolarGrid stroke="#e5e7eb" />
+                      <PolarAngleAxis dataKey="skill" />
+                      <PolarRadiusAxis domain={[0, 100]} />
+                      <Radar name="Current" dataKey="current" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} />
+                      <Radar name="Baseline" dataKey="baseline" stroke="#9ca3af" fill="#9ca3af" fillOpacity={0.2} />
+                      <Legend />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
 
