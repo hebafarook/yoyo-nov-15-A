@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import List, Optional
 import logging
 from models import PlayerAssessment, AssessmentCreate
@@ -10,9 +11,30 @@ from utils.assessment_calculator import (
     generate_training_recommendations
 )
 from datetime import datetime, timezone
+from routes.auth_routes import verify_token
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+security = HTTPBearer()
+
+async def check_player_access(player_name: str, current_user: dict) -> bool:
+    """Check if current user has access to this player's data"""
+    role = current_user.get('role')
+    username = current_user.get('username')
+    user_id = current_user.get('user_id')
+    
+    # Players can only access their own data
+    if role == 'player':
+        return player_name == username
+    
+    # Parents and coaches can access their managed players
+    if role in ['parent', 'coach']:
+        user = await db.users.find_one({"id": user_id})
+        if user:
+            managed_players = user.get('managed_players', [])
+            return player_name in managed_players
+    
+    return False
 
 @router.post("/", response_model=PlayerAssessment)
 async def create_assessment(assessment: AssessmentCreate):
