@@ -392,6 +392,56 @@ Coach Recommendations Integrated:
         "status": "active",
         "completed_sessions": 0,
         "total_sessions": request.duration_weeks * request.training_days_per_week
+
+
+
+@router.get("/my-ai-program")
+async def get_my_ai_program(user_token: dict = Depends(verify_token)):
+    """Get the user's AI-powered training program"""
+    try:
+        user_id = user_token.get('id')
+        
+        # Find most recent AI program
+        program = await db.training_programs.find_one(
+            {"player_id": user_id, "program_type": "ai_personalized"},
+            sort=[("created_at", -1)]
+        )
+        
+        if not program:
+            raise HTTPException(status_code=404, detail="No AI program found")
+        
+        return {"success": True, "program": program}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching AI program: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/my-coach-program")
+async def get_my_coach_program(user_token: dict = Depends(verify_token)):
+    """Get the user's coach-guided training program"""
+    try:
+        user_id = user_token.get('id')
+        
+        # Find most recent coach program
+        program = await db.coach_programs.find_one(
+            {"player_id": user_id, "program_type": "coach_guided"},
+            sort=[("created_at", -1)]
+        )
+        
+        if not program:
+            raise HTTPException(status_code=404, detail="No coach program found")
+        
+        return {"success": True, "program": program}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching coach program: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
     }
     
     return coach_program
