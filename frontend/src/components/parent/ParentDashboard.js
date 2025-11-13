@@ -168,6 +168,16 @@ const ParentDashboard = () => {
                   {user?.full_name || 'Parent'}
                 </span>
               </div>
+
+              {/* Logout Button */}
+              <button
+                onClick={logout}
+                className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="text-sm font-medium">Logout</span>
+              </button>
             </div>
           </div>
         </div>
