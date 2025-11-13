@@ -239,18 +239,28 @@ Be extremely specific with exercises, sets, reps, rest periods, and progressions
             "total_sessions": request.duration_weeks * request.training_days_per_week
         }
         
-        # Save to database
+        # Save AI program to database
         await db.training_programs.insert_one(prepare_for_mongo(program_data))
         
         # Also save to periodized_programs for compatibility
         await save_compatible_program(program_data, request)
         
-        logger.info(f"✅ Program saved: {request.duration_weeks} weeks, {request.training_days_per_week}x/week")
+        logger.info(f"✅ AI Program saved: {request.duration_weeks} weeks, {request.training_days_per_week}x/week")
+        
+        # Generate coach-guided program as well
+        coach_program_id = None
+        if request.generate_both_programs:
+            coach_program_data = await generate_coach_program(request, intensity_modifier)
+            await db.coach_programs.insert_one(prepare_for_mongo(coach_program_data))
+            coach_program_id = coach_program_data["id"]
+            logger.info(f"✅ Coach Program saved: {coach_program_id}")
         
         return {
             "success": True,
-            "program_id": program_data["id"],
-            "message": f"Personalized {request.duration_weeks}-week program generated",
+            "programs_generated": 2 if request.generate_both_programs else 1,
+            "ai_program_id": program_data["id"],
+            "coach_program_id": coach_program_id,
+            "message": f"Both training programs generated successfully!" if request.generate_both_programs else f"AI program generated",
             "program_summary": {
                 "duration_weeks": request.duration_weeks,
                 "sessions_per_week": request.training_days_per_week,
@@ -263,6 +273,18 @@ Be extremely specific with exercises, sets, reps, rest periods, and progressions
                     f"{request.performance_level} level",
                     f"Recovery: {request.recovery_priority}",
                     f"Equipment: {request.equipment_available}"
+                ],
+                "programs": [
+                    {
+                        "type": "AI-Powered Model",
+                        "id": program_data["id"],
+                        "features": ["Machine learning optimization", "Dynamic adjustment", "Performance tracking"]
+                    },
+                    {
+                        "type": "Coach-Guided Program",
+                        "id": coach_program_id,
+                        "features": ["Professional methodology", "Position-specific", "Coach recommendations"]
+                    } if request.generate_both_programs else None
                 ]
             }
         }
