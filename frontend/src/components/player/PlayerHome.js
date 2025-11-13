@@ -307,16 +307,118 @@ const PlayerHome = ({ onStartSession }) => {
         </div>
       )}
 
+      {/* Player Profile Card */}
+      <div className="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 shadow-lg border-2 border-yellow-400">
+        <h3 className="text-xl font-bold text-white mb-4">📋 Player Profile</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+            <p className="text-xs text-purple-200">Height</p>
+            <p className="text-lg font-bold text-white">{playerProfile?.height || user?.height || '175 cm'}</p>
+          </div>
+          <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+            <p className="text-xs text-purple-200">Weight</p>
+            <p className="text-lg font-bold text-white">{playerProfile?.weight || user?.weight || '68 kg'}</p>
+          </div>
+          <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+            <p className="text-xs text-purple-200">Position</p>
+            <p className="text-lg font-bold text-white">{user?.position || 'Forward'}</p>
+          </div>
+          <div className="bg-white/10 rounded-xl p-3 backdrop-blur-sm">
+            <p className="text-xs text-purple-200">Date Joined</p>
+            <p className="text-lg font-bold text-white">
+              {user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Jan 2024'}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Injury Reports */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-red-200">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+            <Heart className="w-6 h-6 text-red-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-800">🏥 Injury & Health Reports</h3>
+        </div>
+        
+        {injuryReports.length > 0 ? (
+          <div className="space-y-3">
+            {injuryReports.map((report) => (
+              <div key={report.id} className={`p-4 rounded-xl border-2 ${
+                report.severity === 'low' ? 'bg-green-50 border-green-200' :
+                report.severity === 'medium' ? 'bg-yellow-50 border-yellow-200' :
+                'bg-red-50 border-red-200'
+              }`}>
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <h4 className="font-bold text-gray-800">{report.injury}</h4>
+                    <p className="text-xs text-gray-600">{new Date(report.date).toLocaleDateString()}</p>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                    report.status === 'Recovered' ? 'bg-green-600 text-white' :
+                    report.status === 'In Recovery' ? 'bg-yellow-600 text-white' :
+                    'bg-red-600 text-white'
+                  }`}>
+                    {report.status}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-700">{report.notes}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-2" />
+            <p className="text-sm text-gray-600 font-medium">No injuries reported - Keep up the good health! 💪</p>
+          </div>
+        )}
+      </div>
+
+      {/* Coach Comments & Notes */}
+      <div className="bg-white rounded-2xl p-6 shadow-lg border-2 border-indigo-200">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+            <MessageSquare className="w-6 h-6 text-indigo-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-800">💬 Coach Comments & Notes</h3>
+        </div>
+        
+        <div className="space-y-3">
+          {coachComments.map((comment) => (
+            <div key={comment.id} className={`p-4 rounded-xl border-l-4 ${
+              comment.type === 'positive' ? 'bg-green-50 border-green-500' :
+              comment.type === 'improvement' ? 'bg-yellow-50 border-yellow-500' :
+              'bg-blue-50 border-blue-500'
+            }`}>
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <h4 className="font-bold text-gray-800">{comment.coach}</h4>
+                  <p className="text-xs text-gray-600">{new Date(comment.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                </div>
+                {comment.type === 'positive' && <span className="text-2xl">⭐</span>}
+                {comment.type === 'improvement' && <span className="text-2xl">📈</span>}
+              </div>
+              <p className="text-sm text-gray-700 italic">"{comment.comment}"</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Add Note Button */}
+        <button className="w-full mt-4 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition">
+          + Add Personal Note
+        </button>
+      </div>
+
       {/* Notifications */}
       <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">Recent Updates</h3>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">🔔 Recent Updates</h3>
         <div className="space-y-3">
           {notifications.map((notif) => {
             const Icon = notif.icon;
             return (
               <div key={notif.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-purple-600" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-800">{notif.text}</p>
