@@ -1390,7 +1390,7 @@ const MainDashboard = () => {
                 className="flex items-center gap-2"
               >
                 <FileText className="w-4 h-4" />
-                View Assessment Report
+                Player Reports
               </Button>
             )}
             
