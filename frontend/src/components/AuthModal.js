@@ -71,6 +71,15 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
       bgColor: 'bg-orange-500',
       hoverBg: 'hover:bg-orange-50',
       description: 'For club administrators to manage teams, staff, and performance'
+    },
+    {
+      id: 'admin',
+      name: 'System Admin',
+      icon: <Shield className="w-8 h-8" />,
+      color: 'red',
+      bgColor: 'bg-red-600',
+      hoverBg: 'hover:bg-red-50',
+      description: 'For system administrators to manage all users and system'
     }
   ];
   
