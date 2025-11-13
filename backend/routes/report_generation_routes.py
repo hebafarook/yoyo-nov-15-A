@@ -728,3 +728,263 @@ Return ONLY a valid JSON object with this exact structure:
         "weaknesses": weaknesses,
         "recommendations": recommendations[:4]
     }
+
+
+
+@router.post("/generate-comprehensive-roadmap")
+async def generate_comprehensive_roadmap(
+    assessment_id: str,
+    user_token: dict = Depends(verify_token)
+):
+    """
+    Generate a comprehensive player development roadmap report
+    Includes: All assessment data, AI analysis, coach recommendations, standards comparison
+    This is the complete report that players can print and save
+    """
+    try:
+        logger.info(f"Generating comprehensive roadmap for assessment: {assessment_id}")
+        
+        # Fetch assessment
+        assessment = await db.assessments.find_one({"id": assessment_id})
+        if not assessment:
+            raise HTTPException(status_code=404, detail="Assessment not found")
+        
+        # Fetch benchmark data
+        benchmark = await db.benchmarks.find_one({"assessment_id": assessment_id})
+        
+        # Fetch user profile
+        user = await db.users.find_one({"id": assessment.get('user_id')})
+        
+        player_name = assessment.get('player_name', 'Player')
+        age = assessment.get('age', 17)
+        position = assessment.get('position', 'Forward')
+        
+        # Generate AI-powered analysis if LLM available
+        ai_analysis = ""
+        coach_recommendations = []
+        standards_comparison = {}
+        
+        if llm_available and EMERGENT_KEY:
+            try:
+                # Create comprehensive analysis prompt
+                assessment_summary = f"""
+Player: {player_name}
+Age: {age}
+Position: {position}
+Assessment Date: {assessment.get('assessment_date', 'N/A')}
+
+PHYSICAL METRICS:
+- 30m Sprint: {assessment.get('sprint_30m', 'N/A')}s
+- Yo-Yo Test: {assessment.get('yo_yo_test', 'N/A')}m
+- VO2 Max: {assessment.get('vo2_max', 'N/A')}
+- Vertical Jump: {assessment.get('vertical_jump', 'N/A')}cm
+- Body Fat: {assessment.get('body_fat', 'N/A')}%
+
+TECHNICAL SKILLS (1-5):
+- Ball Control: {assessment.get('ball_control', 'N/A')}/5
+- Passing Accuracy: {assessment.get('passing_accuracy', 'N/A')}%
+- Dribbling Success: {assessment.get('dribbling_success', 'N/A')}%
+- Shooting Accuracy: {assessment.get('shooting_accuracy', 'N/A')}%
+- Defensive Duels: {assessment.get('defensive_duels', 'N/A')}%
+
+TACTICAL AWARENESS (1-5):
+- Game Intelligence: {assessment.get('game_intelligence', 'N/A')}/5
+- Positioning: {assessment.get('positioning', 'N/A')}/5
+- Decision Making: {assessment.get('decision_making', 'N/A')}/5
+
+MENTAL ATTRIBUTES (1-5):
+- Coachability: {assessment.get('coachability', 'N/A')}/5
+- Mental Toughness: {assessment.get('mental_toughness', 'N/A')}/5
+
+OVERALL SCORE: {benchmark.get('overall_score', 'N/A')}/5
+PERFORMANCE LEVEL: {benchmark.get('performance_level', 'N/A')}
+"""
+                
+                # Initialize LLM chat
+                chat = LlmChat(
+                    api_key=EMERGENT_KEY,
+                    session_id=f"roadmap-{assessment_id}-{datetime.now().timestamp()}",
+                    system_message="""You are an elite soccer coach and sports scientist. Create a comprehensive development roadmap for this player.
+
+Provide:
+1. DETAILED ANALYSIS: Overall assessment of player's current level
+2. STRENGTHS: Top 3-4 areas where player excels
+3. AREAS FOR DEVELOPMENT: Top 3-4 areas needing improvement
+4. COACH RECOMMENDATIONS: 6-8 specific, actionable training focuses
+5. STANDARDS COMPARISON: How player compares to age/position standards
+6. 12-WEEK ROADMAP: Specific phases and goals
+
+Be specific, professional, and encouraging. Focus on actionable insights."""
+                ).with_model("openai", "gpt-4o-mini")
+                
+                prompt = f"""Based on this player assessment data, create a comprehensive development roadmap:
+
+{assessment_summary}
+
+Format your response as:
+
+OVERALL ANALYSIS:
+[2-3 paragraphs analyzing current performance level, playing style, and potential]
+
+STRENGTHS:
+- [Strength 1 with specific metrics]
+- [Strength 2 with specific metrics]
+- [Strength 3 with specific metrics]
+
+AREAS FOR DEVELOPMENT:
+- [Area 1 with specific focus]
+- [Area 2 with specific focus]
+- [Area 3 with specific focus]
+
+COACH RECOMMENDATIONS:
+1. [Specific training recommendation]
+2. [Specific training recommendation]
+3. [Specific training recommendation]
+4. [Specific training recommendation]
+5. [Specific training recommendation]
+6. [Specific training recommendation]
+
+STANDARDS COMPARISON:
+Physical: [Comparison to age/position standards]
+Technical: [Comparison to age/position standards]
+Tactical: [Comparison to age/position standards]
+Mental: [Comparison to age/position standards]
+
+12-WEEK ROADMAP:
+Weeks 1-4: [Focus areas and goals]
+Weeks 5-8: [Focus areas and goals]
+Weeks 9-12: [Focus areas and goals]
+"""
+                
+                user_message = UserMessage(text=prompt)
+                ai_response = await chat.send_message(user_message)
+                
+                # Parse AI response
+                sections = ai_response.split('\n\n')
+                for section in sections:
+                    if section.startswith('OVERALL ANALYSIS:'):
+                        ai_analysis = section.replace('OVERALL ANALYSIS:', '').strip()
+                    elif section.startswith('COACH RECOMMENDATIONS:'):
+                        recs = section.replace('COACH RECOMMENDATIONS:', '').strip().split('\n')
+                        coach_recommendations = [r.strip() for r in recs if r.strip()]
+                    elif section.startswith('STANDARDS COMPARISON:'):
+                        comp = section.replace('STANDARDS COMPARISON:', '').strip()
+                        standards_comparison = {'analysis': comp}
+                
+                logger.info("✅ AI-powered roadmap generated successfully")
+                
+            except Exception as llm_error:
+                logger.error(f"LLM generation failed: {llm_error}")
+                # Fallback to template-based
+                ai_analysis = f"Assessment completed for {player_name}, Age {age}, playing as {position}. The player shows a balanced profile with room for development across all areas."
+                coach_recommendations = [
+                    "Focus on technical skill development through daily practice",
+                    "Improve physical conditioning with structured training",
+                    "Develop tactical awareness through game analysis",
+                    "Build mental resilience through challenging scenarios",
+                    "Maintain consistent training schedule",
+                    "Track progress with regular assessments"
+                ]
+        else:
+            # Fallback analysis
+            ai_analysis = f"Comprehensive assessment completed for {player_name}. Overall performance level: {benchmark.get('performance_level', 'Developing')}."
+            coach_recommendations = [
+                "Continue current training with focus on consistency",
+                "Develop weaker areas identified in assessment",
+                "Maintain strengths through regular practice",
+                "Set measurable short-term goals",
+                "Regular feedback sessions with coach",
+                "Re-assess in 4-6 weeks to track progress"
+            ]
+        
+        # Create comprehensive report document
+        report_data = {
+            "id": str(uuid.uuid4()),
+            "assessment_id": assessment_id,
+            "user_id": assessment.get('user_id'),
+            "report_type": "comprehensive_roadmap",
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            
+            # Player Info
+            "player_info": {
+                "name": player_name,
+                "age": age,
+                "position": position,
+                "height": assessment.get('height_cm', 'N/A'),
+                "weight": assessment.get('weight_kg', 'N/A'),
+                "assessment_date": assessment.get('assessment_date'),
+                "dominant_foot": user.get('dominant_foot', 'N/A') if user else 'N/A'
+            },
+            
+            # Complete Assessment Data
+            "assessment_data": {
+                "physical": {
+                    "sprint_30m": assessment.get('sprint_30m'),
+                    "yo_yo_test": assessment.get('yo_yo_test'),
+                    "vo2_max": assessment.get('vo2_max'),
+                    "vertical_jump": assessment.get('vertical_jump'),
+                    "body_fat": assessment.get('body_fat')
+                },
+                "technical": {
+                    "ball_control": assessment.get('ball_control'),
+                    "passing_accuracy": assessment.get('passing_accuracy'),
+                    "dribbling_success": assessment.get('dribbling_success'),
+                    "shooting_accuracy": assessment.get('shooting_accuracy'),
+                    "defensive_duels": assessment.get('defensive_duels')
+                },
+                "tactical": {
+                    "game_intelligence": assessment.get('game_intelligence'),
+                    "positioning": assessment.get('positioning'),
+                    "decision_making": assessment.get('decision_making')
+                },
+                "psychological": {
+                    "coachability": assessment.get('coachability'),
+                    "mental_toughness": assessment.get('mental_toughness')
+                }
+            },
+            
+            # Scores
+            "scores": {
+                "overall_score": benchmark.get('overall_score', 0) if benchmark else 0,
+                "physical_score": benchmark.get('physical_score', 0) if benchmark else 0,
+                "technical_score": benchmark.get('technical_score', 0) if benchmark else 0,
+                "tactical_score": benchmark.get('tactical_score', 0) if benchmark else 0,
+                "psychological_score": benchmark.get('psychological_score', 0) if benchmark else 0,
+                "performance_level": benchmark.get('performance_level', 'Developing') if benchmark else 'Developing'
+            },
+            
+            # AI Analysis
+            "ai_analysis": ai_analysis,
+            
+            # Coach Recommendations
+            "coach_recommendations": coach_recommendations,
+            
+            # Standards Comparison
+            "standards_comparison": standards_comparison,
+            
+            # Development Roadmap
+            "development_roadmap": {
+                "phase_1": "Weeks 1-4: Foundation building and baseline improvement",
+                "phase_2": "Weeks 5-8: Skill enhancement and tactical development",
+                "phase_3": "Weeks 9-12: Performance optimization and assessment preparation"
+            }
+        }
+        
+        # Save report to database
+        await db.comprehensive_reports.insert_one(prepare_for_mongo(report_data))
+        
+        logger.info(f"✅ Comprehensive roadmap saved for assessment {assessment_id}")
+        
+        return {
+            "success": True,
+            "report_id": report_data["id"],
+            "report_data": report_data,
+            "message": "Comprehensive roadmap generated successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating comprehensive roadmap: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
