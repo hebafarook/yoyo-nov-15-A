@@ -153,6 +153,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
   const switchMode = () => {
     setMode(mode === 'login' ? 'register' : 'login');
     setError('');
+    setStep('portal'); // Reset to portal selection
+    setSelectedPortal(null);
     setFormData({
       username: '',
       email: '',
@@ -164,6 +166,12 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
       position: '',
       is_coach: false
     });
+  };
+  
+  const handleBack = () => {
+    setStep('portal');
+    setSelectedPortal(null);
+    setError('');
   };
 
   if (!isOpen) return null;
@@ -178,22 +186,69 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
           >
             <X className="w-5 h-5" />
           </button>
-          <CardTitle className="flex items-center gap-2">
-            {mode === 'login' ? (
-              <>
-                <LogIn className="w-5 h-5" />
-                Login to Your Account
-              </>
-            ) : (
-              <>
-                <UserPlus className="w-5 h-5" />
-                Create New Account
-              </>
-            )}
-          </CardTitle>
+          {step === 'portal' ? (
+            <CardTitle className="text-center">
+              {mode === 'login' ? 'Login to Your Portal' : 'Choose Your Portal'}
+            </CardTitle>
+          ) : (
+            <CardTitle className="flex items-center gap-2">
+              <button
+                onClick={handleBack}
+                className="text-gray-400 hover:text-gray-600 mr-2"
+              >
+                ←
+              </button>
+              {mode === 'login' ? (
+                <>
+                  <LogIn className="w-5 h-5" />
+                  Login to {selectedPortal === 'player' ? 'Player' : selectedPortal === 'coach' ? 'Coach' : 'Parent'} Portal
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-5 h-5" />
+                  Register for {selectedPortal === 'player' ? 'Player' : selectedPortal === 'coach' ? 'Coach' : 'Parent'} Portal
+                </>
+              )}
+            </CardTitle>
+          )}
         </CardHeader>
         
         <CardContent>
+          {step === 'portal' ? (
+            /* Portal Selection Step */
+            <div className="space-y-4">
+              <p className="text-center text-gray-600 mb-6">
+                Select your portal to continue
+              </p>
+              {portals.map((portal) => (
+                <button
+                  key={portal.id}
+                  onClick={() => handlePortalSelect(portal.id)}
+                  className={`w-full p-4 border-2 border-gray-200 rounded-lg ${portal.hoverBg} transition-all hover:border-${portal.color}-500 hover:shadow-md text-left`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className={`${portal.bgColor} text-white p-3 rounded-lg`}>
+                      {portal.icon}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg">{portal.name}</h3>
+                      <p className="text-sm text-gray-600">{portal.description}</p>
+                    </div>
+                  </div>
+                </button>
+              ))}
+              
+              <div className="text-center pt-4 border-t">
+                <button
+                  onClick={switchMode}
+                  className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                >
+                  {mode === 'login' ? "Don't have an account? Register" : "Already have an account? Login"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Form Step */
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
