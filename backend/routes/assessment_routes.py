@@ -11,7 +11,7 @@ from utils.assessment_calculator import (
     generate_training_recommendations
 )
 from datetime import datetime, timezone
-from routes.auth_routes import verify_token
+from routes.auth_routes import verify_token, verify_token_async
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
