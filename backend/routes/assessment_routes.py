@@ -72,8 +72,10 @@ async def create_assessment(
             bmi=bmi
         )
         
-        # Prepare and save to database
+        # Prepare and save to database with user_id
         assessment_data = prepare_for_mongo(player_assessment.dict())
+        assessment_data['user_id'] = current_user.get('user_id')  # Link to user
+        assessment_data['created_by_username'] = current_user.get('username')
         result = await db.assessments.insert_one(assessment_data)
         
         # Return the created assessment
