@@ -258,22 +258,22 @@ Performance Level: {perf_level}
 {assessment.get('player_name')} demonstrates {level_desc} with an overall score of {overall:.1f}/100.
     """
     
-    # Identify Strengths (AI analysis)
-    strengths = []
-    if sprint <= standards['sprint_30m']:
-        strengths.append(f"Exceptional acceleration - 30m sprint of {sprint}s is elite level")
-    if yo_yo > standards['yo_yo_test']:
-        strengths.append(f"Outstanding aerobic capacity - Yo-Yo test result ({yo_yo}m) exceeds age standard")
-    if ball_control >= standards['ball_control']:
-        strengths.append(f"Strong ball mastery - Control rating ({ball_control}/5) demonstrates technical proficiency")
-    if passing >= standards['passing_accuracy']:
-        strengths.append(f"Accurate distribution - Passing accuracy ({passing}%) above age-appropriate benchmark")
-    if game_intel >= standards['game_intelligence']:
-        strengths.append(f"Advanced tactical awareness - Game intelligence ({game_intel}/5) shows mature understanding")
+    # Identify Strengths (Top 3 highest-performing metrics)
+    metric_performances = [
+        ("Sprint 30m", sprint_percent, f"Exceptional acceleration - 30m sprint at {sprint_percent:.0f}% of standard"),
+        ("Agility Test", agility_percent, f"Strong agility - Change-of-direction at {agility_percent:.0f}% of standard"),
+        ("Reaction Time", reaction_percent, f"Quick reactions - Response time at {reaction_percent:.0f}% of standard"),
+        ("Endurance", endurance_percent, f"Outstanding aerobic capacity - YoYo test at {endurance_percent:.0f}% of standard"),
+        ("Ball Control", ball_control_percent, f"Strong ball mastery - Control at {ball_control_percent:.0f}% of standard"),
+        ("Passing Accuracy", passing_percent, f"Accurate distribution - Passing at {passing_percent:.0f}% of standard")
+    ]
+    
+    # Sort by performance percentage and take top 3
+    metric_performances.sort(key=lambda x: x[1], reverse=True)
+    strengths = [item[2] for item in metric_performances[:3]]
     
     if not strengths:
-        strengths.append("Solid foundation established across multiple areas")
-        strengths.append("Consistent work ethic evident in assessment performance")
+        strengths = ["Solid foundation established", "Consistent performance", "Good work ethic"]
     
     # Identify Weaknesses (AI analysis)
     weaknesses = []
