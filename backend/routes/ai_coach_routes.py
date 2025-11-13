@@ -429,3 +429,161 @@ async def get_analysis_history(player_name: str, limit: int = 10):
     except Exception as e:
         logger.error(f"Error fetching analysis history: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@router.post("/player-insights")
+async def generate_player_insights(player_id: str):
+    """
+    Generate AI-powered insights for player dashboard
+    Analyzes player data and provides personalized recommendations
+    """
+    try:
+        db = get_database()
+        logger.info(f"Generating player insights for {player_id}")
+        
+        # Fetch player's recent data
+        benchmarks = await db.benchmarks.find(
+            {"user_id": player_id}
+        ).sort("benchmark_date", -1).limit(5).to_list(length=5)
+        
+        daily_progress = await db.daily_progress.find(
+            {"player_id": player_id}
+        ).sort("date", -1).limit(14).to_list(length=14)
+        
+        training_program = await db.periodized_programs.find_one(
+            {"player_id": player_id},
+            sort=[("created_at", -1)]
+        )
+        
+        if not benchmarks and not daily_progress:
+            return {
+                "success": True,
+                "insights": "Start your journey! Complete your first assessment to unlock personalized AI insights.",
+                "recommendations": [
+                    "Complete your initial assessment",
+                    "Set your training goals",
+                    "Begin your training program"
+                ],
+                "motivational_message": "Every champion started somewhere. Let's begin your development journey!"
+            }
+        
+        # Prepare data summary for AI
+        data_summary = f"""
+Player ID: {player_id}
+Recent Assessments: {len(benchmarks)}
+Training Days (Last 2 weeks): {len(daily_progress)}
+Has Active Program: {'Yes' if training_program else 'No'}
+
+"""
+        
+        if benchmarks:
+            latest = benchmarks[0]
+            data_summary += f"""
+Latest Assessment:
+- Overall Score: {latest.get('overall_score', 'N/A')}/5
+- Physical: {latest.get('physical_score', 'N/A')}/5
+- Technical: {latest.get('technical_score', 'N/A')}/5
+- Tactical: {latest.get('tactical_score', 'N/A')}/5
+"""
+        
+        if len(benchmarks) > 1:
+            trend = "improving" if benchmarks[0].get('overall_score', 0) > benchmarks[1].get('overall_score', 0) else "declining"
+            data_summary += f"Performance Trend: {trend}\n"
+        
+        if daily_progress:
+            completion_rate = len([p for p in daily_progress if p.get('completed_exercises')]) / len(daily_progress) * 100
+            data_summary += f"Training Completion Rate: {completion_rate:.1f}%\n"
+        
+        if not EMERGENT_KEY or EMERGENT_KEY == "your_emergent_llm_key_here":
+            # Mock response when API key not configured
+            return {
+                "success": True,
+                "insights": f"Great progress! You've completed {len(daily_progress)} training sessions recently. Keep up the consistency!",
+                "recommendations": [
+                    "Focus on your technical skills this week",
+                    "Maintain your training streak",
+                    "Stay consistent with recovery protocols"
+                ],
+                "motivational_message": "You're on the right track! Keep pushing yourself every day.",
+                "note": "Mock response - Emergent LLM key not configured"
+            }
+        
+        # Initialize LLM chat
+        chat = LlmChat(
+            api_key=EMERGENT_KEY,
+            session_id=f"insights-{player_id}-{datetime.now().timestamp()}",
+            system_message="""You are an elite soccer coach and sports analyst. Analyze player data and provide:
+            1. Key insights (2-3 sentences)
+            2. Specific recommendations (3-4 actionable items)
+            3. Motivational message (1 encouraging sentence)
+            
+            Be specific, actionable, and encouraging. Focus on what matters most for player development."""
+        ).with_model("openai", "gpt-4o-mini")
+        
+        # Create analysis prompt
+        prompt = f"""Analyze this player's recent performance and generate insights:
+
+{data_summary}
+
+Provide:
+1. KEY INSIGHTS: What patterns do you see? What's notable about their progress?
+2. RECOMMENDATIONS: 3-4 specific, actionable training focuses for the next week
+3. MOTIVATIONAL MESSAGE: One encouraging statement to keep them engaged
+
+Format your response as:
+INSIGHTS: [your insights]
+RECOMMENDATIONS:
+- [recommendation 1]
+- [recommendation 2]
+- [recommendation 3]
+MOTIVATION: [your message]
+"""
+        
+        # Get AI response
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        
+        # Parse response
+        insights_text = ""
+        recommendations = []
+        motivational_message = ""
+        
+        lines = response.split('\n')
+        current_section = None
+        
+        for line in lines:
+            line = line.strip()
+            if line.startswith('INSIGHTS:'):
+                current_section = 'insights'
+                insights_text = line.replace('INSIGHTS:', '').strip()
+            elif line.startswith('RECOMMENDATIONS:'):
+                current_section = 'recommendations'
+            elif line.startswith('MOTIVATION:'):
+                current_section = 'motivation'
+                motivational_message = line.replace('MOTIVATION:', '').strip()
+            elif current_section == 'insights' and line:
+                insights_text += ' ' + line
+            elif current_section == 'recommendations' and line.startswith('-'):
+                recommendations.append(line.replace('-', '').strip())
+            elif current_section == 'motivation' and line:
+                motivational_message += ' ' + line
+        
+        logger.info(f"✅ Player insights generated for {player_id}")
+        
+        return {
+            "success": True,
+            "insights": insights_text or "You're making great progress! Keep training consistently.",
+            "recommendations": recommendations if recommendations else [
+                "Continue your current training program",
+                "Focus on areas identified in your assessment",
+                "Stay consistent with daily sessions"
+            ],
+            "motivational_message": motivational_message or "Keep pushing forward - every session counts!",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Error generating player insights: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
