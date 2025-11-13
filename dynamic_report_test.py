@@ -106,7 +106,7 @@ class DynamicReportTester:
                 "mental_toughness": 4
             }
             
-            async with self.session.post(f"{API_BASE}/assessments", json=create_data) as response:
+            async with self.session.post(f"{API_BASE}/assessments/authenticated", json=create_data, headers=headers) as response:
                 if response.status == 200:
                     assessment_data = await response.json()
                     assessment_id = assessment_data.get('id')
