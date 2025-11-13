@@ -55,6 +55,27 @@ const PlayerHome = ({ onStartSession }) => {
         console.log('AI insights not available:', err);
       }
 
+      // Fetch player profile with extended info
+      try {
+        const profileRes = await axios.get(`${BACKEND_URL}/api/auth/profile`, { headers });
+        setPlayerProfile(profileRes.data);
+      } catch (err) {
+        console.log('Profile not available:', err);
+      }
+
+      // Fetch coach comments (mock for now)
+      setCoachComments([
+        { id: 1, coach: 'Coach Mike', date: '2024-01-10', comment: 'Great improvement in passing accuracy. Keep working on your weak foot.', type: 'positive' },
+        { id: 2, coach: 'Coach Sarah', date: '2024-01-08', comment: 'Need to focus more on defensive positioning during matches.', type: 'improvement' },
+        { id: 3, coach: 'Coach Mike', date: '2024-01-05', comment: 'Excellent work ethic in training. Speed drills showing results.', type: 'positive' }
+      ]);
+
+      // Fetch injury reports (mock for now)
+      setInjuryReports([
+        { id: 1, date: '2024-01-12', injury: 'Minor ankle strain', status: 'Recovered', severity: 'low', notes: 'Full training resumed' },
+        { id: 2, date: '2023-12-20', injury: 'Hamstring tightness', status: 'Recovered', severity: 'medium', notes: 'Completed rehab protocol' }
+      ]);
+
       setLoading(false);
     } catch (error) {
       console.error('Error fetching player data:', error);
