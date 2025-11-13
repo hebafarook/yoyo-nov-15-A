@@ -638,26 +638,99 @@ Report Date: ${new Date().toLocaleString()}
       </Card>
       
       {/* Assessment Trend Chart */}
-      {assessmentHistory.length > 1 && (
+      {assessmentHistory.length > 0 && (
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Performance Trend</CardTitle>
+            <CardTitle>Performance Trend Over Time</CardTitle>
+            <p className="text-sm text-gray-600 mt-1">
+              Track your progress across multiple assessments
+            </p>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={assessmentHistory}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="overall" stroke="#2563eb" strokeWidth={3} name="Overall" />
-                <Line type="monotone" dataKey="physical" stroke="#0891b2" strokeWidth={2} name="Physical" />
-                <Line type="monotone" dataKey="technical" stroke="#16a34a" strokeWidth={2} name="Technical" />
-                <Line type="monotone" dataKey="tactical" stroke="#9333ea" strokeWidth={2} name="Tactical" />
-                <Line type="monotone" dataKey="psychological" stroke="#f97316" strokeWidth={2} name="Psychological" />
-              </LineChart>
-            </ResponsiveContainer>
+            {assessmentHistory.length === 1 ? (
+              <div className="text-center py-12 text-gray-500">
+                <p className="mb-2">This is your first assessment!</p>
+                <p className="text-sm">Complete more assessments to see your progress trend</p>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={350}>
+                <LineChart 
+                  data={assessmentHistory}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey="date" 
+                    stroke="#6b7280"
+                    style={{ fontSize: '12px' }}
+                  />
+                  <YAxis 
+                    domain={[0, 100]} 
+                    stroke="#6b7280"
+                    style={{ fontSize: '12px' }}
+                    label={{ value: 'Score', angle: -90, position: 'insideLeft' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#ffffff', 
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      padding: '12px'
+                    }}
+                    formatter={(value) => [`${Math.round(value)}/100`, '']}
+                  />
+                  <Legend 
+                    wrapperStyle={{ paddingTop: '20px' }}
+                    iconType="line"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="overall" 
+                    stroke="#2563eb" 
+                    strokeWidth={4} 
+                    name="Overall Score"
+                    dot={{ fill: '#2563eb', r: 5 }}
+                    activeDot={{ r: 7 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="physical" 
+                    stroke="#0891b2" 
+                    strokeWidth={2} 
+                    name="Physical"
+                    dot={{ fill: '#0891b2', r: 4 }}
+                    strokeDasharray="5 5"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="technical" 
+                    stroke="#16a34a" 
+                    strokeWidth={2} 
+                    name="Technical"
+                    dot={{ fill: '#16a34a', r: 4 }}
+                    strokeDasharray="5 5"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="tactical" 
+                    stroke="#9333ea" 
+                    strokeWidth={2} 
+                    name="Tactical"
+                    dot={{ fill: '#9333ea', r: 4 }}
+                    strokeDasharray="5 5"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="psychological" 
+                    stroke="#f97316" 
+                    strokeWidth={2} 
+                    name="Psychological"
+                    dot={{ fill: '#f97316', r: 4 }}
+                    strokeDasharray="5 5"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
           </CardContent>
         </Card>
       )}
