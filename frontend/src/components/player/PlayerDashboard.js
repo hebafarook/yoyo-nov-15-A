@@ -79,21 +79,21 @@ const PlayerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
-      {/* Top Navigation - Royal Colors */}
-      <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-pink-900 border-b-4 border-yellow-400 shadow-xl sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      {/* Top Navigation - Main App Colors */}
+      <div className="bg-white border-b-2 border-blue-200 shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* User Header with Player Info */}
-          <div className="flex items-center justify-between py-3 border-b border-white/20">
+          <div className="flex items-center justify-between py-3 border-b border-gray-200">
             <div className="flex items-center space-x-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-indigo-900 font-bold text-2xl shadow-lg border-2 border-white">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
                 {(user?.username || 'P').substring(0, 1).toUpperCase()}
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">
+                <h1 className="text-xl font-bold text-gray-900">
                   {user?.full_name || user?.username || 'Player Dashboard'}
                 </h1>
-                <div className="flex items-center space-x-4 text-xs text-purple-200">
+                <div className="flex items-center space-x-4 text-xs text-gray-600">
                   <span>⚡ Position: {user?.position || 'Forward'}</span>
                   <span>📅 Age: {user?.age || 17}</span>
                   <span>📏 Height: {user?.height || '175cm'}</span>
@@ -102,15 +102,24 @@ const PlayerDashboard = () => {
                 </div>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-purple-200">Joined</p>
-              <p className="text-sm font-semibold text-yellow-400">
-                {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Jan 2024'}
-              </p>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-xs text-gray-500">Joined</p>
+                <p className="text-sm font-semibold text-blue-600">
+                  {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Jan 2024'}
+                </p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold text-sm"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
             </div>
           </div>
 
-          {/* Tabs Navigation - Royal Style */}
+          {/* Tabs Navigation - Main App Style */}
           <div className="flex space-x-1 overflow-x-auto py-2">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -120,8 +129,8 @@ const PlayerDashboard = () => {
                   onClick={() => setActiveTab(item.id)}
                   className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all ${
                     activeTab === item.id
-                      ? 'bg-yellow-400 text-indigo-900 shadow-lg transform scale-105'
-                      : 'text-purple-100 hover:bg-white/10 hover:text-white'
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
