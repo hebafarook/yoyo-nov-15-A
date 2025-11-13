@@ -252,6 +252,53 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
         </div>
       </div>
 
+      {/* Assessment Status Banner (Players Only) */}
+      {user?.role === 'player' && assessmentStatus && (
+        <Card className={`mb-6 ${assessmentStatus.is_due ? 'border-orange-500 bg-orange-50' : 'border-green-500 bg-green-50'}`}>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className={`p-3 rounded-full ${assessmentStatus.is_due ? 'bg-orange-500' : 'bg-green-500'}`}>
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold">
+                    {assessmentStatus.has_assessment 
+                      ? (assessmentStatus.is_due 
+                          ? '🔔 New Assessment Due!' 
+                          : '✅ Assessment Up to Date')
+                      : '📝 Start Your First Assessment'}
+                  </h3>
+                  <p className="text-sm text-gray-700">
+                    {assessmentStatus.has_assessment 
+                      ? (assessmentStatus.is_due 
+                          ? `Your next assessment is ready. Last completed: ${new Date(assessmentStatus.latest_assessment_date).toLocaleDateString()}`
+                          : `Next assessment due in ${assessmentStatus.days_until_due} days (${new Date(assessmentStatus.next_assessment_due).toLocaleDateString()})`)
+                      : assessmentStatus.message}
+                  </p>
+                  {assessmentStatus.has_assessment && (
+                    <div className="flex gap-3 mt-2">
+                      <span className="text-xs font-semibold px-2 py-1 bg-white rounded">
+                        Current Score: {Math.round(assessmentStatus.overall_score)}/100
+                      </span>
+                      <span className="text-xs font-semibold px-2 py-1 bg-white rounded">
+                        Level: {assessmentStatus.performance_level}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <Button 
+                onClick={() => onNavigate('assessment')}
+                className={assessmentStatus.is_due || !assessmentStatus.has_assessment ? 'bg-orange-600 hover:bg-orange-700' : 'bg-green-600 hover:bg-green-700'}
+              >
+                {assessmentStatus.is_due || !assessmentStatus.has_assessment ? 'Take Assessment Now' : 'View Assessment'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card className="border-l-4 border-l-blue-500">
