@@ -14,7 +14,7 @@ import CoachMessages from './CoachMessages';
 import CoachSettings from './CoachSettings';
 import { 
   Home, Users, FileText, Activity, Book, Zap, Shield, MessageSquare, 
-  Settings, Bell, Search, Menu, X, Heart 
+  Settings, Bell, Search, Menu, X, Heart, LogOut 
 } from 'lucide-react';
 
 const CoachDashboard = () => {
