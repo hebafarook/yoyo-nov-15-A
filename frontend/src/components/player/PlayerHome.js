@@ -18,6 +18,8 @@ const PlayerHome = ({ onStartSession }) => {
     }
   }, [user]);
 
+  const [aiInsights, setAiInsights] = useState(null);
+
   const fetchPlayerData = async () => {
     try {
       setLoading(true);
@@ -35,6 +37,20 @@ const PlayerHome = ({ onStartSession }) => {
       // Fetch performance metrics
       const metricsRes = await axios.get(`${BACKEND_URL}/api/performance-metrics/${user.id}`, { headers });
       setPerformanceMetrics(metricsRes.data);
+
+      // Fetch AI insights
+      try {
+        const insightsRes = await axios.post(`${BACKEND_URL}/api/ai-coach/player-insights`, 
+          null,
+          { 
+            headers,
+            params: { player_id: user.id }
+          }
+        );
+        setAiInsights(insightsRes.data);
+      } catch (err) {
+        console.log('AI insights not available:', err);
+      }
 
       setLoading(false);
     } catch (error) {
