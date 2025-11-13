@@ -480,12 +480,24 @@ async def generate_dynamic_report(
         user_id = current_user.get('user_id')
         
         # Get latest assessment for the player
+        logger.info(f"Looking for assessment: player_name={player_name}, user_id={user_id}")
+        
+        # First try with user_id
         latest_assessment = await db.assessments.find_one(
             {"player_name": player_name, "user_id": user_id},
             sort=[("created_at", -1)]
         )
         
+        # If not found, try without user_id for testing
         if not latest_assessment:
+            logger.info(f"No assessment found with user_id, trying without user_id")
+            latest_assessment = await db.assessments.find_one(
+                {"player_name": player_name},
+                sort=[("created_at", -1)]
+            )
+        
+        if not latest_assessment:
+            logger.error(f"No assessment found for player: {player_name}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"No assessment found for player: {player_name}"
