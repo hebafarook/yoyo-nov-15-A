@@ -158,10 +158,10 @@ const PlayerTrainingPlan = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Week Summary */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-6 text-white shadow-lg border-2 border-yellow-400">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-3xl font-bold mb-2">Week {weekPlan.weekNumber} Training Plan</h2>
+            <h2 className="text-3xl font-bold mb-2">📅 Week {weekPlan.weekNumber} Training Plan</h2>
             <p className="text-lg font-medium mb-1">Focus: {weekPlan.focus}</p>
           </div>
           <Calendar className="w-12 h-12 text-white/80" />
