@@ -175,15 +175,29 @@ async def get_latest_assessment(
         )
 
 @router.get("/{assessment_id}", response_model=PlayerAssessment)
-async def get_assessment(assessment_id: str):
+async def get_assessment(
+    assessment_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Get a specific assessment by ID"""
     try:
+        # Verify token and get user info
+        current_user = await verify_token(credentials.credentials)
+        
         assessment = await db.assessments.find_one({"id": assessment_id})
         
         if not assessment:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Assessment not found"
+            )
+        
+        # Check if user has access to this player's data
+        player_name = assessment.get("player_name")
+        if not await check_player_access(player_name, current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: You don't have permission to view this assessment"
             )
         
         return PlayerAssessment(**parse_from_mongo(assessment))
