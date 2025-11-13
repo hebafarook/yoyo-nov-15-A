@@ -1436,8 +1436,19 @@ const MainDashboard = () => {
                 </Button>
               </>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <span className="text-sm font-medium">Welcome, {user?.full_name}</span>
+                {user?.role === 'player' && (
+                  <Button
+                    onClick={() => setActiveTab('reports')}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 bg-blue-50 border-blue-300 hover:bg-blue-100"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Latest Reports
+                  </Button>
+                )}
                 <Button
                   onClick={logout}
                   variant="outline"
