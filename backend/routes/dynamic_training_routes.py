@@ -392,7 +392,9 @@ Coach Recommendations Integrated:
         "status": "active",
         "completed_sessions": 0,
         "total_sessions": request.duration_weeks * request.training_days_per_week
-
+    }
+    
+    return coach_program
 
 
 @router.get("/my-ai-program")
