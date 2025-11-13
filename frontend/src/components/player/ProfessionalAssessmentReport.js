@@ -128,10 +128,11 @@ Report ID: ${report.id}
       const token = localStorage.getItem('token');
       const headers = { Authorization: `Bearer ${token}` };
 
-      // Call AI-powered dynamic program generation
+      // Call AI-powered dynamic program generation (creates both programs)
       const response = await axios.post(
         `${BACKEND_URL}/api/training/generate-dynamic-program`,
         {
+          generate_both_programs: true,  // Generate coach + AI programs
           // Player basic info
           player_id: user.id,
           player_name: report.player_info.name,
