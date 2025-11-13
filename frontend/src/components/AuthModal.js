@@ -210,8 +210,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-md">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+      <div className="min-h-screen flex items-center justify-center py-8">
+        <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto my-8">
         <CardHeader className="relative">
           <button
             onClick={handleClose}
