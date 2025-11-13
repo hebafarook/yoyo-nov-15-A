@@ -197,9 +197,31 @@ async def get_assessment(assessment_id: str):
         )
 
 @router.put("/{assessment_id}", response_model=PlayerAssessment)
-async def update_assessment(assessment_id: str, assessment_update: AssessmentCreate):
+async def update_assessment(
+    assessment_id: str, 
+    assessment_update: AssessmentCreate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Update an existing assessment"""
     try:
+        # Verify token and get user info
+        current_user = await verify_token(credentials.credentials)
+        
+        # Get existing assessment to check permissions
+        existing_assessment = await db.assessments.find_one({"id": assessment_id})
+        if not existing_assessment:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Assessment not found"
+            )
+        
+        player_name = existing_assessment.get("player_name")
+        if not await check_player_access(player_name, current_user):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: You don't have permission to update this assessment"
+            )
+        
         # Calculate new overall score
         assessment_dict = assessment_update.dict()
         overall_score = calculate_overall_score(assessment_dict)
