@@ -1447,11 +1447,18 @@ const MainDashboard = () => {
           {user?.role === 'parent' && (
             <>
               <button 
+                onClick={() => setActiveTab("group")}
+                className={`tab-trigger ${activeTab === "group" ? "active" : ""}`}
+              >
+                <Users className="w-4 h-4" />
+                My Children
+              </button>
+              <button 
                 onClick={() => setActiveTab("progress")}
                 className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
               >
                 <TrendingUp className="w-4 h-4" />
-                Child Progress
+                Progress
               </button>
               <button 
                 onClick={() => setActiveTab("reports")}
@@ -1461,18 +1468,18 @@ const MainDashboard = () => {
                 Reports
               </button>
               <button 
-                onClick={() => setActiveTab("voice")}
-                className={`tab-trigger ${activeTab === "voice" ? "active" : ""}`}
-              >
-                <Mic className="w-4 h-4" />
-                Communication
-              </button>
-              <button 
                 onClick={() => setActiveTab("trophies")}
                 className={`tab-trigger ${activeTab === "trophies" ? "active" : ""}`}
               >
                 <Trophy className="w-4 h-4" />
                 Achievements
+              </button>
+              <button 
+                onClick={() => setActiveTab("inbox")}
+                className={`tab-trigger ${activeTab === "inbox" ? "active" : ""}`}
+              >
+                <Inbox className="w-4 h-4" />
+                Inbox
               </button>
             </>
           )}
