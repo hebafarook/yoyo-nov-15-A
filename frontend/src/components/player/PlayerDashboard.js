@@ -76,19 +76,69 @@ const PlayerDashboard = () => {
   };
 
   const renderContent = () => {
-    switch (activeTab) {
-      case 'home': return <PlayerHome onStartSession={() => setActiveTab('training')} onTakeAssessment={() => setActiveTab('take-assessment')} />;
-      case 'training': return <PlayerTodaySession />;
-      case 'plan': return <PlayerTrainingPlan />;
-      case 'take-assessment': return <PlayerAssessmentForm onAssessmentComplete={handleAssessmentComplete} />;
-      case 'assessments': return <PlayerAssessmentHistory />;
-      case 'progress': return <PlayerProgress />;
-      case 'recovery': return <PlayerRecovery />;
-      case 'report': return <PlayerReportCard />;
-      case 'achievements': return <AchievementsDisplay />;
-      case 'inbox': return <InboxDashboard />;
-      default: return <PlayerHome onStartSession={() => setActiveTab('training')} onTakeAssessment={() => setActiveTab('take-assessment')} />;
+    // Show loading while checking first-time status
+    if (checkingFirstTime) {
+      return (
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading your dashboard...</p>
+          </div>
+        </div>
+      );
     }
+
+    // Show first-time welcome banner
+    const content = (() => {
+      switch (activeTab) {
+        case 'home': return <PlayerHome onStartSession={() => setActiveTab('training')} onTakeAssessment={() => setActiveTab('take-assessment')} />;
+        case 'training': return <PlayerTodaySession />;
+        case 'plan': return <PlayerTrainingPlan />;
+        case 'take-assessment': return <PlayerAssessmentForm onAssessmentComplete={handleAssessmentComplete} isFirstTime={isFirstTime} />;
+        case 'assessments': return <PlayerAssessmentHistory />;
+        case 'progress': return <PlayerProgress />;
+        case 'recovery': return <PlayerRecovery />;
+        case 'report': return <PlayerReportCard />;
+        case 'achievements': return <AchievementsDisplay />;
+        case 'inbox': return <InboxDashboard />;
+        default: return <PlayerHome onStartSession={() => setActiveTab('training')} onTakeAssessment={() => setActiveTab('take-assessment')} />;
+      }
+    })();
+
+    return (
+      <>
+        {isFirstTime && activeTab === 'take-assessment' && (
+          <div className="mb-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl p-6 text-white shadow-lg">
+            <h2 className="text-2xl font-bold mb-2">🎉 Welcome to Your Soccer Development Journey!</h2>
+            <p className="text-white/90 mb-4">
+              Let's start by completing your first assessment. This will help us create a personalized training program and comprehensive roadmap for your development.
+            </p>
+            <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
+              <h3 className="font-bold mb-2">What happens next:</h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-start gap-2">
+                  <span className="text-yellow-400 font-bold">1.</span>
+                  <span>Complete your assessment with all your current metrics</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-yellow-400 font-bold">2.</span>
+                  <span>AI will analyze your data and create your personalized training program</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-yellow-400 font-bold">3.</span>
+                  <span>You'll receive a comprehensive report with coach recommendations and AI standards</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-yellow-400 font-bold">4.</span>
+                  <span>Your development roadmap will be ready - printable and saveable!</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
+        {content}
+      </>
+    );
   };
 
   return (
