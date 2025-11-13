@@ -58,11 +58,18 @@ async def create_assessment(
         overall_score = calculate_overall_score(assessment_dict)
         performance_level = get_performance_level(overall_score)
         
+        # Calculate BMI if height and weight are provided
+        bmi = None
+        if assessment_dict.get('height_cm') and assessment_dict.get('weight_kg'):
+            height_m = assessment_dict['height_cm'] / 100
+            bmi = assessment_dict['weight_kg'] / (height_m ** 2)
+        
         # Create the assessment object
         player_assessment = PlayerAssessment(
             **assessment_dict,
             overall_score=overall_score,
-            performance_level=performance_level
+            performance_level=performance_level,
+            bmi=bmi
         )
         
         # Prepare and save to database
