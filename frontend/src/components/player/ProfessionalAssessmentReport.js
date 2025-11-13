@@ -456,6 +456,230 @@ Report ID: ${report.id}
           <p className="mt-2">Yo-Yo Elite Soccer Player AI Coach • Report ID: {report.id}</p>
         </div>
       </div>
+
+      {/* Program Parameters Modal */}
+      {showProgramForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white rounded-t-2xl">
+              <h2 className="text-2xl font-bold mb-2">Customize Your Training Program</h2>
+              <p className="text-blue-100">AI will generate a personalized program based on these parameters</p>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Training Schedule */}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Training Schedule</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Days per Week *
+                    </label>
+                    <select
+                      value={programParams.training_days_per_week}
+                      onChange={(e) => setProgramParams({...programParams, training_days_per_week: parseInt(e.target.value)})}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="2">2 days (Light)</option>
+                      <option value="3">3 days (Moderate)</option>
+                      <option value="4">4 days (Regular)</option>
+                      <option value="5">5 days (Intensive)</option>
+                      <option value="6">6 days (Elite)</option>
+                      <option value="7">7 days (Professional)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Program Duration *
+                    </label>
+                    <select
+                      value={programParams.duration_weeks}
+                      onChange={(e) => setProgramParams({...programParams, duration_weeks: parseInt(e.target.value)})}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="4">4 weeks (Short-term)</option>
+                      <option value="6">6 weeks (Standard)</option>
+                      <option value="8">8 weeks (Extended)</option>
+                      <option value="12">12 weeks (Full cycle)</option>
+                      <option value="16">16 weeks (Season prep)</option>
+                      <option value="24">24 weeks (Full season)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Session Duration
+                    </label>
+                    <select
+                      value={programParams.session_duration_minutes}
+                      onChange={(e) => setProgramParams({...programParams, session_duration_minutes: parseInt(e.target.value)})}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="30">30 minutes</option>
+                      <option value="45">45 minutes</option>
+                      <option value="60">60 minutes</option>
+                      <option value="75">75 minutes</option>
+                      <option value="90">90 minutes</option>
+                      <option value="120">120 minutes</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Personal Info */}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Personal Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Gender
+                    </label>
+                    <select
+                      value={programParams.gender}
+                      onChange={(e) => setProgramParams({...programParams, gender: e.target.value})}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Availability
+                    </label>
+                    <select
+                      value={programParams.availability}
+                      onChange={(e) => setProgramParams({...programParams, availability: e.target.value})}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="morning">Morning (6-9 AM)</option>
+                      <option value="after_school">After School (3-6 PM)</option>
+                      <option value="evening">Evening (6-9 PM)</option>
+                      <option value="flexible">Flexible</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Injury & Recovery */}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Injury & Recovery</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={programParams.has_injuries}
+                        onChange={(e) => setProgramParams({...programParams, has_injuries: e.target.checked})}
+                        className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                      />
+                      <span className="text-sm font-medium text-gray-700">I have current injuries or concerns</span>
+                    </label>
+                  </div>
+                  {programParams.has_injuries && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Injury Details
+                      </label>
+                      <textarea
+                        value={programParams.injury_details}
+                        onChange={(e) => setProgramParams({...programParams, injury_details: e.target.value})}
+                        placeholder="Describe any injuries, pain, or areas to avoid..."
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        rows="3"
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Recovery Priority
+                    </label>
+                    <select
+                      value={programParams.recovery_priority}
+                      onChange={(e) => setProgramParams({...programParams, recovery_priority: e.target.value})}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="low">Low (Push hard)</option>
+                      <option value="moderate">Moderate (Balanced)</option>
+                      <option value="high">High (Extra rest days)</option>
+                      <option value="injury_prevention">Injury Prevention Focus</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Equipment & Goals */}
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Equipment & Goals</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Equipment Available
+                    </label>
+                    <select
+                      value={programParams.equipment_available}
+                      onChange={(e) => setProgramParams({...programParams, equipment_available: e.target.value})}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="minimal">Minimal (Just a ball)</option>
+                      <option value="basic">Basic (Ball, cones, small space)</option>
+                      <option value="full">Full (Field, goals, full equipment)</option>
+                      <option value="gym">Gym Access</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Your Goals (Optional)
+                    </label>
+                    <textarea
+                      value={programParams.goals}
+                      onChange={(e) => setProgramParams({...programParams, goals: e.target.value})}
+                      placeholder="E.g., Make the varsity team, improve speed, better first touch..."
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      rows="3"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* AI Notice */}
+              <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+                <div className="flex items-start gap-3">
+                  <svg className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="text-sm font-medium text-blue-900 mb-1">AI-Powered Personalization</p>
+                    <p className="text-xs text-blue-700">
+                      Our AI will analyze your assessment results ({report.scores.performance_level} level), 
+                      age ({report.player_info.age}), position ({report.player_info.position}), and all parameters above to create 
+                      a perfectly tailored {programParams.duration_weeks}-week program with {programParams.training_days_per_week} sessions per week.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-4 pt-4">
+                <button
+                  onClick={handleGenerateTrainingProgram}
+                  disabled={generatingProgram}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-900 transition disabled:opacity-50"
+                >
+                  {generatingProgram ? 'Generating...' : 'Generate Program with AI'}
+                </button>
+                <button
+                  onClick={() => setShowProgramForm(false)}
+                  disabled={generatingProgram}
+                  className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
