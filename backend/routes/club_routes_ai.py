@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from typing import List
-from datetime import datetime, timezone, timedelta
+from typing import List, Optional
+from datetime import datetime, timezone, timedelta, date
 import logging
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
