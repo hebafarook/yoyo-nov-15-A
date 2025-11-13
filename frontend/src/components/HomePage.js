@@ -335,6 +335,50 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
         </CardContent>
       </Card>
 
+      {/* Recent Saved Reports */}
+      {stats.recentReports && stats.recentReports.length > 0 && (
+        <Card>
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Recent Assessment Reports
+              </CardTitle>
+              <Button variant="outline" size="sm" onClick={() => onNavigate('reports')}>
+                View All
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {stats.recentReports.slice(0, 3).map((report, index) => (
+                <div key={report.id || index} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900">
+                      {report.title || `Assessment - ${new Date(report.saved_at).toLocaleDateString()}`}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      {report.player_name} • {new Date(report.saved_at).toLocaleDateString('en-US', { 
+                        month: 'long', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => onNavigate('reports')}
+                  >
+                    View Report
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Getting Started Guide */}
       <Card className="border-2 border-blue-200 bg-blue-50">
         <CardHeader>
