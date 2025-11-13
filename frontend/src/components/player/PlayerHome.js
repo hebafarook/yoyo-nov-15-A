@@ -1,44 +1,124 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, CheckCircle, Circle, Bell, TrendingUp, Calendar, Award, Flame } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const PlayerHome = ({ onStartSession }) => {
-  // Mock player data
-  const player = {
-    name: 'Alex Johnson',
-    level: 'Gold',
-    avatar: 'AJ',
-    streak: 7,
-    todayFocus: 'First Touch + Acceleration',
-    sessionTime: '45-60 min'
+  const { user } = useAuth();
+  const [currentRoutine, setCurrentRoutine] = useState(null);
+  const [dailyProgress, setDailyProgress] = useState([]);
+  const [performanceMetrics, setPerformanceMetrics] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchPlayerData();
+    }
+  }, [user]);
+
+  const fetchPlayerData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+
+      // Fetch current routine
+      const routineRes = await axios.get(`${BACKEND_URL}/api/current-routine/${user.id}`, { headers });
+      setCurrentRoutine(routineRes.data);
+
+      // Fetch daily progress history (last 7 days)
+      const progressRes = await axios.get(`${BACKEND_URL}/api/daily-progress/${user.id}`, { headers });
+      setDailyProgress(progressRes.data || []);
+
+      // Fetch performance metrics
+      const metricsRes = await axios.get(`${BACKEND_URL}/api/performance-metrics/${user.id}`, { headers });
+      setPerformanceMetrics(metricsRes.data);
+
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching player data:', error);
+      setLoading(false);
+    }
   };
 
-  const dailyChecklist = [
-    { id: 1, task: 'Warm-up', completed: true },
-    { id: 2, task: 'Main Drill Block 1', completed: true },
-    { id: 3, task: 'Main Drill Block 2', completed: false },
-    { id: 4, task: 'Recovery / Stretching', completed: false },
-    { id: 5, task: 'Nutrition Check', completed: false }
-  ];
+  // Calculate streak from daily progress
+  const calculateStreak = () => {
+    if (!dailyProgress.length) return 0;
+    let streak = 0;
+    const today = new Date();
+    for (let i = 0; i < dailyProgress.length; i++) {
+      const progressDate = new Date(dailyProgress[i].date);
+      const daysDiff = Math.floor((today - progressDate) / (1000 * 60 * 60 * 24));
+      if (daysDiff === i) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    return streak;
+  };
+
+  // Calculate 7-day completion rate
+  const calculate7DayCompletion = () => {
+    if (!dailyProgress.length) return 0;
+    const last7Days = dailyProgress.slice(0, 7);
+    const totalExercises = last7Days.reduce((sum, day) => sum + (day.completed_exercises?.length || 0), 0);
+    const completedExercises = last7Days.reduce((sum, day) => {
+      return sum + (day.completed_exercises?.filter(ex => ex.completed).length || 0);
+    }, 0);
+    return totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
+  };
+
+  const player = {
+    name: user?.username || user?.full_name || 'Player',
+    level: 'Gold',
+    avatar: (user?.username || 'P').substring(0, 2).toUpperCase(),
+    streak: calculateStreak(),
+    todayFocus: currentRoutine?.focus || 'Loading...',
+    sessionTime: currentRoutine?.duration ? `${currentRoutine.duration} min` : '45-60 min'
+  };
+
+  const dailyChecklist = currentRoutine?.exercises?.map((ex, idx) => ({
+    id: idx + 1,
+    task: ex.name || ex.title,
+    completed: false // Will be updated from daily progress
+  })) || [];
 
   const upcomingSessions = [
-    { id: 1, date: 'Today', time: '16:00', type: 'Technical', title: 'Ball Control Session' },
+    { id: 1, date: 'Today', time: '16:00', type: 'Technical', title: currentRoutine?.title || 'Training Session' },
     { id: 2, date: 'Tomorrow', time: '17:00', type: 'Conditioning', title: 'Speed & Agility' },
     { id: 3, date: 'Thu', time: '16:00', type: 'Match Prep', title: 'Team Tactical' }
   ];
 
+  const lastAssessmentScore = performanceMetrics?.overall_score || 'N/A';
+  const completionRate = calculate7DayCompletion();
+
   const quickStats = [
-    { label: 'Last Assessment', value: '92', color: 'text-green-600' },
-    { label: '7-Day Completion', value: '86%', color: 'text-blue-600' },
-    { label: 'Coach Rating', value: '4.8', color: 'text-yellow-600' }
+    { label: 'Last Assessment', value: lastAssessmentScore, color: 'text-green-600' },
+    { label: '7-Day Completion', value: `${completionRate}%`, color: 'text-blue-600' },
+    { label: 'Active Days', value: player.streak, color: 'text-yellow-600' }
   ];
 
   const notifications = [
-    { id: 1, text: 'Coach updated your plan', icon: Calendar, time: '2h ago' },
-    { id: 2, text: 'New challenge unlocked', icon: Award, time: '5h ago' }
+    { id: 1, text: 'New training program available', icon: Calendar, time: '1h ago' },
+    { id: 2, text: 'Check your progress', icon: Award, time: '3h ago' }
   ];
 
   const completedCount = dailyChecklist.filter(item => item.completed).length;
-  const progressPercent = Math.round((completedCount / dailyChecklist.length) * 100);
+  const progressPercent = dailyChecklist.length > 0 ? Math.round((completedCount / dailyChecklist.length) * 100) : 0;
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto p-6 flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
