@@ -1410,7 +1410,7 @@ const MainDashboard = () => {
                 className={`tab-trigger ${activeTab === "group" ? "active" : ""}`}
               >
                 <Users className="w-4 h-4" />
-                Team Management
+                My Roster
               </button>
               <button 
                 onClick={() => setActiveTab("assessment")}
@@ -1420,18 +1420,25 @@ const MainDashboard = () => {
                 Player Assessments
               </button>
               <button 
-                onClick={() => setActiveTab("progress")}
-                className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
-              >
-                <TrendingUp className="w-4 h-4" />
-                Analytics
-              </button>
-              <button 
                 onClick={() => setActiveTab("training")}
                 className={`tab-trigger ${activeTab === "training" ? "active" : ""}`}
               >
                 <Zap className="w-4 h-4" />
-                Training Programs
+                Training Plans
+              </button>
+              <button 
+                onClick={() => setActiveTab("progress")}
+                className={`tab-trigger ${activeTab === "progress" ? "active" : ""}`}
+              >
+                <TrendingUp className="w-4 h-4" />
+                Team Analytics
+              </button>
+              <button 
+                onClick={() => setActiveTab("inbox")}
+                className={`tab-trigger ${activeTab === "inbox" ? "active" : ""}`}
+              >
+                <Inbox className="w-4 h-4" />
+                Inbox
               </button>
             </>
           )}
