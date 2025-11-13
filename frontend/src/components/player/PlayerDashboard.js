@@ -13,6 +13,7 @@ import SavedReports from '../SavedReports';
 import InboxDashboard from '../InboxDashboard';
 import PlayerReportCard from './PlayerReportCard';
 import PlayerAssessmentForm from './PlayerAssessmentForm';
+import PlayerTrainingPrograms from './PlayerTrainingPrograms';
 import { Home, Activity, Calendar, FileText, TrendingUp, Heart, Trophy, BarChart3, Inbox, ClipboardCheck, LogOut } from 'lucide-react';
 
 const PlayerDashboard = () => {
