@@ -361,7 +361,7 @@ const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
           </div>
         </div>
         
-        {performanceMetrics ? (
+        {performanceMetrics && performanceMetrics.has_assessment ? (
           <>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               {/* Physical Score - Clickable */}
@@ -369,8 +369,8 @@ const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
                 onClick={() => setSelectedMetric({
                   name: 'Physical',
                   score: Math.round(performanceMetrics.physical_score * 20),
-                  strengths: performanceMetrics.physical_strengths || ['Sprint speed', 'Endurance'],
-                  weaknesses: performanceMetrics.physical_weaknesses || ['Upper body strength', 'Flexibility'],
+                  strengths: performanceMetrics.physical_strengths || [],
+                  weaknesses: performanceMetrics.physical_weaknesses || [],
                   color: 'purple'
                 })}
                 className="bg-purple-50 hover:bg-purple-100 rounded-xl p-4 text-center transition cursor-pointer border-2 border-transparent hover:border-purple-300"
@@ -385,8 +385,8 @@ const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
                 onClick={() => setSelectedMetric({
                   name: 'Technical',
                   score: Math.round(performanceMetrics.technical_score * 20),
-                  strengths: performanceMetrics.technical_strengths || ['Ball control', 'Dribbling'],
-                  weaknesses: performanceMetrics.technical_weaknesses || ['Weak foot', 'Long passing'],
+                  strengths: performanceMetrics.technical_strengths || [],
+                  weaknesses: performanceMetrics.technical_weaknesses || [],
                   color: 'blue'
                 })}
                 className="bg-blue-50 hover:bg-blue-100 rounded-xl p-4 text-center transition cursor-pointer border-2 border-transparent hover:border-blue-300"
@@ -401,8 +401,8 @@ const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
                 onClick={() => setSelectedMetric({
                   name: 'Tactical',
                   score: Math.round(performanceMetrics.tactical_score * 20),
-                  strengths: performanceMetrics.tactical_strengths || ['Positioning', 'Game reading'],
-                  weaknesses: performanceMetrics.tactical_weaknesses || ['Defensive awareness', 'Set piece positioning'],
+                  strengths: performanceMetrics.tactical_strengths || [],
+                  weaknesses: performanceMetrics.tactical_weaknesses || [],
                   color: 'green'
                 })}
                 className="bg-green-50 hover:bg-green-100 rounded-xl p-4 text-center transition cursor-pointer border-2 border-transparent hover:border-green-300"
@@ -417,8 +417,8 @@ const PlayerHome = ({ onStartSession, onTakeAssessment }) => {
                 onClick={() => setSelectedMetric({
                   name: 'Mental',
                   score: Math.round(performanceMetrics.psychological_score * 20),
-                  strengths: performanceMetrics.mental_strengths || ['Coachability', 'Focus'],
-                  weaknesses: performanceMetrics.mental_weaknesses || ['Pressure handling', 'Confidence'],
+                  strengths: performanceMetrics.mental_strengths || [],
+                  weaknesses: performanceMetrics.mental_weaknesses || [],
                   color: 'orange'
                 })}
                 className="bg-orange-50 hover:bg-orange-100 rounded-xl p-4 text-center transition cursor-pointer border-2 border-transparent hover:border-orange-300"
