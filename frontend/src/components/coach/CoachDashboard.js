@@ -137,6 +137,15 @@ const CoachDashboard = () => {
                   {user?.full_name?.[0] || 'C'}
                 </div>
               </div>
+
+              <button
+                onClick={logout}
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition border border-white/20"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="text-sm font-medium">Logout</span>
+              </button>
             </div>
           </div>
         </div>
