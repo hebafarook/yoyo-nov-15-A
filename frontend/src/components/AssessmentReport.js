@@ -11,93 +11,155 @@ import { Printer, Download, Save, Bookmark, MessageSquare } from 'lucide-react';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Gauge Chart Component
-const GaugeChart = ({ value, label, max = 100, unit = '', description = '' }) => {
+// Interactive Gauge Chart Component with Animation
+const GaugeChart = ({ value, label, max = 100, unit = '', description = '', isLowerBetter = false }) => {
+  const [animatedValue, setAnimatedValue] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  
   // Ensure value is a number
   const numericValue = Number(value) || 0;
   const maxValue = Number(max) || 100;
   
   // Calculate percentage (0-100)
-  const percentage = Math.min(100, Math.max(0, (numericValue / maxValue) * 100));
+  let percentage = Math.min(100, Math.max(0, (numericValue / maxValue) * 100));
   
-  // Determine color based on percentage
-  let color;
-  if (percentage >= 75) {
+  // For "lower is better" metrics (like sprint times), invert the percentage for color coding
+  const displayPercentage = isLowerBetter ? Math.max(0, 100 - percentage) : percentage;
+  
+  // Animate the gauge on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimatedValue(percentage);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [percentage]);
+  
+  // Determine color based on display percentage
+  let color, colorName;
+  if (displayPercentage >= 75) {
     color = '#16a34a'; // green
-  } else if (percentage >= 50) {
-    color = '#eab308'; // yellow
+    colorName = 'Excellent';
+  } else if (displayPercentage >= 50) {
+    color = '#eab308'; // yellow/orange
+    colorName = 'Good';
   } else {
     color = '#ef4444'; // red
+    colorName = 'Needs Work';
   }
   
   // SVG gauge parameters
-  const size = 140;
-  const strokeWidth = 14;
+  const size = 160;
+  const strokeWidth = 16;
   const center = size / 2;
   const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
   
   // Calculate angle for semicircle gauge (-90 to 90 degrees)
-  const angle = -90 + (percentage / 100) * 180;
+  const angle = -90 + (animatedValue / 100) * 180;
   
-  // Calculate stroke dash
-  const dashArray = circumference;
-  const dashOffset = circumference - (percentage / 100) * (circumference / 2);
+  // Create arc path for background and value
+  const createArcPath = (startAngle, endAngle) => {
+    const start = (startAngle * Math.PI) / 180;
+    const end = (endAngle * Math.PI) / 180;
+    const x1 = center + radius * Math.cos(start);
+    const y1 = center + radius * Math.sin(start);
+    const x2 = center + radius * Math.cos(end);
+    const y2 = center + radius * Math.sin(end);
+    const largeArc = endAngle - startAngle > 180 ? 1 : 0;
+    return `M ${x1},${y1} A ${radius},${radius} 0 ${largeArc} 1 ${x2},${y2}`;
+  };
   
   return (
-    <div className="flex flex-col items-center p-4">
-      <svg width={size} height={size * 0.65} viewBox={`0 0 ${size} ${size * 0.65}`}>
-        {/* Background arc */}
+    <div 
+      className="flex flex-col items-center p-4 transition-transform hover:scale-105 cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <svg width={size} height={size * 0.7} viewBox={`0 0 ${size} ${size * 0.7}`}>
+        {/* Background arc (gray) */}
         <path
-          d={`M ${strokeWidth/2},${center} A ${radius},${radius} 0 0 1 ${size - strokeWidth/2},${center}`}
+          d={createArcPath(-90, 90)}
           fill="none"
           stroke="#e5e7eb"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
         
-        {/* Value arc */}
+        {/* Gradient zones (green, yellow, red) */}
+        <defs>
+          <linearGradient id={`gradient-${label.replace(/\s/g, '')}`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#ef4444" />
+            <stop offset="50%" stopColor="#eab308" />
+            <stop offset="100%" stopColor="#16a34a" />
+          </linearGradient>
+        </defs>
+        
+        {/* Value arc with transition */}
         <path
-          d={`M ${strokeWidth/2},${center} A ${radius},${radius} 0 0 1 ${center + radius * Math.cos((angle * Math.PI) / 180)},${center + radius * Math.sin((angle * Math.PI) / 180)}`}
+          d={createArcPath(-90, angle)}
           fill="none"
           stroke={color}
-          strokeWidth={strokeWidth}
+          strokeWidth={isHovered ? strokeWidth + 2 : strokeWidth}
           strokeLinecap="round"
+          style={{ 
+            transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+            filter: isHovered ? 'drop-shadow(0 0 8px rgba(0,0,0,0.3))' : 'none'
+          }}
         />
         
-        {/* Needle */}
-        <g transform={`rotate(${angle} ${center} ${center})`}>
+        {/* Needle indicator */}
+        <g 
+          transform={`rotate(${angle} ${center} ${center})`}
+          style={{ transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)' }}
+        >
           <line
             x1={center}
             y1={center}
             x2={center}
-            y2={strokeWidth + 8}
+            y2={strokeWidth + 5}
             stroke="#1f2937"
-            strokeWidth="3"
+            strokeWidth="4"
             strokeLinecap="round"
           />
-          <circle cx={center} cy={center} r="6" fill="#1f2937" />
+          <circle cx={center} cy={center} r="8" fill="#1f2937" />
+          <circle cx={center} cy={center} r="4" fill="#ffffff" />
         </g>
+        
+        {/* Min/Max labels */}
+        <text x="15" y={center + 5} fill="#9ca3af" fontSize="10" fontWeight="600">0</text>
+        <text x={size - 15} y={center + 5} fill="#9ca3af" fontSize="10" fontWeight="600" textAnchor="end">{maxValue}</text>
         
         {/* Value text */}
         <text
           x={center}
-          y={center + 20}
+          y={center + 25}
           textAnchor="middle"
-          className="font-bold text-2xl"
+          fontSize="28"
+          fontWeight="700"
           fill="#1f2937"
         >
-          {numericValue.toFixed(numericValue % 1 === 0 ? 0 : 1)}{unit}
+          {numericValue.toFixed(numericValue % 1 === 0 ? 0 : 1)}
+        </text>
+        <text
+          x={center}
+          y={center + 42}
+          textAnchor="middle"
+          fontSize="12"
+          fill="#6b7280"
+        >
+          {unit}
         </text>
       </svg>
       
-      <div className="text-center mt-2">
-        <div className="font-semibold text-sm text-gray-900">{label}</div>
+      <div className="text-center mt-3 w-full">
+        <div className="font-bold text-base text-gray-900 mb-1">{label}</div>
         {description && (
-          <div className="text-xs text-gray-500 mt-1">{description}</div>
+          <div className="text-xs text-gray-600 mb-2 px-2">{description}</div>
         )}
-        <div className="text-xs font-medium mt-1" style={{ color }}>
-          {percentage >= 75 ? 'Excellent' : percentage >= 50 ? 'Good' : 'Needs Improvement'}
+        <div 
+          className="inline-block px-3 py-1 rounded-full text-xs font-semibold text-white"
+          style={{ backgroundColor: color }}
+        >
+          {colorName} • {Math.round(displayPercentage)}%
         </div>
       </div>
     </div>
