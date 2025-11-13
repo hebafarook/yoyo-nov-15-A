@@ -171,14 +171,14 @@ const HomePage = ({ onNavigate, onOpenAuth }) => {
             </div>
 
             <div className="flex gap-4 justify-center">
-              <Button onClick={() => onNavigate('assessment')} size="lg" className="px-8">
+              <Button onClick={onOpenAuth} size="lg" className="px-8">
                 Get Started
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
 
             <p className="text-gray-500 text-sm mt-6">
-              Click "Login" or "Register" above to choose your portal and get started
+              Create an account or login to access your personalized portal
             </p>
           </CardContent>
         </Card>
