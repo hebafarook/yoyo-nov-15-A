@@ -336,6 +336,10 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
                   />
                 </div>
 
+                {/* Role is pre-selected from portal choice, so hiding this field */}
+                <input type="hidden" name="role" value={formData.role} />
+                
+                {false && (
                 <div>
                   <Label htmlFor="role">I am a...</Label>
                   <Select value={formData.role} onValueChange={handleRoleChange}>
