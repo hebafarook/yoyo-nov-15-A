@@ -297,19 +297,25 @@ const HomePage = ({ onNavigate }) => {
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
-      {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg p-8">
+      {/* Welcome Header - Role-based colors */}
+      <div className={`bg-gradient-to-r ${
+        user?.role === 'coach' ? 'from-green-600 to-green-700' :
+        user?.role === 'parent' ? 'from-purple-600 to-purple-700' :
+        'from-blue-600 to-blue-700'
+      } text-white rounded-lg p-8`}>
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold mb-2">
-              Welcome back, {user?.full_name || 'Coach'}! 👋
+              Welcome back, {user?.full_name || user?.username || 'User'}! 👋
             </h1>
-            <p className="text-blue-100 text-lg">
-              {user?.is_coach ? 'Professional Coaching Dashboard' : 'Player Development Dashboard'}
+            <p className="text-white text-opacity-90 text-lg">
+              {user?.role === 'coach' ? '🎯 Professional Coaching Dashboard' : 
+               user?.role === 'parent' ? '👨‍👩‍👧 Parent Monitoring Dashboard' : 
+               '⚽ Player Development Dashboard'}
             </p>
           </div>
           <div className="text-right">
-            <div className="text-sm text-blue-100">Today's Date</div>
+            <div className="text-sm text-white text-opacity-80">Today's Date</div>
             <div className="text-2xl font-bold">{new Date().toLocaleDateString('en-US', { 
               month: 'short', 
               day: 'numeric', 
