@@ -21,9 +21,9 @@ const PlayerProfile = () => {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Profile Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white shadow-lg">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-8 text-white shadow-lg border-2 border-yellow-400">
         <div className="flex items-center gap-6 mb-6">
-          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center text-4xl font-bold text-blue-600">
+          <div className="w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center text-4xl font-bold text-indigo-900">
             {playerProfile.name.split(' ').map(n => n[0]).join('')}
           </div>
           <div>
