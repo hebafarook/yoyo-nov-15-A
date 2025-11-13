@@ -949,7 +949,44 @@ Weeks 9-12: [Focus areas and goals]
                 "physical_score": benchmark.get('physical_score', 0) if benchmark else 0,
                 "technical_score": benchmark.get('technical_score', 0) if benchmark else 0,
                 "tactical_score": benchmark.get('tactical_score', 0) if benchmark else 0,
-
+                "psychological_score": benchmark.get('psychological_score', 0) if benchmark else 0,
+                "performance_level": benchmark.get('performance_level', 'Developing') if benchmark else 'Developing'
+            },
+            
+            # AI Analysis
+            "ai_analysis": ai_analysis,
+            
+            # Coach Recommendations
+            "coach_recommendations": coach_recommendations,
+            
+            # Standards Comparison
+            "standards_comparison": standards_comparison,
+            
+            # Development Roadmap
+            "development_roadmap": {
+                "phase_1": "Weeks 1-4: Foundation building and baseline improvement",
+                "phase_2": "Weeks 5-8: Skill enhancement and tactical development",
+                "phase_3": "Weeks 9-12: Performance optimization and assessment preparation"
+            }
+        }
+        
+        # Save report to database
+        await db.comprehensive_reports.insert_one(prepare_for_mongo(report_data))
+        
+        logger.info(f"✅ Comprehensive roadmap saved for assessment {assessment_id}")
+        
+        return {
+            "success": True,
+            "report_id": report_data["id"],
+            "report_data": report_data,
+            "message": "Comprehensive roadmap generated successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating comprehensive roadmap: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/my-roadmap")
