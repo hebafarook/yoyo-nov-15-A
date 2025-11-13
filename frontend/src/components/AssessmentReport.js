@@ -550,6 +550,7 @@ Report Date: ${new Date().toLocaleString()}
               max={6}
               unit="s"
               description="Lower is better (Elite: <4.5s)"
+              isLowerBetter={true}
             />
             <GaugeChart
               value={playerData.yo_yo_test || 0}
