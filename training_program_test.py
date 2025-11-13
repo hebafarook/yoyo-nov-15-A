@@ -13,7 +13,7 @@ import sys
 import os
 
 # Backend URL from environment
-BACKEND_URL = "https://elite-soccer-coach-1.preview.emergentagent.com/api"
+BACKEND_URL = "https://soccer-ai-coach-7.preview.emergentagent.com/api"
 
 class TrainingProgramTester:
     def __init__(self):
