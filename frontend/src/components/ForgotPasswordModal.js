@@ -87,13 +87,9 @@ Copy this token and use it in the next step to reset your password.`);
     }
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/auth/reset-password`, {
+      const response = await fetch(`${BACKEND_URL}/api/auth/reset-password?reset_token=${encodeURIComponent(resetToken)}&new_password=${encodeURIComponent(password)}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          reset_token: resetToken,
-          new_password: password
-        })
+        headers: { 'Content-Type': 'application/json' }
       });
 
       const data = await response.json();
