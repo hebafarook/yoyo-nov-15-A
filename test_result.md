@@ -637,7 +637,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Visual Assessment Report Dashboard with Gauges and Charts"
+    - "New Player Portal Integration with Real APIs and AI Insights"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
