@@ -160,16 +160,22 @@ You can now access all features in your Player Portal!`);
                     <p className="text-white/80 text-xs mt-1">Fill all physical, technical, tactical, and mental metrics</p>
                   </div>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-yellow-400 font-bold">2.</span>
-                  <span>AI will analyze your data and create your personalized training program</span>
+                <li className="flex items-start gap-3 bg-white/10 p-3 rounded-lg">
+                  <span className="text-yellow-400 font-bold text-lg min-w-[24px]">2.</span>
+                  <div>
+                    <strong>Saved as Baseline Benchmark</strong>
+                    <p className="text-white/80 text-xs mt-1">Your starting point for tracking all future progress</p>
+                  </div>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-yellow-400 font-bold">3.</span>
-                  <span>You'll receive a comprehensive report with coach recommendations and AI standards</span>
+                <li className="flex items-start gap-3 bg-white/10 p-3 rounded-lg">
+                  <span className="text-yellow-400 font-bold text-lg min-w-[24px]">3.</span>
+                  <div>
+                    <strong>AI Generates Training Programs</strong>
+                    <p className="text-white/80 text-xs mt-1">Both Coach-Guided & AI-Powered programs tailored to your needs</p>
+                  </div>
                 </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-yellow-400 font-bold">4.</span>
+                <li className="flex items-start gap-3 bg-white/10 p-3 rounded-lg">
+                  <span className="text-yellow-400 font-bold text-lg min-w-[24px]">4.</span>
                   <span>Your development roadmap will be ready - printable and saveable!</span>
                 </li>
               </ul>
