@@ -22,12 +22,10 @@ const SavedReports = () => {
   const { getSavedReports, deleteSavedReport, user, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       loadSavedReports();
-    } else {
-      setLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [user]);
 
   const loadSavedReports = async () => {
     setLoading(true);
