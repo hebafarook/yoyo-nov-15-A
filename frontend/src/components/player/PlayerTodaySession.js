@@ -254,6 +254,7 @@ const PlayerTodaySession = () => {
 
       {/* Finish Button */}
       <button
+        onClick={progressPercent === 100 ? handleFinishSession : null}
         disabled={progressPercent < 100}
         className="w-full py-4 bg-green-600 text-white rounded-xl font-bold text-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition shadow-lg"
       >
