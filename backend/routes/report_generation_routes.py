@@ -949,6 +949,37 @@ Weeks 9-12: [Focus areas and goals]
                 "physical_score": benchmark.get('physical_score', 0) if benchmark else 0,
                 "technical_score": benchmark.get('technical_score', 0) if benchmark else 0,
                 "tactical_score": benchmark.get('tactical_score', 0) if benchmark else 0,
+
+
+
+@router.get("/my-roadmap")
+async def get_my_comprehensive_roadmap(user_token: dict = Depends(verify_token)):
+    """
+    Get the user's most recent comprehensive roadmap report
+    """
+    try:
+        user_id = user_token.get('id')
+        
+        # Find most recent comprehensive report for this user
+        report = await db.comprehensive_reports.find_one(
+            {"user_id": user_id},
+            sort=[("generated_at", -1)]
+        )
+        
+        if not report:
+            raise HTTPException(status_code=404, detail="No comprehensive roadmap found. Please complete an assessment first.")
+        
+        return {
+            "success": True,
+            "report_data": report
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching roadmap: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
                 "psychological_score": benchmark.get('psychological_score', 0) if benchmark else 0,
                 "performance_level": benchmark.get('performance_level', 'Developing') if benchmark else 'Developing'
             },
