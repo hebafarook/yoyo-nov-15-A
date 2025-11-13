@@ -56,6 +56,9 @@ class DynamicProgramRequest(BaseModel):
     
     # Player goals
     player_goals: Optional[str] = ""
+    
+    # Program generation options
+    generate_both_programs: Optional[bool] = True
 
 
 @router.post("/generate-dynamic-program")
