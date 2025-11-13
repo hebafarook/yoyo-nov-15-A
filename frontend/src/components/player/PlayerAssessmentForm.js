@@ -79,6 +79,7 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
       console.log('Assessment created successfully:', response.data);
       
       const createdAssessment = response.data;
+      setLastAssessmentId(createdAssessment.id);
       
       // Calculate overall score for the assessment
       const ageCategory = getAgeCategory(parseInt(formData.age));
