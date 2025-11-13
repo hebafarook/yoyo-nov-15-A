@@ -1513,7 +1513,7 @@ const MainDashboard = () => {
         </div>
 
         <TabsContent value="home">
-          <HomePage onNavigate={handleNavigate} />
+          <HomePage onNavigate={handleNavigate} onOpenAuth={() => setShowAuthModal(true)} />
         </TabsContent>
 
         <TabsContent value="assessment">
