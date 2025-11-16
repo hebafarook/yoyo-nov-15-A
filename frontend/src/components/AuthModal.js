@@ -531,46 +531,94 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <Label htmlFor="height">
-                          Height ({formData.height_unit === 'metric' ? 'cm' : 'inches'}) *
-                        </Label>
-                        <Input
-                          id="height"
-                          name="height"
-                          type="number"
-                          required
-                          min={formData.height_unit === 'metric' ? '140' : '55'}
-                          max={formData.height_unit === 'metric' ? '210' : '83'}
-                          value={formData.height}
-                          onChange={handleInputChange}
-                          placeholder={formData.height_unit === 'metric' ? 'e.g., 175' : 'e.g., 69'}
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          {formData.height_unit === 'metric' ? 'Centimeters' : 'Total inches (5\'9" = 69")'}
-                        </p>
+                    {/* Height Input - Different for Metric vs Imperial */}
+                    {formData.height_unit === 'metric' ? (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label htmlFor="height">Height (cm) *</Label>
+                          <Input
+                            id="height"
+                            name="height"
+                            type="number"
+                            required
+                            min="140"
+                            max="210"
+                            value={formData.height}
+                            onChange={handleInputChange}
+                            placeholder="e.g., 175"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Centimeters</p>
+                        </div>
+                        <div>
+                          <Label htmlFor="weight">Weight (kg) *</Label>
+                          <Input
+                            id="weight"
+                            name="weight"
+                            type="number"
+                            required
+                            min="40"
+                            max="120"
+                            value={formData.weight}
+                            onChange={handleInputChange}
+                            placeholder="e.g., 68"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Kilograms</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label htmlFor="weight">
-                          Weight ({formData.weight_unit === 'metric' ? 'kg' : 'lbs'}) *
-                        </Label>
-                        <Input
-                          id="weight"
-                          name="weight"
-                          type="number"
-                          required
-                          min={formData.weight_unit === 'metric' ? '40' : '88'}
-                          max={formData.weight_unit === 'metric' ? '120' : '265'}
-                          value={formData.weight}
-                          onChange={handleInputChange}
-                          placeholder={formData.weight_unit === 'metric' ? 'e.g., 68' : 'e.g., 150'}
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          {formData.weight_unit === 'metric' ? 'Kilograms' : 'Pounds'}
-                        </p>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-3">
+                        {/* Imperial Height - Feet and Inches */}
+                        <div>
+                          <Label>Height *</Label>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <Input
+                                id="height_feet"
+                                name="height_feet"
+                                type="number"
+                                required
+                                min="4"
+                                max="7"
+                                value={formData.height_feet}
+                                onChange={handleInputChange}
+                                placeholder="Feet"
+                              />
+                              <p className="text-xs text-gray-500 mt-1">Feet</p>
+                            </div>
+                            <div>
+                              <Input
+                                id="height_inches"
+                                name="height_inches"
+                                type="number"
+                                required
+                                min="0"
+                                max="11"
+                                value={formData.height_inches}
+                                onChange={handleInputChange}
+                                placeholder="Inches"
+                              />
+                              <p className="text-xs text-gray-500 mt-1">Inches</p>
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">e.g., 5 ft 9 in</p>
+                        </div>
+                        <div>
+                          <Label htmlFor="weight">Weight (lbs) *</Label>
+                          <Input
+                            id="weight"
+                            name="weight"
+                            type="number"
+                            required
+                            min="88"
+                            max="265"
+                            value={formData.weight}
+                            onChange={handleInputChange}
+                            placeholder="e.g., 150"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Pounds</p>
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     <div className="grid grid-cols-2 gap-3">
                       <div>
