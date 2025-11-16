@@ -11,8 +11,12 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
     player_name: "",
     age: "",
     position: "",
+    gender: "",
     height_cm: "",
     weight_kg: "",
+    height_feet: "",
+    height_inches: "",
+    weight_lbs: "",
     assessment_date: new Date().toISOString().split('T')[0],
     // Physical metrics
     sprint_30m: "",
@@ -34,6 +38,8 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
     coachability: "",
     mental_toughness: ""
   });
+
+  const [unitPreference, setUnitPreference] = useState('metric'); // 'metric' or 'imperial'
 
   const [isLoading, setIsLoading] = useState(false);
   const [assessmentSuccess, setAssessmentSuccess] = useState(false);
