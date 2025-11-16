@@ -263,12 +263,15 @@ class User(BaseModel):
     age: Optional[int] = None
     position: Optional[str] = None
     gender: Optional[str] = None  # "male", "female", "other"
-    height: Optional[str] = None  # e.g., "175cm"
-    weight: Optional[str] = None  # e.g., "68kg"
+    height: Optional[str] = None  # e.g., "175cm" or "5'9\""
+    weight: Optional[str] = None  # e.g., "68kg" or "150lbs"
     dominant_foot: Optional[str] = None  # "Left", "Right", "Both"
     current_injuries: Optional[str] = None
     parent_email: Optional[str] = None  # To link with parent portal
     coach_email: Optional[str] = None  # To link with coach portal
+    # Unit preferences
+    height_unit: Optional[str] = "metric"  # "metric" (cm) or "imperial" (ft/in)
+    weight_unit: Optional[str] = "metric"  # "metric" (kg) or "imperial" (lbs)
     # Coach/Parent management
     managed_players: List[str] = Field(default_factory=list)  # List of player_names or player_ids they can access
     profile_picture: Optional[str] = None
