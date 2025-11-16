@@ -186,7 +186,9 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
           if (formData.height_unit === 'metric') {
             registrationData.height = `${formData.height}cm`;
           } else {
-            registrationData.height = `${formData.height}"`; // Store as inches for imperial
+            // Convert feet and inches to total inches, then format as "5'9\""
+            const totalInches = (parseInt(formData.height_feet) * 12) + parseInt(formData.height_inches);
+            registrationData.height = `${formData.height_feet}'${formData.height_inches}"`;
           }
           
           // Format weight based on unit preference
