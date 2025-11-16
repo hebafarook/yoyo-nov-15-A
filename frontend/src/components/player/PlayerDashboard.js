@@ -78,12 +78,6 @@ const PlayerDashboard = () => {
     { id: 'inbox', label: 'Inbox', icon: Inbox }
   ];
 
-  const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      logout();
-    }
-  };
-
   const handleAssessmentComplete = (assessment) => {
     console.log('Assessment completed:', assessment);
     setIsFirstTime(false);
