@@ -1052,30 +1052,35 @@ Click "View Professional Report" to see your updated analysis!`);
         </div>
 
         {/* Submit Button */}
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border-2 border-green-200">
-          <div className="text-center mb-4">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Ready to Generate Your Programs?</h3>
-            <p className="text-gray-600 text-sm">
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 border-2 border-green-300 shadow-xl">
+          <div className="text-center mb-6">
+            <div className="inline-block bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-bold mb-3">
+              FINAL STEP
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">🚀 Ready to Generate Your Programs?</h3>
+            <p className="text-gray-600">
               Your assessment will be analyzed by AI and coaches to create two personalized training programs
             </p>
           </div>
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-blue-900 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            className="w-full px-8 py-5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold text-lg hover:from-green-700 hover:to-emerald-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transform hover:scale-[1.02]"
           >
             {isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                Submitting to AI & Coach Analysis...
+              <span className="flex items-center justify-center gap-3">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                <span>Submitting to AI & Coach Analysis...</span>
               </span>
             ) : (
               <>
-                <div className="flex items-center justify-center gap-2">
-                  <CheckCircle className="w-6 h-6" />
+                <div className="flex items-center justify-center gap-3">
+                  <CheckCircle className="w-7 h-7" />
                   <span>Submit Assessment & Generate Programs</span>
                 </div>
-                <div className="text-xs mt-1 font-normal">Creates: Coach Program + AI Model Training</div>
+                <div className="text-sm mt-2 font-normal text-green-100">
+                  ✓ Coach-Guided Program  •  ✓ AI-Powered Model  •  ✓ Professional Report
+                </div>
               </>
             )}
           </button>
