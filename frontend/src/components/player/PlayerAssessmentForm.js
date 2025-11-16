@@ -986,7 +986,7 @@ Click "View Professional Report" to see your updated analysis!`);
           <h3 className="text-xl font-bold text-gray-900 mb-4">Mental Attributes (1-5 scale)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Coachability</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Coachability (1-5)</label>
               <input
                 type="number"
                 min="1"
@@ -996,9 +996,12 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                📚 Receptiveness to feedback, willingness to learn, implementing coach instructions. 5=Highly Coachable | 1=Resistant
+              </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Mental Toughness</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Mental Toughness (1-5)</label>
               <input
                 type="number"
                 min="1"
@@ -1008,6 +1011,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                💪 Resilience, focus, handling pressure, bouncing back from mistakes. 5=Exceptional Mental Strength | 1=Easily Discouraged
+              </p>
             </div>
           </div>
         </div>
