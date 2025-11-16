@@ -144,10 +144,26 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
 
         // Validate player-specific fields
         if (formData.role === 'player') {
-          if (!formData.age || !formData.position || !formData.height || !formData.weight) {
+          // Check required fields based on unit system
+          if (!formData.age || !formData.position || !formData.weight) {
             setError('Age, position, height, and weight are required for player accounts');
             setLoading(false);
             return;
+          }
+          
+          // Validate height based on unit system
+          if (formData.height_unit === 'metric') {
+            if (!formData.height) {
+              setError('Height is required');
+              setLoading(false);
+              return;
+            }
+          } else {
+            if (!formData.height_feet || !formData.height_inches) {
+              setError('Both feet and inches are required for height');
+              setLoading(false);
+              return;
+            }
           }
         }
 
