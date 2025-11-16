@@ -56,32 +56,46 @@ const PlayerDashboard = () => {
       try {
         const token = localStorage.getItem('token');
         const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+        
+        console.log('🔍 Checking if player has previous assessments...');
+        
         const response = await fetch(`${BACKEND_URL}/api/auth/benchmarks`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch benchmarks: ${response.status}`);
+        }
+        
         const benchmarks = await response.json();
+        console.log('📊 Benchmarks received:', benchmarks);
         
         if (!benchmarks || benchmarks.length === 0) {
-          // First-time player - no assessments yet
-          console.log('🎯 First-time player detected - forcing assessment');
+          // First-time player - no assessments yet - FORCE ASSESSMENT
+          console.log('🎯 FIRST-TIME PLAYER - NO ASSESSMENTS FOUND');
+          console.log('🔒 Forcing assessment screen - all other tabs locked');
           setIsFirstTime(true);
           setActiveTab('take-assessment');
         } else {
-          // Existing player with assessments - go to home
-          console.log('✅ Existing player with assessments - showing home');
+          // Existing player with assessments - allow home access
+          console.log('✅ EXISTING PLAYER - Found', benchmarks.length, 'assessments');
+          console.log('🏠 Allowing access to home screen');
           setIsFirstTime(false);
           setActiveTab('home');
         }
         setCheckingFirstTime(false);
       } catch (error) {
-        console.error('Error checking first-time status:', error);
+        console.error('❌ Error checking first-time status:', error);
+        // On error, default to assessment screen to be safe
+        console.log('⚠️ Error occurred - defaulting to assessment screen');
+        setIsFirstTime(true);
+        setActiveTab('take-assessment');
         setCheckingFirstTime(false);
-        // Default to home on error
-        setActiveTab('home');
       }
     };
 
     if (user?.id) {
+      console.log('👤 User logged in:', user.username, '- Starting first-time check');
       checkFirstTimePlayer();
     }
   }, [user]);
