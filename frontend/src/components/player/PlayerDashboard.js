@@ -114,31 +114,38 @@ const PlayerDashboard = () => {
   ];
 
   const handleAssessmentComplete = (assessment) => {
-    console.log('Assessment completed:', assessment);
+    console.log('✅ Assessment completed:', assessment);
+    
+    // Immediately unlock all features
     setIsFirstTime(false);
+    setCheckingFirstTime(false);
     
     // Show success message and guide to next steps
     setTimeout(() => {
-      alert(`🎉 CONGRATULATIONS! Your baseline assessment is complete!
+      const userResponse = window.confirm(`🎉 CONGRATULATIONS! Your baseline assessment is complete!
 
-✅ Your assessment has been saved as your BASELINE BENCHMARK
-✅ AI is analyzing your data and generating personalized programs
-✅ Your Professional Report is ready to view
+✅ Assessment saved as BASELINE BENCHMARK
+✅ AI is generating personalized programs
+✅ Professional Report is ready
 
 NEXT STEPS:
-1. View your Professional Report
-2. Generate your Training Program
-3. Start tracking your progress!
+1. View your Training Program (Click OK)
+2. Check your Professional Report
+3. Start your training journey!
 
-All Player Portal features are now unlocked!
+🔓 All Player Portal features are now unlocked!
 
-Redirecting to Home...`);
+Click OK to go to Training Program or Cancel to stay here.`);
       
-      // Navigate to home after first assessment
-      setActiveTab('home');
-      
-      // Refresh the page to update sidebar state and clear first-time flag
-      window.location.reload();
+      if (userResponse) {
+        // Navigate to training program page
+        console.log('📋 Navigating to Training Program...');
+        setActiveTab('training-program');
+      } else {
+        // Stay on current page (which will now have all tabs unlocked)
+        console.log('🏠 Staying on current page - all features unlocked');
+        setActiveTab('home');
+      }
     }, 1000);
   };
 
