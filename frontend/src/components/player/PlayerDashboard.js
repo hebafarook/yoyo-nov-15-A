@@ -112,16 +112,18 @@ const PlayerDashboard = () => {
 ✅ Your Professional Report is ready to view
 
 NEXT STEPS:
-1. View your Professional Report (opens in new tab)
-2. Generate your Training Program from the report
+1. View your Professional Report
+2. Generate your Training Program
 3. Start tracking your progress!
 
-You can now access all features in your Player Portal!`);
+All Player Portal features are now unlocked!
+
+Redirecting to Home...`);
       
-      // Navigate to My Report tab to see the generated comprehensive report
-      setActiveTab('report');
+      // Navigate to home after first assessment
+      setActiveTab('home');
       
-      // Refresh the page to update sidebar state
+      // Refresh the page to update sidebar state and clear first-time flag
       window.location.reload();
     }, 1000);
   };
