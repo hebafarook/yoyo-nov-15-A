@@ -934,7 +934,7 @@ Click "View Professional Report" to see your updated analysis!`);
           <h3 className="text-xl font-bold text-gray-900 mb-4">Tactical Awareness (1-5 scale)</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Game Intelligence</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Game Intelligence (1-5)</label>
               <input
                 type="number"
                 min="1"
@@ -944,9 +944,12 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                🧠 Understanding game situations, reading play, anticipation. 5=Exceptional | 3=Good | 1=Developing
+              </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Positioning</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Positioning (1-5)</label>
               <input
                 type="number"
                 min="1"
@@ -956,9 +959,12 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                📍 Spatial awareness, being in right place at right time, defensive/offensive positioning
+              </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Decision Making</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Decision Making (1-5)</label>
               <input
                 type="number"
                 min="1"
@@ -968,6 +974,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                ⚡ Speed and quality of decisions under pressure, choosing right option in game situations
+              </p>
             </div>
           </div>
         </div>
