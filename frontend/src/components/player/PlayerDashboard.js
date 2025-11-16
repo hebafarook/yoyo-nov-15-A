@@ -117,36 +117,33 @@ const PlayerDashboard = () => {
     console.log('✅ Assessment completed:', assessment);
     
     // Immediately unlock all features
+    console.log('🔓 UNLOCKING ALL FEATURES - Setting isFirstTime to false');
     setIsFirstTime(false);
     setCheckingFirstTime(false);
     
     // Show success message and guide to next steps
     setTimeout(() => {
-      const userResponse = window.confirm(`🎉 CONGRATULATIONS! Your baseline assessment is complete!
+      alert(`🎉 CONGRATULATIONS! Your baseline assessment is complete!
 
 ✅ Assessment saved as BASELINE BENCHMARK
-✅ AI is generating personalized programs
-✅ Professional Report is ready
+✅ AI is generating personalized programs  
+✅ Professional Report is ready to view
 
-NEXT STEPS:
-1. View your Training Program (Click OK)
-2. Check your Professional Report
-3. Start your training journey!
+🔓 ALL PLAYER PORTAL FEATURES NOW UNLOCKED!
 
-🔓 All Player Portal features are now unlocked!
+WHAT'S NEXT:
+• Click "Training Program" tab to see your personalized plans
+• Check "My Report" for your professional assessment report
+• Visit "Home" to start tracking your daily progress
+• All navigation tabs are now accessible!
 
-Click OK to go to Training Program or Cancel to stay here.`);
+The assessment report window will open automatically.
+You can now navigate freely through all portal features!`);
       
-      if (userResponse) {
-        // Navigate to training program page
-        console.log('📋 Navigating to Training Program...');
-        setActiveTab('training-program');
-      } else {
-        // Stay on current page (which will now have all tabs unlocked)
-        console.log('🏠 Staying on current page - all features unlocked');
-        setActiveTab('home');
-      }
-    }, 1000);
+      // Navigate to training program to show user it's unlocked
+      console.log('📋 Auto-navigating to Training Program to show it\'s unlocked...');
+      setActiveTab('training-program');
+    }, 1500);
   };
 
   const renderContent = () => {
