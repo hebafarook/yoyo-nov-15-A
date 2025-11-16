@@ -182,7 +182,9 @@ async def register_user(user_data: UserCreate):
             dominant_foot=user_data.dominant_foot,
             current_injuries=user_data.current_injuries,
             parent_email=user_data.parent_email,
-            coach_email=user_data.coach_email
+            coach_email=user_data.coach_email,
+            height_unit=user_data.height_unit,
+            weight_unit=user_data.weight_unit
         )
         
         # Save user to database
