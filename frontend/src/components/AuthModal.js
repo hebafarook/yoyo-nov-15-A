@@ -163,12 +163,27 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
           registrationData.age = parseInt(formData.age);
           registrationData.position = formData.position;
           registrationData.gender = formData.gender;
-          registrationData.height = `${formData.height}cm`;
-          registrationData.weight = `${formData.weight}kg`;
+          
+          // Format height based on unit preference
+          if (formData.height_unit === 'metric') {
+            registrationData.height = `${formData.height}cm`;
+          } else {
+            registrationData.height = `${formData.height}"`; // Store as inches for imperial
+          }
+          
+          // Format weight based on unit preference
+          if (formData.weight_unit === 'metric') {
+            registrationData.weight = `${formData.weight}kg`;
+          } else {
+            registrationData.weight = `${formData.weight}lbs`;
+          }
+          
           registrationData.dominant_foot = formData.dominant_foot;
           registrationData.current_injuries = formData.current_injuries || 'None';
           registrationData.parent_email = formData.parent_email;
           registrationData.coach_email = formData.coach_email;
+          registrationData.height_unit = formData.height_unit;
+          registrationData.weight_unit = formData.weight_unit;
         }
 
         const result = await register(registrationData);
