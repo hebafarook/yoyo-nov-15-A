@@ -652,14 +652,26 @@ Click "View Professional Report" to see your updated analysis!`);
           </div>
         </div>
 
-        {/* Performance Standards Guide */}
+        {/* Performance Standards Guide - Collapsible */}
         <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 shadow-lg border-2 border-blue-200">
-          <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-            📊 Performance Standards Guide
-          </h3>
-          <p className="text-sm text-gray-700 mb-4">
-            Use these benchmarks to assess your performance across different metrics. These standards are based on elite youth soccer player data.
+          <button
+            type="button"
+            onClick={() => setShowStandards(!showStandards)}
+            className="w-full flex items-center justify-between text-left"
+          >
+            <h3 className="text-xl font-bold text-gray-900 flex items-center">
+              📊 Performance Standards Guide
+            </h3>
+            <span className="text-2xl text-blue-600">
+              {showStandards ? '−' : '+'}
+            </span>
+          </button>
+          <p className="text-sm text-gray-700 mt-2">
+            {showStandards ? 'Use these benchmarks to assess your performance. Based on elite youth soccer data.' : 'Click to expand and see performance benchmarks'}
           </p>
+          
+          {showStandards && (
+          <>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Physical Metrics Standards */}
