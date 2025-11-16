@@ -652,6 +652,111 @@ Click "View Professional Report" to see your updated analysis!`);
           </div>
         </div>
 
+        {/* Performance Standards Guide */}
+        <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 shadow-lg border-2 border-blue-200">
+          <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+            📊 Performance Standards Guide
+          </h3>
+          <p className="text-sm text-gray-700 mb-4">
+            Use these benchmarks to assess your performance across different metrics. These standards are based on elite youth soccer player data.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Physical Metrics Standards */}
+            <div className="bg-white rounded-lg p-4 border border-blue-200">
+              <h4 className="font-bold text-blue-900 mb-3">⚡ Physical Metrics</h4>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <strong>30m Sprint:</strong>
+                  <div className="ml-2 text-gray-700">
+                    • Excellent: &lt;4.0s | Good: 4.0-4.3s | Average: 4.3-4.6s | Below: &gt;4.6s
+                  </div>
+                </div>
+                <div>
+                  <strong>Yo-Yo Test:</strong>
+                  <div className="ml-2 text-gray-700">
+                    • Excellent: &gt;2400m | Good: 2000-2400m | Average: 1600-2000m | Below: &lt;1600m
+                  </div>
+                </div>
+                <div>
+                  <strong>VO2 Max:</strong>
+                  <div className="ml-2 text-gray-700">
+                    • Excellent: &gt;60 | Good: 55-60 | Average: 50-55 | Below: &lt;50
+                  </div>
+                </div>
+                <div>
+                  <strong>Vertical Jump:</strong>
+                  <div className="ml-2 text-gray-700">
+                    • Excellent: &gt;60cm | Good: 50-60cm | Average: 40-50cm | Below: &lt;40cm
+                  </div>
+                </div>
+                <div>
+                  <strong>Body Fat %:</strong>
+                  <div className="ml-2 text-gray-700">
+                    • Excellent: 8-12% | Good: 12-15% | Average: 15-18% | Above: &gt;18%
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Technical Skills Standards */}
+            <div className="bg-white rounded-lg p-4 border border-purple-200">
+              <h4 className="font-bold text-purple-900 mb-3">⚽ Technical Skills (1-5 Scale)</h4>
+              <div className="space-y-2 text-sm">
+                <div>
+                  <strong>Rating Scale:</strong>
+                  <div className="ml-2 text-gray-700">
+                    • 5: Elite/Professional Level
+                  </div>
+                  <div className="ml-2 text-gray-700">
+                    • 4: Advanced/Competitive
+                  </div>
+                  <div className="ml-2 text-gray-700">
+                    • 3: Intermediate/Developing
+                  </div>
+                  <div className="ml-2 text-gray-700">
+                    • 2: Beginner/Learning
+                  </div>
+                  <div className="ml-2 text-gray-700">
+                    • 1: Needs Significant Work
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <strong>Accuracy Metrics (%):</strong>
+                  <div className="ml-2 text-gray-700">
+                    • Excellent: &gt;85% | Good: 75-85% | Average: 65-75% | Below: &lt;65%
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tactical & Psychological Standards */}
+            <div className="bg-white rounded-lg p-4 border border-green-200">
+              <h4 className="font-bold text-green-900 mb-3">🧠 Tactical Awareness (1-5 Scale)</h4>
+              <div className="space-y-2 text-sm text-gray-700">
+                <p><strong>Game Intelligence:</strong> Understanding of game situations, reading play</p>
+                <p><strong>Positioning:</strong> Spatial awareness, defensive/offensive positioning</p>
+                <p><strong>Decision Making:</strong> Speed and quality of decisions under pressure</p>
+              </div>
+            </div>
+
+            {/* Psychological Standards */}
+            <div className="bg-white rounded-lg p-4 border border-orange-200">
+              <h4 className="font-bold text-orange-900 mb-3">💪 Psychological (1-5 Scale)</h4>
+              <div className="space-y-2 text-sm text-gray-700">
+                <p><strong>Coachability:</strong> Receptiveness to feedback, willingness to learn</p>
+                <p><strong>Mental Toughness:</strong> Resilience, focus, handling pressure</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 bg-blue-100 border border-blue-300 rounded-lg p-3">
+            <p className="text-sm text-blue-900">
+              <strong>💡 Tip:</strong> Be honest in your self-assessment. Accurate data leads to better personalized training programs!
+            </p>
+          </div>
+        </div>
+
         {/* Physical Metrics */}
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
           <h3 className="text-xl font-bold text-gray-900 mb-4">Physical Metrics</h3>
