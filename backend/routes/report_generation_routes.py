@@ -194,6 +194,7 @@ def analyze_assessment_with_llm(assessment: dict, previous_assessments: list, st
     endurance = assessment.get('yo_yo_test', 0)
     ball_control = assessment.get('ball_control', 0)
     passing = assessment.get('passing_accuracy', 0)
+    game_intel = assessment.get('game_intelligence', 0)  # Tactical awareness
     overall = assessment.get('overall_score', 0)
     
     # Performance level determination (as per system requirements)
