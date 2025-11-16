@@ -1,29 +1,16 @@
 #!/usr/bin/env python3
 """
-Assessment Report Save Functionality Test
-Testing "Save to Profile" and "Save as Benchmark" buttons with proper authentication
+Comprehensive Backend Testing for Unit Preference System
+Testing the new unit preference system in player registration
 """
 
-import asyncio
-import aiohttp
+import requests
 import json
-import uuid
-from datetime import datetime, timezone
+import sys
 import os
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv('/app/backend/.env')
-
-# Get backend URL from frontend .env
-with open('/app/frontend/.env', 'r') as f:
-    for line in f:
-        if line.startswith('REACT_APP_BACKEND_URL='):
-            BACKEND_URL = line.split('=', 1)[1].strip()
-            break
-    else:
-        BACKEND_URL = "http://localhost:8001"
-
+# Get backend URL from environment
+BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://soccer-pro-portal.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
 class AssessmentReportSaveTest:
