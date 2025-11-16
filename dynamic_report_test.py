@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 import uuid
 
 # Get backend URL from environment
-BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://soccer-ai-coach-7.preview.emergentagent.com')
+BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://soccer-pro-portal.preview.emergentagent.com')
 API_BASE = f"{BACKEND_URL}/api"
 
 class DynamicReportTester:
