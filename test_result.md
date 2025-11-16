@@ -474,6 +474,18 @@ frontend:
           agent: "main"
           comment: "ENHANCED IMPERIAL HEIGHT INPUT & FIRST-TIME ASSESSMENT REDIRECT FIXES COMPLETED ✅ USER FEEDBACK ADDRESSED: 1) IMPERIAL HEIGHT NOW USES FEET + INCHES - Changed from single 'inches' input to separate 'Feet' and 'Inches' inputs for better UX, Imperial selection shows two side-by-side inputs (Feet: 4-7, Inches: 0-11), Helper text 'e.g., 5 ft 9 in' guides users, Height stored as '5'9\"' format (e.g., 5 feet 9 inches), Metric still uses single cm input. 2) FIRST-TIME ASSESSMENT REDIRECT FIXED - Changed default activeTab from 'home' to 'take-assessment' to prevent flash of home screen, Updated useEffect to explicitly set tab to 'home' for existing players with assessments, Added console logs for debugging first-time vs existing player detection, New players now go directly to assessment screen (not home), After completing first assessment, users are redirected to home with all features unlocked. 3) VALIDATION ENHANCED - Separate validation for imperial height (both feet AND inches required), Better error messages for missing fields based on unit system. VISUAL CONFIRMATION: Screenshot shows Imperial option correctly displaying: Height section with 'Feet' and 'Inches' as separate labeled inputs, Helper text showing 'e.g., 5 ft 9 in', Clean layout with proper spacing. EXPECTED FLOW: New player registers → Auto-login → PlayerDashboard loads with 'take-assessment' tab active → First-time check confirms no assessments → User sees assessment form with first-time banner → After assessment complete → Redirect to home with success message → All tabs unlocked. Ready for frontend testing to verify complete registration-to-assessment flow with both unit systems."
 
+  - task: "Fix Generate Program Not Working After Assessment"
+    implemented: true
+    working: "NA"
+    file: "report_generation_routes.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "CRITICAL BUG FIX - Report Generation Failing ✅ USER ISSUE: After completing assessment and clicking generate program button, nothing was working. ROOT CAUSE IDENTIFIED: Python NameError in report_generation_routes.py line 313-337. The variable 'yo_yo' was being used but never defined. Code extracted 'agility', 'endurance' from yo_yo_test but forgot to extract 'yo_yo' itself. ERROR IN LOGS: 'ERROR:routes.report_generation_routes:Error generating report: name yo_yo is not defined' appeared multiple times. FIX APPLIED: Added line 191: yo_yo = assessment.get('yo_yo_test', 0) to extract the yo_yo variable alongside other metrics (sprint, agility, endurance, ball_control, passing, overall). This variable is used in: 1) Comparison with previous assessments (line 313-314), 2) Standards comparison calculations (line 325, 331, 337), 3) Training recommendations (line 349, 371, 389), 4) Performance gauge calculations (line 522, 525, 536, 544). BACKEND RESTARTED: sudo supervisorctl restart backend completed successfully. Server running on port 8001. Hot reload detected changes automatically. EXPECTED FLOW NOW: 1) Player completes assessment → Assessment saved, 2) Backend generates comprehensive roadmap (POST /api/reports/generate-comprehensive-roadmap), 3) Professional Report opens in new window, 4) Player clicks Generate Program button, 5) Backend creates both Coach-Guided and AI-Powered programs successfully, 6) Programs visible in Training Plan tab. Ready for testing to verify complete assessment-to-program-generation flow works end-to-end."
+
   - task: "Performance Highlights & Body Monitor"
     implemented: true
     working: true
