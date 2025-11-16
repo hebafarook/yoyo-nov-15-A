@@ -650,7 +650,6 @@ Click "View Professional Report" to see your updated analysis!`);
               </>
             )}
           </div>
-          </div>
         </div>
 
         {/* Physical Metrics */}
