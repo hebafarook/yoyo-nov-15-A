@@ -502,6 +502,21 @@ Click "View Professional Report" to see your updated analysis!`);
               </select>
             </div>
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Assessment Date *</label>
               <input
                 type="date"
@@ -512,26 +527,118 @@ Click "View Professional Report" to see your updated analysis!`);
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Height (cm)</label>
-              <input
-                type="number"
-                name="height_cm"
-                value={formData.height_cm}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+          </div>
+
+          {/* Unit Preference Selector */}
+          <div className="mt-4 bg-gray-50 border border-gray-300 p-4 rounded-lg">
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Measurement Standard</label>
+            <p className="text-xs text-gray-600 mb-3">Select your preferred measurement system</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setUnitPreference('metric')}
+                className={`p-3 border-2 rounded-lg transition-all text-sm font-medium ${
+                  unitPreference === 'metric'
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                }`}
+              >
+                <div className="font-bold">Metric (Europe)</div>
+                <div className="text-xs">cm • kg</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setUnitPreference('imperial')}
+                className={`p-3 border-2 rounded-lg transition-all text-sm font-medium ${
+                  unitPreference === 'imperial'
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                }`}
+              >
+                <div className="font-bold">Imperial (USA)</div>
+                <div className="text-xs">ft/in • lbs</div>
+              </button>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Weight (kg)</label>
-              <input
-                type="number"
-                name="weight_kg"
-                value={formData.weight_kg}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+          </div>
+
+          {/* Height and Weight - Dynamic based on unit preference */}
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {unitPreference === 'metric' ? (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Height (cm)</label>
+                  <input
+                    type="number"
+                    name="height_cm"
+                    value={formData.height_cm}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 175"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Centimeters</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Weight (kg)</label>
+                  <input
+                    type="number"
+                    name="weight_kg"
+                    value={formData.weight_kg}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 68"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Kilograms</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Height</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <input
+                        type="number"
+                        name="height_feet"
+                        value={formData.height_feet}
+                        onChange={handleInputChange}
+                        placeholder="Feet"
+                        min="4"
+                        max="7"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Feet</p>
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        name="height_inches"
+                        value={formData.height_inches}
+                        onChange={handleInputChange}
+                        placeholder="Inches"
+                        min="0"
+                        max="11"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Inches</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">e.g., 5 ft 9 in</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Weight (lbs)</label>
+                  <input
+                    type="number"
+                    name="weight_lbs"
+                    value={formData.weight_lbs}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 150"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Pounds</p>
+                </div>
+              </>
+            )}
+          </div>
           </div>
         </div>
 
