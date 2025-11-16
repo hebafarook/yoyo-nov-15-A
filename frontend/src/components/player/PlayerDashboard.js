@@ -18,7 +18,7 @@ import { Home, Activity, Calendar, FileText, TrendingUp, Heart, Trophy, BarChart
 
 const PlayerDashboard = () => {
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState('take-assessment'); // Start with assessment for first-time check
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [checkingFirstTime, setCheckingFirstTime] = useState(true);
 
