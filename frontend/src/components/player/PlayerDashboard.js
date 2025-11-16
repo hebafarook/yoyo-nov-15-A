@@ -190,61 +190,52 @@ Redirecting to Home...`);
     return (
       <>
         {isFirstTime && activeTab === 'take-assessment' && (
-          <div className="mb-6 bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 rounded-xl p-6 text-white shadow-2xl border-4 border-yellow-400">
-            <div className="text-center mb-4">
-              <h2 className="text-3xl font-bold mb-2">🎯 BASELINE ASSESSMENT REQUIRED</h2>
-              <div className="inline-block bg-yellow-400 text-gray-900 px-6 py-2 rounded-full font-bold text-sm mb-3">
+          <div className="mb-6 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 text-white shadow-xl border-2 border-blue-400">
+            <div className="text-center mb-6">
+              <div className="inline-block bg-white text-blue-600 px-6 py-2 rounded-full font-bold text-sm mb-4 shadow-md">
                 STEP 1 OF YOUR JOURNEY
               </div>
+              <h2 className="text-4xl font-bold mb-3">🎯 Baseline Assessment Required</h2>
+              <p className="text-blue-100 text-lg max-w-2xl mx-auto">
+                Complete your first assessment to establish your baseline benchmark and unlock all Player Portal features!
+              </p>
             </div>
-            <p className="text-white/95 mb-4 text-center text-lg">
-              Complete your first assessment to establish your BASELINE BENCHMARK and unlock all Player Portal features!
-            </p>
-            <div className="bg-white/15 rounded-lg p-5 backdrop-blur-sm border-2 border-white/30">
-              <h3 className="font-bold mb-3 text-lg flex items-center gap-2">
-                <span className="text-yellow-400">🚀</span> Your Development Pipeline:
+            
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <h3 className="font-bold mb-4 text-xl text-center text-white">
+                🚀 Your Development Pipeline
               </h3>
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-start gap-3 bg-white/10 p-3 rounded-lg">
-                  <span className="text-yellow-400 font-bold text-lg min-w-[24px]">1.</span>
-                  <div>
-                    <strong>Complete Assessment</strong>
-                    <p className="text-white/80 text-xs mt-1">Fill all physical, technical, tactical, and mental metrics</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 bg-white/10 p-3 rounded-lg">
-                  <span className="text-yellow-400 font-bold text-lg min-w-[24px]">2.</span>
-                  <div>
-                    <strong>Saved as Baseline Benchmark</strong>
-                    <p className="text-white/80 text-xs mt-1">Your starting point for tracking all future progress</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 bg-white/10 p-3 rounded-lg">
-                  <span className="text-yellow-400 font-bold text-lg min-w-[24px]">3.</span>
-                  <div>
-                    <strong>AI Generates Training Programs</strong>
-                    <p className="text-white/80 text-xs mt-1">Both Coach-Guided & AI-Powered programs tailored to your needs</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 bg-white/10 p-3 rounded-lg">
-                  <span className="text-yellow-400 font-bold text-lg min-w-[24px]">4.</span>
-                  <div>
-                    <strong>View Professional Report</strong>
-                    <p className="text-white/80 text-xs mt-1">Comprehensive roadmap opens automatically - print, save, and share!</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3 bg-green-500/30 p-3 rounded-lg border-2 border-green-400">
-                  <span className="text-green-300 font-bold text-lg min-w-[24px]">5.</span>
-                  <div>
-                    <strong>🔓 All Features Unlocked!</strong>
-                    <p className="text-white/90 text-xs mt-1">Access Home, Training, Progress, History, and all Player Portal features</p>
-                  </div>
-                </li>
-              </ul>
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                <div className="bg-white/10 rounded-lg p-4 text-center border border-white/20 hover:bg-white/15 transition">
+                  <div className="text-3xl mb-2">1️⃣</div>
+                  <div className="font-bold text-sm mb-1">Complete Assessment</div>
+                  <div className="text-xs text-blue-100">Fill all metrics</div>
+                </div>
+                <div className="bg-white/10 rounded-lg p-4 text-center border border-white/20 hover:bg-white/15 transition">
+                  <div className="text-3xl mb-2">2️⃣</div>
+                  <div className="font-bold text-sm mb-1">Baseline Saved</div>
+                  <div className="text-xs text-blue-100">Progress tracking starts</div>
+                </div>
+                <div className="bg-white/10 rounded-lg p-4 text-center border border-white/20 hover:bg-white/15 transition">
+                  <div className="text-3xl mb-2">3️⃣</div>
+                  <div className="font-bold text-sm mb-1">AI Programs</div>
+                  <div className="text-xs text-blue-100">Personalized plans</div>
+                </div>
+                <div className="bg-white/10 rounded-lg p-4 text-center border border-white/20 hover:bg-white/15 transition">
+                  <div className="text-3xl mb-2">4️⃣</div>
+                  <div className="font-bold text-sm mb-1">Pro Report</div>
+                  <div className="text-xs text-blue-100">Comprehensive roadmap</div>
+                </div>
+                <div className="bg-green-500 rounded-lg p-4 text-center border-2 border-green-300 shadow-lg">
+                  <div className="text-3xl mb-2">🔓</div>
+                  <div className="font-bold text-sm mb-1">All Unlocked!</div>
+                  <div className="text-xs text-green-100">Full portal access</div>
+                </div>
+              </div>
               
-              <div className="mt-4 bg-yellow-400/20 border-2 border-yellow-400 rounded-lg p-3">
-                <p className="text-yellow-100 text-xs font-semibold text-center">
-                  ⏱️ Assessment takes 10-15 minutes • All fields required for accurate analysis
+              <div className="mt-4 bg-blue-500/30 rounded-lg p-3 text-center border border-blue-300">
+                <p className="text-sm font-semibold text-white">
+                  ⏱️ Takes 10-15 minutes • All fields required for accurate AI analysis
                 </p>
               </div>
             </div>
