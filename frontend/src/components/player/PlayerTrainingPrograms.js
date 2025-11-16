@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import { Calendar, Activity, CheckCircle, Clock, Target, Zap, TrendingUp, Award } from 'lucide-react';
+import { Calendar, Activity, CheckCircle, Clock, Target, Zap, TrendingUp, Award, ClipboardCheck } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
