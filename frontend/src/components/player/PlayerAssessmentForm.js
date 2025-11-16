@@ -167,11 +167,22 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
         return;
       }
 
-      // Add user_id if authenticated
+      // Prepare assessment data with proper unit handling
       const assessmentData = {
         ...formData,
         user_id: user.id
       };
+      
+      // Convert height to cm for backend (if imperial was used)
+      if (unitPreference === 'imperial' && formData.height_feet && formData.height_inches) {
+        const totalInches = (parseInt(formData.height_feet) * 12) + parseInt(formData.height_inches);
+        assessmentData.height_cm = Math.round(totalInches * 2.54); // Convert to cm
+      }
+      
+      // Convert weight to kg for backend (if imperial was used)
+      if (unitPreference === 'imperial' && formData.weight_lbs) {
+        assessmentData.weight_kg = Math.round(parseFloat(formData.weight_lbs) / 2.205); // Convert to kg
+      }
       
       console.log('Creating assessment with data:', assessmentData);
       const response = await axios.post(`${BACKEND_URL}/api/assessments`, assessmentData);
