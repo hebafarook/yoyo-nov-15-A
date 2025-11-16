@@ -786,6 +786,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                ⚡ Speed test: How fast you can run 30 meters. Elite: &lt;4.0s | Good: 4.0-4.3s | Average: 4.3-4.6s
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Yo-Yo Test (meters)</label>
@@ -796,6 +799,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                🏃 Endurance test: Total distance covered in intermittent running. Elite: &gt;2400m | Good: 2000-2400m
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">VO2 Max</label>
@@ -807,6 +813,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                💨 Aerobic capacity: Maximum oxygen uptake (ml/kg/min). Elite: &gt;60 | Good: 55-60 | Average: 50-55
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Vertical Jump (cm)</label>
@@ -817,6 +826,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                🦘 Explosive power: Jump height from standing position. Elite: &gt;60cm | Good: 50-60cm | Average: 40-50cm
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Body Fat (%)</label>
@@ -828,6 +840,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                📊 Body composition: Percentage of body fat. Elite: 8-12% | Good: 12-15% | Average: 15-18%
+              </p>
             </div>
           </div>
         </div>
