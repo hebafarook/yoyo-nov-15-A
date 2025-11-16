@@ -1010,8 +1010,13 @@ Click "View Professional Report" to see your updated analysis!`);
         </div>
 
         {/* Psychological Metrics */}
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Mental Attributes (1-5 scale)</h3>
+        <div className="bg-white rounded-2xl p-6 shadow-xl border-2 border-pink-100">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+              <span className="text-xl">💪</span>
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900">Mental Attributes <span className="text-lg text-gray-600">(1-5 scale)</span></h3>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Coachability (1-5)</label>
