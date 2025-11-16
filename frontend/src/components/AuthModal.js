@@ -497,34 +497,76 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
                       </div>
                     </div>
 
+                    {/* Measurement Unit Preference */}
+                    <div className="bg-gray-50 border border-gray-300 p-3 rounded-lg">
+                      <Label className="text-sm font-semibold text-gray-700 mb-2 block">Measurement Standard *</Label>
+                      <p className="text-xs text-gray-600 mb-3">Choose your preferred measurement system</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({...prev, height_unit: 'metric', weight_unit: 'metric'}))}
+                          className={`p-3 border-2 rounded-lg transition-all text-sm font-medium ${
+                            formData.height_unit === 'metric'
+                              ? 'border-blue-500 bg-blue-50 text-blue-700'
+                              : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                          }`}
+                        >
+                          <div className="font-bold">Metric</div>
+                          <div className="text-xs">cm • kg</div>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({...prev, height_unit: 'imperial', weight_unit: 'imperial'}))}
+                          className={`p-3 border-2 rounded-lg transition-all text-sm font-medium ${
+                            formData.height_unit === 'imperial'
+                              ? 'border-blue-500 bg-blue-50 text-blue-700'
+                              : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                          }`}
+                        >
+                          <div className="font-bold">Imperial</div>
+                          <div className="text-xs">in • lbs</div>
+                        </button>
+                      </div>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <Label htmlFor="height">Height (cm) *</Label>
+                        <Label htmlFor="height">
+                          Height ({formData.height_unit === 'metric' ? 'cm' : 'inches'}) *
+                        </Label>
                         <Input
                           id="height"
                           name="height"
                           type="number"
                           required
-                          min="140"
-                          max="210"
+                          min={formData.height_unit === 'metric' ? '140' : '55'}
+                          max={formData.height_unit === 'metric' ? '210' : '83'}
                           value={formData.height}
                           onChange={handleInputChange}
-                          placeholder="e.g., 175"
+                          placeholder={formData.height_unit === 'metric' ? 'e.g., 175' : 'e.g., 69'}
                         />
+                        <p className="text-xs text-gray-500 mt-1">
+                          {formData.height_unit === 'metric' ? 'Centimeters' : 'Total inches (5\'9" = 69")'}
+                        </p>
                       </div>
                       <div>
-                        <Label htmlFor="weight">Weight (kg) *</Label>
+                        <Label htmlFor="weight">
+                          Weight ({formData.weight_unit === 'metric' ? 'kg' : 'lbs'}) *
+                        </Label>
                         <Input
                           id="weight"
                           name="weight"
                           type="number"
                           required
-                          min="40"
-                          max="120"
+                          min={formData.weight_unit === 'metric' ? '40' : '88'}
+                          max={formData.weight_unit === 'metric' ? '120' : '265'}
                           value={formData.weight}
                           onChange={handleInputChange}
-                          placeholder="e.g., 68"
+                          placeholder={formData.weight_unit === 'metric' ? 'e.g., 68' : 'e.g., 150'}
                         />
+                        <p className="text-xs text-gray-500 mt-1">
+                          {formData.weight_unit === 'metric' ? 'Kilograms' : 'Pounds'}
+                        </p>
                       </div>
                     </div>
 
