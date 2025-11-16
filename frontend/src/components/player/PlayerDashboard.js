@@ -155,8 +155,23 @@ Redirecting to Home...`);
       );
     }
 
+    console.log('🎨 Rendering content for tab:', activeTab, '| First-time:', isFirstTime);
+
+    // FORCE assessment for first-time players - override any other tab selection
+    if (isFirstTime && activeTab !== 'take-assessment') {
+      console.log('⚠️ WARNING: First-time player but wrong tab active. Forcing assessment...');
+      setActiveTab('take-assessment');
+    }
+
     // Show first-time welcome banner
     const content = (() => {
+      // For first-time players, ONLY show assessment
+      if (isFirstTime) {
+        console.log('🎯 First-time player - ONLY showing assessment form');
+        return <PlayerAssessmentForm onAssessmentComplete={handleAssessmentComplete} isFirstTime={isFirstTime} />;
+      }
+
+      // For existing players, show requested tab
       switch (activeTab) {
         case 'home': return <PlayerHome onStartSession={() => setActiveTab('training')} onTakeAssessment={() => setActiveTab('take-assessment')} />;
         case 'training': return <PlayerTodaySession />;
