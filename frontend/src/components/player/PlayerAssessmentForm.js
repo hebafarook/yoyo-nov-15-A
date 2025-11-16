@@ -667,7 +667,7 @@ Click "View Professional Report" to see your updated analysis!`);
         </div>
 
         {/* Performance Standards Guide - Collapsible */}
-        <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6 shadow-lg border-2 border-blue-200">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-xl border-2 border-blue-300">
           <button
             type="button"
             onClick={() => setShowStandards(!showStandards)}
