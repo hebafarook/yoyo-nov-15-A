@@ -463,10 +463,18 @@ Click "View Professional Report" to see your updated analysis!`);
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl p-6 text-white shadow-lg mb-6">
-        <h2 className="text-3xl font-bold mb-2">📝 Player Assessment</h2>
-        <p className="text-white/90">Complete this assessment to generate your personalized training program</p>
+    <div className="max-w-6xl mx-auto p-4 md:p-6">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 md:p-8 text-white shadow-xl mb-6 border-2 border-blue-400">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-2">📝 Player Assessment</h2>
+            <p className="text-blue-100">Complete this assessment to generate your personalized training program</p>
+          </div>
+          <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/30">
+            <div className="text-xs text-blue-100">Progress</div>
+            <div className="text-2xl font-bold">0%</div>
+          </div>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
