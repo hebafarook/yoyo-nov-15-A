@@ -240,11 +240,11 @@ You can now access all features in your Player Portal!`);
             </div>
             <div className="text-gray-600">
               <span className="block text-gray-400">Height</span>
-              <span className="font-semibold text-gray-900">{user?.height || '175cm'}</span>
+              <span className="font-semibold text-gray-900">{formatMeasurement(user?.height, 'height')}</span>
             </div>
             <div className="text-gray-600">
               <span className="block text-gray-400">Weight</span>
-              <span className="font-semibold text-gray-900">{user?.weight || '68kg'}</span>
+              <span className="font-semibold text-gray-900">{formatMeasurement(user?.weight, 'weight')}</span>
             </div>
             <div className="text-gray-600">
               <span className="block text-gray-400">Foot</span>
