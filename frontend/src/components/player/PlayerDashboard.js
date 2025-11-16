@@ -22,6 +22,19 @@ const PlayerDashboard = () => {
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [checkingFirstTime, setCheckingFirstTime] = useState(true);
 
+  // Helper function to format height and weight based on user preferences
+  const formatMeasurement = (value, type) => {
+    if (!value) {
+      // Default fallback values based on user's unit preference
+      if (type === 'height') {
+        return user?.height_unit === 'imperial' ? '5\'9"' : '175cm';
+      } else if (type === 'weight') {
+        return user?.weight_unit === 'imperial' ? '150lbs' : '68kg';
+      }
+    }
+    return value;
+  };
+
   const handleLogout = () => {
     console.log('Logout button clicked');
     try {
