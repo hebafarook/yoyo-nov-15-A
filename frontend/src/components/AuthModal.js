@@ -28,6 +28,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
     gender: 'male',
     height: '',
     weight: '',
+    height_unit: 'metric',
+    weight_unit: 'metric',
     dominant_foot: 'Right',
     current_injuries: '',
     parent_email: '',
