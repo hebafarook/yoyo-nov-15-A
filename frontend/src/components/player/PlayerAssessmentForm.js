@@ -40,6 +40,7 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
   });
 
   const [unitPreference, setUnitPreference] = useState('metric'); // 'metric' or 'imperial'
+  const [showStandards, setShowStandards] = useState(false); // Show/hide standards guide
 
   const [isLoading, setIsLoading] = useState(false);
   const [assessmentSuccess, setAssessmentSuccess] = useState(false);
