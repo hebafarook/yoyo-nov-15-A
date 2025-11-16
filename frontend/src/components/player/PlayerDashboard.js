@@ -63,13 +63,21 @@ const PlayerDashboard = () => {
         
         if (!benchmarks || benchmarks.length === 0) {
           // First-time player - no assessments yet
+          console.log('🎯 First-time player detected - forcing assessment');
           setIsFirstTime(true);
           setActiveTab('take-assessment');
+        } else {
+          // Existing player with assessments - go to home
+          console.log('✅ Existing player with assessments - showing home');
+          setIsFirstTime(false);
+          setActiveTab('home');
         }
         setCheckingFirstTime(false);
       } catch (error) {
         console.error('Error checking first-time status:', error);
         setCheckingFirstTime(false);
+        // Default to home on error
+        setActiveTab('home');
       }
     };
 
