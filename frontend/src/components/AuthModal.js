@@ -27,6 +27,8 @@ const AuthModal = ({ isOpen, onClose, defaultMode = 'login', onForgotPassword })
     position: '',
     gender: 'male',
     height: '',
+    height_feet: '',
+    height_inches: '',
     weight: '',
     height_unit: 'metric',
     weight_unit: 'metric',
