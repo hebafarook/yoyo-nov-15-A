@@ -456,6 +456,18 @@ frontend:
           agent: "testing"
           comment: "ASSESSMENT REPORT SYSTEM TESTING COMPLETED ✅ The assessment system is fully functional with comprehensive reporting capabilities. Key achievements: 1) PROFESSIONAL ASSESSMENT FORM - Complete form with Performance Standards Guide showing Excellent/Good/Average/Needs Improvement categories with proper descriptions (Elite/International Level, High Competitive Standard, Solid Club Level, Development Required), 2) COMPREHENSIVE ASSESSMENT CATEGORIES - Physical Performance Tests (20% Weight): 30m Sprint, Yo-Yo Test, VO2 Max with integrated calculator, Vertical Jump, Body Fat percentage, Technical Skills Assessment (40% Weight): Ball Control (1-5 scale), Passing/Dribbling/Shooting Accuracy (%), Defensive Duels (%), Tactical Awareness Assessment (30% Weight): Game Intelligence, Positioning, Decision Making (1-5 scales), Psychological Traits Assessment (10% Weight): Coachability, Mental Toughness (1-5 scales), 3) FORM FUNCTIONALITY - All input fields working correctly, validation and field explanations with 'Show Details' buttons, position selection dropdown functional, age-based category detection, 4) ASSESSMENT SUBMISSION - Form successfully processes and submits assessment data, integrates with backend assessment endpoints, ready for report generation and benchmark saving. The assessment form is production-ready and successfully captures comprehensive player evaluation data according to Youth Handbook standards."
 
+  - task: "Unit Preference System (Metric/Imperial) in Registration"
+    implemented: true
+    working: "NA"
+    file: "models.py, auth_routes.py, AuthModal.js, PlayerDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented comprehensive unit preference system for player registration. BACKEND CHANGES: 1) Added height_unit and weight_unit fields to User and UserCreate models in models.py (default 'metric'), 2) Updated auth_routes.py registration endpoint to save unit preferences. FRONTEND CHANGES: 1) Added measurement standard selector in AuthModal.js registration form - visual toggle buttons for Metric (cm/kg) vs Imperial (in/lbs), 2) Dynamic height/weight input labels and placeholders based on selected unit, 3) Different min/max validation ranges for metric vs imperial, 4) Updated PlayerDashboard.js with formatMeasurement helper function to display units correctly based on user preferences. FEATURES: User can choose measurement standard during registration (Metric or Imperial), Height stored as cm or inches, Weight stored as kg or lbs, Unit preferences saved to user profile, PlayerDashboard displays measurements in user's preferred units. Ready for testing to verify: 1) Registration with metric units saves correctly, 2) Registration with imperial units saves correctly, 3) Unit preferences persist in user profile, 4) Dashboard displays correct units based on preference, 5) First-time assessment flow still works after registration."
+
   - task: "Performance Highlights & Body Monitor"
     implemented: true
     working: true
