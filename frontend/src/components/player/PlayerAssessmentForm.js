@@ -852,7 +852,7 @@ Click "View Professional Report" to see your updated analysis!`);
           <h3 className="text-xl font-bold text-gray-900 mb-4">Technical Skills (1-5 scale)</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Ball Control</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Ball Control (1-5)</label>
               <input
                 type="number"
                 min="1"
@@ -862,6 +862,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                ⚽ First touch, close control, ability to manipulate ball. 5=Elite | 4=Advanced | 3=Intermediate | 2=Beginner | 1=Needs Work
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Passing Accuracy (%)</label>
@@ -874,6 +877,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                🎯 Success rate of completed passes in games/training. Elite: &gt;85% | Good: 75-85% | Average: 65-75%
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Dribbling Success (%)</label>
@@ -886,6 +892,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                🏃‍♂️ Percentage of successful take-ons and dribbles past opponents. Elite: &gt;85% | Good: 75-85%
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Shooting Accuracy (%)</label>
@@ -898,6 +907,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                🥅 Shots on target percentage. Elite: &gt;85% | Good: 75-85% | Average: 65-75%
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Defensive Duels Won (%)</label>
@@ -910,6 +922,9 @@ Click "View Professional Report" to see your updated analysis!`);
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="text-xs text-gray-600 mt-1">
+                🛡️ Success rate in 1v1 defensive situations and tackles. Elite: &gt;85% | Good: 75-85%
+              </p>
             </div>
           </div>
         </div>
