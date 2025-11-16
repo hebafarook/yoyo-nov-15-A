@@ -49,12 +49,62 @@ const PlayerAssessmentForm = ({ onAssessmentComplete, isFirstTime = false }) => 
   // Auto-populate player data from user profile
   useEffect(() => {
     if (isAuthenticated && user) {
+      console.log('👤 Auto-populating assessment form from user profile:', user);
+      
+      // Set unit preference from user profile
+      const userUnitPreference = user.height_unit || 'metric';
+      setUnitPreference(userUnitPreference);
+      
+      // Parse height and weight based on user's stored format
+      let heightCm = '';
+      let heightFeet = '';
+      let heightInches = '';
+      let weightKg = '';
+      let weightLbs = '';
+      
+      // Parse height
+      if (user.height) {
+        if (user.height.includes('cm')) {
+          // Metric: "175cm"
+          heightCm = user.height.replace('cm', '');
+        } else if (user.height.includes("'")) {
+          // Imperial: "5'9\""
+          const parts = user.height.split("'");
+          heightFeet = parts[0];
+          heightInches = parts[1]?.replace('"', '') || '0';
+        }
+      }
+      
+      // Parse weight
+      if (user.weight) {
+        if (user.weight.includes('kg')) {
+          weightKg = user.weight.replace('kg', '');
+        } else if (user.weight.includes('lbs')) {
+          weightLbs = user.weight.replace('lbs', '');
+        }
+      }
+      
       setFormData(prev => ({
         ...prev,
-        player_name: user.role === 'player' ? user.username : prev.player_name,
+        player_name: user.full_name || user.username || prev.player_name,
         age: user.age || prev.age,
         position: user.position || prev.position,
+        gender: user.gender || 'male',
+        height_cm: heightCm,
+        height_feet: heightFeet,
+        height_inches: heightInches,
+        weight_kg: weightKg,
+        weight_lbs: weightLbs,
       }));
+      
+      console.log('✅ Form pre-filled:', {
+        name: user.full_name || user.username,
+        age: user.age,
+        position: user.position,
+        height: user.height,
+        weight: user.weight,
+        unit: userUnitPreference
+      });
     }
   }, [isAuthenticated, user]);
 
