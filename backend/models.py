@@ -298,6 +298,9 @@ class UserCreate(BaseModel):
     current_injuries: Optional[str] = None
     parent_email: Optional[str] = None
     coach_email: Optional[str] = None
+    # Unit preferences
+    height_unit: Optional[str] = "metric"  # "metric" (cm) or "imperial" (ft/in)
+    weight_unit: Optional[str] = "metric"  # "metric" (kg) or "imperial" (lbs)
 
 class UserLogin(BaseModel):
     username: str
