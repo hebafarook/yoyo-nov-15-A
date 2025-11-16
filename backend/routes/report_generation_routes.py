@@ -188,6 +188,7 @@ def analyze_assessment_with_llm(assessment: dict, previous_assessments: list, st
     
     # Extract metrics
     sprint = assessment.get('sprint_30m', 0)
+    yo_yo = assessment.get('yo_yo_test', 0)  # Yo-Yo endurance test
     agility = assessment.get('yo_yo_test', 0)  # Used as agility metric
     reaction_time = assessment.get('vo2_max', 0) * 5  # Convert to ms approximation
     endurance = assessment.get('yo_yo_test', 0)
