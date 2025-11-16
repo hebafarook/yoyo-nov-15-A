@@ -282,12 +282,19 @@ Redirecting to Home...`);
           <div className="px-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isDisabled = isFirstTime && item.id !== 'take-assessment';
+              const isDisabled = (isFirstTime || checkingFirstTime) && item.id !== 'take-assessment';
               
               return (
                 <button
                   key={item.id}
-                  onClick={() => !isDisabled && setActiveTab(item.id)}
+                  onClick={() => {
+                    if (!isDisabled) {
+                      console.log('📱 Navigation: Switching to tab:', item.id);
+                      setActiveTab(item.id);
+                    } else {
+                      console.log('🔒 Navigation blocked: First assessment required');
+                    }
+                  }}
                   disabled={isDisabled}
                   className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     activeTab === item.id
