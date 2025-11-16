@@ -162,7 +162,7 @@ Click OK to go to Training Program or Cancel to stay here.`);
       );
     }
 
-    console.log('🎨 Rendering content for tab:', activeTab, '| First-time:', isFirstTime);
+    console.log('🎨 Rendering content for tab:', activeTab, '| First-time:', isFirstTime, '| Checking:', checkingFirstTime);
 
     // FORCE assessment for first-time players - override any other tab selection
     if (isFirstTime && activeTab !== 'take-assessment') {
@@ -177,6 +177,8 @@ Click OK to go to Training Program or Cancel to stay here.`);
         console.log('🎯 First-time player - ONLY showing assessment form');
         return <PlayerAssessmentForm onAssessmentComplete={handleAssessmentComplete} isFirstTime={isFirstTime} />;
       }
+      
+      console.log('✅ Existing player or assessment complete - showing requested tab:', activeTab);
 
       // For existing players, show requested tab
       switch (activeTab) {
