@@ -767,6 +767,8 @@ Click "View Professional Report" to see your updated analysis!`);
               <strong>💡 Tip:</strong> Be honest in your self-assessment. Accurate data leads to better personalized training programs!
             </p>
           </div>
+          </>
+          )}
         </div>
 
         {/* Physical Metrics */}
