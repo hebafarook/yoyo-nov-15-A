@@ -663,7 +663,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "New Player Portal Integration with Real APIs and AI Insights"
+    - "Unit Preference System (Metric/Imperial) in Registration"
+    - "First-Time Player Assessment Flow with Unit Preferences"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
