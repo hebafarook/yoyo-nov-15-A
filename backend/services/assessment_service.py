@@ -67,7 +67,15 @@ class AssessmentService:
         assessment_data: AssessmentCreate,
         current_user: dict
     ) -> PlayerAssessment:
-        """Create a new player assessment with automatic scoring."""
+        """Create a new player assessment with automatic scoring.
+        
+        Args:
+            assessment_data: The assessment data from the request
+            current_user: Dict containing user info from JWT (user_id, username, role)
+        
+        Returns:
+            PlayerAssessment with user_id properly linked
+        """
         # Check access
         if not await self.check_player_access(assessment_data.player_name, current_user):
             raise AccessDeniedError(
@@ -85,23 +93,27 @@ class AssessmentService:
             height_m = assessment_dict['height_cm'] / 100
             bmi = assessment_dict['weight_kg'] / (height_m ** 2)
         
-        # Create the assessment object
+        # Extract user_id from current_user (derived from JWT in route layer)
+        # This ensures the assessment is properly linked to the authenticated user
+        user_id = current_user.get('user_id')
+        
+        # Create the assessment object with user_id linked
         player_assessment = PlayerAssessment(
             **assessment_dict,
+            user_id=user_id,  # Link to authenticated user
             overall_score=overall_score,
             performance_level=performance_level,
             bmi=bmi
         )
         
-        # Add user tracking data
+        # Prepare data for database storage
         assessment_data_dict = player_assessment.dict()
-        assessment_data_dict['user_id'] = current_user.get('user_id')
         assessment_data_dict['created_by_username'] = current_user.get('username')
         
         # Save to database
         await self.repository.create_assessment(assessment_data_dict)
         
-        logger.info(f"Assessment created for player: {assessment_data.player_name}")
+        logger.info(f"Assessment created for player: {assessment_data.player_name} by user: {user_id}")
         return player_assessment
     
     async def get_all_assessments(self, current_user: dict) -> List[PlayerAssessment]:
