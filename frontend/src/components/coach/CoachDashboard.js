@@ -58,6 +58,7 @@ const CoachDashboard = () => {
       case 'players': return <CoachPlayerList onSelectPlayer={(player) => { setSelectedPlayer(player); setActiveScreen('player-profile'); }} />;
       case 'assessments': return <CoachAssessmentManagement onSelectAssessment={(assessment) => { setSelectedAssessment(assessment); setActiveScreen('assessment-report'); }} />;
       case 'drills': return <CoachDrillLibrary />;
+      case 'upload-drills': return <CoachDrillUpload />;
       case 'ai-planner': return <CoachAITrainingGenerator />;
       case 'teams': return <CoachTeamManagement />;
       case 'recovery': return <CoachRecovery />;
