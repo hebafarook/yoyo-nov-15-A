@@ -2640,13 +2640,9 @@ except ImportError as e:
 # Include the router in the main app
 app.include_router(api_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Configure CORS (single source of truth)
+from utils.cors_config import configure_cors
+configure_cors(app)
 
 # Configure logging
 logging.basicConfig(
