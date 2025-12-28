@@ -13,7 +13,7 @@ import sys
 import os
 
 # Backend URL from environment
-BACKEND_URL = "https://soccerpro-api.preview.emergentagent.com/api"
+BACKEND_URL = "https://drill-uploader.preview.emergentagent.com/api"
 
 class ComprehensiveProgramTester:
     def __init__(self):
