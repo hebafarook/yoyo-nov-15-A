@@ -71,6 +71,7 @@ def auth_service(mock_user_repo, mock_profile_repo):
     return service
 
 
+@pytest.mark.unit
 class TestAuthService:
     """Test auth service business logic."""
     
