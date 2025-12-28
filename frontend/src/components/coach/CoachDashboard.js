@@ -37,6 +37,7 @@ const CoachDashboard = () => {
     { id: 'players', label: 'Players', icon: Users },
     { id: 'assessments', label: 'Assessments', icon: FileText },
     { id: 'drills', label: 'Drill Library', icon: Book },
+    { id: 'upload-drills', label: 'Upload Drills', icon: Upload },
     { id: 'ai-planner', label: 'AI Planner', icon: Zap },
     { id: 'teams', label: 'Teams', icon: Shield },
     { id: 'recovery', label: 'Recovery', icon: Heart },
