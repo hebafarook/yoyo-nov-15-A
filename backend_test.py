@@ -1,73 +1,53 @@
 #!/usr/bin/env python3
 """
-YoYo Report v2 API Testing
-==========================
+Coach PDF Drill Upload Testing
+==============================
 
-Tests the new YoYo Report v2 presentation-layer endpoints.
-This tests the read-only formatting endpoints that present existing data.
+Tests the 2-step Coach PDF Drill Upload process:
+1. POST /api/coach/drills/upload-pdf - Parse PDF and return preview candidates (NO DB writes)
+2. POST /api/coach/drills/confirm - Validate and save drills to DB
+3. GET /api/coach/drills/sections - Get valid sections for dropdown
 
-Test Credentials:
-- Username: yoyo_test
-- Password: Test123!
-- User ID: a09c6343-daa9-4cf7-8846-0c425544bd4d
+Authentication Tests:
+- Without token → 401/403
+- Player token → 403 (only coach/admin allowed)
+- Coach token → 200
+- Admin token → 200
 
-Endpoints to Test:
-1. GET /api/v2/report/yoyo/{player_id} - Full report
-2. GET /api/v2/report/yoyo/{player_id}/sections - Sections only
-3. GET /api/v2/report/yoyo/{player_id}/json - JSON only
-4. Authentication tests (401/403 without auth)
+File Validation Tests:
+- Non-PDF file → 400
+- Empty file → 400
+- Valid PDF → 200 with parsed candidates
+
+Validation Tests:
+- Invalid section → 422 (whole batch rejected, NO partial writes)
+- Duplicate drill_ids → 422
+- Valid drills → 200 with upsert results
 """
 
 import requests
 import json
 import sys
-from typing import Dict, Any, Optional
-from datetime import datetime
+import jwt
+import time
+from typing import Dict, Any, Optional, List
+from datetime import datetime, timedelta
+import io
 
 # Backend URL from environment
 BACKEND_URL = "https://drill-uploader.preview.emergentagent.com"
 API_BASE = f"{BACKEND_URL}/api"
 
-# Test credentials
-TEST_USERNAME = "yoyo_test"
-TEST_PASSWORD = "Test123!"
-TEST_PLAYER_ID = "a09c6343-daa9-4cf7-8846-0c425544bd4d"
+# JWT Configuration
+JWT_SECRET = "elite-soccer-ai-coach-secret-key-2024-change-in-production"
+JWT_ALGORITHM = "HS256"
 
-# Expected section titles in exact order
-EXPECTED_SECTION_TITLES = [
-    "Identity & Biology",
-    "Performance Snapshot", 
-    "Strengths & Weaknesses",
-    "Development Identity",
-    "Benchmarks (Now → Target → Elite)",
-    "Training Mode",
-    "Training Program",
-    "Return-to-Play Engine",
-    "Safety Governor",
-    "AI Object (JSON)",
-    "Goal State"
-]
+# Test PDF file path
+TEST_PDF_PATH = "/tmp/test_drills.pdf"
 
-# Expected JSON keys
-EXPECTED_JSON_KEYS = [
-    'player_id', 'name', 'age', 'gender', 'position', 'dominant_leg',
-    'mode', 'profile_label', 'weekly_sessions', 'total_weeks',
-    'benchmarks', 'safety_rules', 'sub_program', 'matches'
-]
-
-# Expected sub_program keys
-EXPECTED_SUB_PROGRAM_KEYS = ['phases', 'weekly_microcycle', 'expanded_sections']
-
-# Expected expanded_sections keys (9 keys)
-EXPECTED_EXPANDED_SECTIONS_KEYS = [
-    'technical', 'tactical', 'possession', 'cardio', 'gym',
-    'speed_agility', 'mobility', 'recovery', 'prehab'
-]
-
-class YoYoReportV2Tester:
+class CoachDrillUploadTester:
     def __init__(self):
         self.session = requests.Session()
-        self.auth_token = None
         self.test_results = []
         
     def log_test(self, test_name: str, passed: bool, details: str = ""):
@@ -84,338 +64,483 @@ class YoYoReportV2Tester:
             "timestamp": datetime.now().isoformat()
         })
     
-    def authenticate(self) -> bool:
-        """Authenticate and get JWT token"""
-        try:
-            print(f"\n🔐 Authenticating with username: {TEST_USERNAME}")
-            
-            # Try login endpoint
-            login_data = {
-                "username": TEST_USERNAME,
-                "password": TEST_PASSWORD
-            }
-            
-            response = self.session.post(f"{API_BASE}/auth/login", json=login_data)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if 'access_token' in data:
-                    self.auth_token = data['access_token']
-                    self.session.headers.update({
-                        'Authorization': f'Bearer {self.auth_token}'
-                    })
-                    self.log_test("Authentication", True, f"Successfully authenticated as {TEST_USERNAME}")
-                    return True
-                else:
-                    self.log_test("Authentication", False, f"No access_token in response: {data}")
-                    return False
-            else:
-                self.log_test("Authentication", False, f"Login failed: {response.status_code} - {response.text}")
-                return False
-                
-        except Exception as e:
-            self.log_test("Authentication", False, f"Authentication error: {str(e)}")
-            return False
+    def create_jwt_token(self, user_id: str, role: str, username: str = "test_user") -> str:
+        """Create JWT token for testing"""
+        payload = {
+            "user_id": user_id,
+            "role": role,
+            "username": username,
+            "exp": datetime.utcnow() + timedelta(hours=1)
+        }
+        return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     
-    def test_unauthenticated_access(self):
-        """Test that endpoints require authentication"""
-        print(f"\n🚫 Testing unauthenticated access...")
+    def test_upload_pdf_requires_auth(self):
+        """Test that upload-pdf endpoint requires authentication"""
+        print(f"\n🚫 Testing upload-pdf without authentication...")
         
         # Create session without auth
         unauth_session = requests.Session()
         
         try:
-            response = unauth_session.get(f"{API_BASE}/v2/report/yoyo/{TEST_PLAYER_ID}")
+            # Try to upload without token
+            with open(TEST_PDF_PATH, 'rb') as f:
+                files = {'file': ('test_drills.pdf', f, 'application/pdf')}
+                response = unauth_session.post(f"{API_BASE}/coach/drills/upload-pdf", files=files)
             
             if response.status_code in [401, 403]:
-                self.log_test("Unauthenticated Access Protection", True, 
+                self.log_test("Upload PDF - No Auth Protection", True, 
                             f"Correctly returned {response.status_code} for unauthenticated request")
             else:
-                self.log_test("Unauthenticated Access Protection", False, 
-                            f"Expected 401/403, got {response.status_code}")
+                self.log_test("Upload PDF - No Auth Protection", False, 
+                            f"Expected 401/403, got {response.status_code}: {response.text}")
                 
         except Exception as e:
-            self.log_test("Unauthenticated Access Protection", False, f"Error: {str(e)}")
+            self.log_test("Upload PDF - No Auth Protection", False, f"Error: {str(e)}")
     
-    def test_full_yoyo_report(self) -> Optional[Dict[str, Any]]:
-        """Test GET /api/v2/report/yoyo/{player_id}"""
-        print(f"\n📊 Testing full YoYo Report v2 endpoint...")
+    def test_upload_pdf_requires_coach_or_admin(self):
+        """Test that upload-pdf requires coach or admin role"""
+        print(f"\n👤 Testing upload-pdf with player token...")
         
         try:
-            response = self.session.get(f"{API_BASE}/v2/report/yoyo/{TEST_PLAYER_ID}")
+            # Create player token
+            player_token = self.create_jwt_token("player-456", "player", "test_player")
+            
+            # Create session with player token
+            player_session = requests.Session()
+            player_session.headers.update({'Authorization': f'Bearer {player_token}'})
+            
+            # Try to upload with player token
+            with open(TEST_PDF_PATH, 'rb') as f:
+                files = {'file': ('test_drills.pdf', f, 'application/pdf')}
+                response = player_session.post(f"{API_BASE}/coach/drills/upload-pdf", files=files)
+            
+            if response.status_code == 403:
+                self.log_test("Upload PDF - Player Role Rejection", True, 
+                            "Correctly rejected player token with 403")
+            else:
+                self.log_test("Upload PDF - Player Role Rejection", False, 
+                            f"Expected 403, got {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_test("Upload PDF - Player Role Rejection", False, f"Error: {str(e)}")
+    
+    def test_upload_pdf_file_validation(self):
+        """Test file validation for upload-pdf"""
+        print(f"\n📄 Testing file validation...")
+        
+        # Create coach token
+        coach_token = self.create_jwt_token("coach-123", "coach", "test_coach")
+        coach_session = requests.Session()
+        coach_session.headers.update({'Authorization': f'Bearer {coach_token}'})
+        
+        # Test 1: Non-PDF file
+        try:
+            fake_txt_content = b"This is not a PDF file"
+            files = {'file': ('test.txt', io.BytesIO(fake_txt_content), 'text/plain')}
+            response = coach_session.post(f"{API_BASE}/coach/drills/upload-pdf", files=files)
+            
+            if response.status_code == 400:
+                self.log_test("Upload PDF - Non-PDF Rejection", True, 
+                            "Correctly rejected non-PDF file with 400")
+            else:
+                self.log_test("Upload PDF - Non-PDF Rejection", False, 
+                            f"Expected 400, got {response.status_code}: {response.text}")
+        except Exception as e:
+            self.log_test("Upload PDF - Non-PDF Rejection", False, f"Error: {str(e)}")
+        
+        # Test 2: Empty file
+        try:
+            files = {'file': ('empty.pdf', io.BytesIO(b""), 'application/pdf')}
+            response = coach_session.post(f"{API_BASE}/coach/drills/upload-pdf", files=files)
+            
+            if response.status_code == 400:
+                self.log_test("Upload PDF - Empty File Rejection", True, 
+                            "Correctly rejected empty file with 400")
+            else:
+                self.log_test("Upload PDF - Empty File Rejection", False, 
+                            f"Expected 400, got {response.status_code}: {response.text}")
+        except Exception as e:
+            self.log_test("Upload PDF - Empty File Rejection", False, f"Error: {str(e)}")
+    
+    def test_upload_pdf_returns_candidates(self) -> Optional[Dict[str, Any]]:
+        """Test successful PDF upload and parsing"""
+        print(f"\n📊 Testing successful PDF upload...")
+        
+        try:
+            # Create coach token
+            coach_token = self.create_jwt_token("coach-123", "coach", "test_coach")
+            coach_session = requests.Session()
+            coach_session.headers.update({'Authorization': f'Bearer {coach_token}'})
+            
+            # Upload valid PDF
+            with open(TEST_PDF_PATH, 'rb') as f:
+                files = {'file': ('test_drills.pdf', f, 'application/pdf')}
+                response = coach_session.post(f"{API_BASE}/coach/drills/upload-pdf", files=files)
             
             if response.status_code != 200:
-                self.log_test("Full YoYo Report - HTTP Status", False, 
+                self.log_test("Upload PDF - Success Response", False, 
                             f"Expected 200, got {response.status_code}: {response.text}")
                 return None
             
-            self.log_test("Full YoYo Report - HTTP Status", True, "Returns HTTP 200")
+            self.log_test("Upload PDF - Success Response", True, "Returns HTTP 200")
             
-            # Parse JSON
+            # Parse JSON response
             try:
                 data = response.json()
             except json.JSONDecodeError as e:
-                self.log_test("Full YoYo Report - JSON Parse", False, f"Invalid JSON: {str(e)}")
+                self.log_test("Upload PDF - JSON Parse", False, f"Invalid JSON: {str(e)}")
                 return None
             
-            self.log_test("Full YoYo Report - JSON Parse", True, "Valid JSON response")
+            self.log_test("Upload PDF - JSON Parse", True, "Valid JSON response")
             
-            # Check top-level structure
-            if not data.get('success'):
-                self.log_test("Full YoYo Report - Success Flag", False, f"success=False: {data}")
-                return None
-            
-            self.log_test("Full YoYo Report - Success Flag", True, "success=True")
-            
-            # Check for report object
-            if 'report' not in data:
-                self.log_test("Full YoYo Report - Report Object", False, "Missing 'report' key")
-                return None
-            
-            report = data['report']
-            self.log_test("Full YoYo Report - Report Object", True, "Has 'report' object")
-            
-            # Check report_sections
-            if 'report_sections' not in report:
-                self.log_test("Full YoYo Report - Report Sections", False, "Missing 'report_sections'")
-                return None
-            
-            sections = report['report_sections']
-            
-            # Check sections count
-            if len(sections) != 11:
-                self.log_test("Full YoYo Report - Section Count", False, 
-                            f"Expected 11 sections, got {len(sections)}")
-                return None
-            
-            self.log_test("Full YoYo Report - Section Count", True, "Has exactly 11 sections")
-            
-            # Check section order and titles
-            section_titles_correct = True
-            for i, section in enumerate(sections):
-                expected_number = i + 1
-                expected_title = EXPECTED_SECTION_TITLES[i]
-                
-                if section.get('section_number') != expected_number:
-                    self.log_test("Full YoYo Report - Section Numbers", False, 
-                                f"Section {i+1} has wrong number: {section.get('section_number')}")
-                    section_titles_correct = False
-                    break
-                
-                if section.get('section_title') != expected_title:
-                    self.log_test("Full YoYo Report - Section Titles", False, 
-                                f"Section {i+1} has wrong title. Expected '{expected_title}', got '{section.get('section_title')}'")
-                    section_titles_correct = False
-                    break
-            
-            if section_titles_correct:
-                self.log_test("Full YoYo Report - Section Order", True, "All sections in correct order with correct titles")
-            
-            # Check report_json
-            if 'report_json' not in report:
-                self.log_test("Full YoYo Report - Report JSON", False, "Missing 'report_json'")
-                return None
-            
-            report_json = report['report_json']
-            self.log_test("Full YoYo Report - Report JSON", True, "Has 'report_json' object")
-            
-            # Check required JSON keys
-            missing_keys = []
-            for key in EXPECTED_JSON_KEYS:
-                if key not in report_json:
-                    missing_keys.append(key)
+            # Check response structure
+            required_keys = ['parsed', 'errors', 'meta']
+            missing_keys = [key for key in required_keys if key not in data]
             
             if missing_keys:
-                self.log_test("Full YoYo Report - JSON Keys", False, 
+                self.log_test("Upload PDF - Response Structure", False, 
                             f"Missing required keys: {missing_keys}")
+                return None
+            
+            self.log_test("Upload PDF - Response Structure", True, "Has required keys: parsed, errors, meta")
+            
+            # Check parsed candidates
+            parsed = data['parsed']
+            if not isinstance(parsed, list):
+                self.log_test("Upload PDF - Parsed Candidates", False, 
+                            f"'parsed' should be a list, got {type(parsed)}")
+                return None
+            
+            if len(parsed) == 0:
+                self.log_test("Upload PDF - Parsed Candidates", False, 
+                            "No drill candidates were parsed from PDF")
+                return None
+            
+            self.log_test("Upload PDF - Parsed Candidates", True, 
+                        f"Parsed {len(parsed)} drill candidates")
+            
+            # Check candidate structure
+            first_candidate = parsed[0]
+            expected_candidate_keys = ['raw_text', 'needs_review', 'confidence']
+            missing_candidate_keys = [key for key in expected_candidate_keys if key not in first_candidate]
+            
+            if missing_candidate_keys:
+                self.log_test("Upload PDF - Candidate Structure", False, 
+                            f"Missing candidate keys: {missing_candidate_keys}")
             else:
-                self.log_test("Full YoYo Report - JSON Keys", True, "All required JSON keys present")
+                self.log_test("Upload PDF - Candidate Structure", True, 
+                            "Candidates have required structure")
             
-            # Check sub_program structure
-            if 'sub_program' in report_json:
-                sub_program = report_json['sub_program']
-                
-                # Check sub_program keys
-                missing_sub_keys = []
-                for key in EXPECTED_SUB_PROGRAM_KEYS:
-                    if key not in sub_program:
-                        missing_sub_keys.append(key)
-                
-                if missing_sub_keys:
-                    self.log_test("Full YoYo Report - Sub Program Keys", False, 
-                                f"Missing sub_program keys: {missing_sub_keys}")
-                else:
-                    self.log_test("Full YoYo Report - Sub Program Keys", True, "All sub_program keys present")
-                
-                # Check expanded_sections
-                if 'expanded_sections' in sub_program:
-                    expanded = sub_program['expanded_sections']
-                    missing_expanded = []
-                    for key in EXPECTED_EXPANDED_SECTIONS_KEYS:
-                        if key not in expanded:
-                            missing_expanded.append(key)
-                    
-                    if missing_expanded:
-                        self.log_test("Full YoYo Report - Expanded Sections", False, 
-                                    f"Missing expanded_sections keys: {missing_expanded}")
-                    else:
-                        self.log_test("Full YoYo Report - Expanded Sections", True, 
-                                    f"All 9 expanded_sections keys present: {list(expanded.keys())}")
-            
-            # Check validation
-            if 'validation' in data:
-                validation = data['validation']
-                if validation.get('valid'):
-                    self.log_test("Full YoYo Report - Validation", True, "Report structure validation passed")
-                else:
-                    self.log_test("Full YoYo Report - Validation", False, 
-                                f"Validation errors: {validation.get('errors', [])}")
-            
-            # Check specific data from assessment (Section 2 - Performance Snapshot)
-            section_2 = sections[1]  # Performance Snapshot
-            if section_2.get('section_title') == "Performance Snapshot":
-                content = section_2.get('content', {})
-                physical_metrics = content.get('physical_metrics', {})
-                technical_metrics = content.get('technical_metrics', {})
-                
-                # Check for specific values mentioned in requirements
-                sprint_30m = physical_metrics.get('sprint_30m', {}).get('value')
-                yo_yo_test = physical_metrics.get('yo_yo_test', {}).get('value')
-                ball_control = technical_metrics.get('ball_control', {}).get('value')
-                overall_score = content.get('overall_score')
-                
-                performance_data = []
-                if sprint_30m not in [None, "N/A"]:
-                    performance_data.append(f"Sprint 30m: {sprint_30m}")
-                if yo_yo_test not in [None, "N/A"]:
-                    performance_data.append(f"Yo-Yo Test: {yo_yo_test}")
-                if ball_control not in [None, "N/A"]:
-                    performance_data.append(f"Ball Control: {ball_control}")
-                if overall_score not in [None, "N/A"]:
-                    performance_data.append(f"Overall Score: {overall_score}")
-                
-                if performance_data:
-                    self.log_test("Full YoYo Report - Performance Data", True, 
-                                f"Performance metrics found: {', '.join(performance_data)}")
-                else:
-                    self.log_test("Full YoYo Report - Performance Data", False, 
-                                "No performance metrics found in Section 2")
+            # Check meta information
+            meta = data['meta']
+            if 'filename' in meta and 'pages' in meta:
+                self.log_test("Upload PDF - Meta Information", True, 
+                            f"Meta: {meta['filename']}, {meta['pages']} pages")
+            else:
+                self.log_test("Upload PDF - Meta Information", False, 
+                            "Missing filename or pages in meta")
             
             return data
             
         except Exception as e:
-            self.log_test("Full YoYo Report - Exception", False, f"Error: {str(e)}")
+            self.log_test("Upload PDF - Exception", False, f"Error: {str(e)}")
             return None
     
-    def test_sections_only_endpoint(self):
-        """Test GET /api/v2/report/yoyo/{player_id}/sections"""
-        print(f"\n📋 Testing sections-only endpoint...")
+    def test_confirm_requires_auth(self):
+        """Test that confirm endpoint requires authentication"""
+        print(f"\n🚫 Testing confirm without authentication...")
+        
+        # Create session without auth
+        unauth_session = requests.Session()
         
         try:
-            response = self.session.get(f"{API_BASE}/v2/report/yoyo/{TEST_PLAYER_ID}/sections")
+            # Try to confirm without token
+            confirm_data = {
+                "drills": [
+                    {
+                        "drill_id": "TEST01",
+                        "name": "Test Drill",
+                        "section": "technical"
+                    }
+                ]
+            }
+            response = unauth_session.post(f"{API_BASE}/coach/drills/confirm", json=confirm_data)
+            
+            if response.status_code in [401, 403]:
+                self.log_test("Confirm - No Auth Protection", True, 
+                            f"Correctly returned {response.status_code} for unauthenticated request")
+            else:
+                self.log_test("Confirm - No Auth Protection", False, 
+                            f"Expected 401/403, got {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_test("Confirm - No Auth Protection", False, f"Error: {str(e)}")
+    
+    def test_confirm_validates_all_or_none(self):
+        """Test that confirm validates all drills and rejects batch if any invalid"""
+        print(f"\n🔍 Testing confirm validation (all-or-none)...")
+        
+        try:
+            # Create coach token
+            coach_token = self.create_jwt_token("coach-123", "coach", "test_coach")
+            coach_session = requests.Session()
+            coach_session.headers.update({'Authorization': f'Bearer {coach_token}'})
+            
+            # Test 1: Invalid section should reject entire batch
+            invalid_batch = {
+                "drills": [
+                    {
+                        "drill_id": "VALID01",
+                        "name": "Valid Drill",
+                        "section": "technical"
+                    },
+                    {
+                        "drill_id": "INVALID01",
+                        "name": "Invalid Drill",
+                        "section": "invalid_section"  # Invalid section
+                    }
+                ]
+            }
+            
+            response = coach_session.post(f"{API_BASE}/coach/drills/confirm", json=invalid_batch)
+            
+            if response.status_code == 422:
+                self.log_test("Confirm - Invalid Section Rejection", True, 
+                            "Correctly rejected batch with invalid section (422)")
+            else:
+                self.log_test("Confirm - Invalid Section Rejection", False, 
+                            f"Expected 422, got {response.status_code}: {response.text}")
+            
+            # Test 2: Duplicate drill_ids should reject batch
+            duplicate_batch = {
+                "drills": [
+                    {
+                        "drill_id": "DUPLICATE01",
+                        "name": "First Drill",
+                        "section": "technical"
+                    },
+                    {
+                        "drill_id": "DUPLICATE01",  # Duplicate ID
+                        "name": "Second Drill",
+                        "section": "tactical"
+                    }
+                ]
+            }
+            
+            response = coach_session.post(f"{API_BASE}/coach/drills/confirm", json=duplicate_batch)
+            
+            if response.status_code == 422:
+                self.log_test("Confirm - Duplicate ID Rejection", True, 
+                            "Correctly rejected batch with duplicate drill_ids (422)")
+            else:
+                self.log_test("Confirm - Duplicate ID Rejection", False, 
+                            f"Expected 422, got {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_test("Confirm - Validation Exception", False, f"Error: {str(e)}")
+    
+    def test_confirm_upserts(self):
+        """Test that confirm successfully upserts valid drills"""
+        print(f"\n💾 Testing confirm upsert functionality...")
+        
+        try:
+            # Create coach token
+            coach_token = self.create_jwt_token("coach-123", "coach", "test_coach")
+            coach_session = requests.Session()
+            coach_session.headers.update({'Authorization': f'Bearer {coach_token}'})
+            
+            # Test valid drill batch
+            valid_batch = {
+                "drills": [
+                    {
+                        "drill_id": f"COACH_TEST_{int(time.time())}_01",
+                        "name": "Triangle Passing",
+                        "section": "technical",
+                        "tags": ["passing", "first_touch"],
+                        "duration_min": 15,
+                        "intensity": "moderate",
+                        "equipment": ["cones", "balls"],
+                        "coaching_points": ["Soft first touch", "Body position open"]
+                    },
+                    {
+                        "drill_id": f"COACH_TEST_{int(time.time())}_02",
+                        "name": "Speed Ladder",
+                        "section": "speed_agility",
+                        "tags": ["agility", "quick_feet"],
+                        "duration_min": 10,
+                        "intensity": "high",
+                        "equipment": ["ladder"]
+                    }
+                ]
+            }
+            
+            response = coach_session.post(f"{API_BASE}/coach/drills/confirm", json=valid_batch)
             
             if response.status_code != 200:
-                self.log_test("Sections Only - HTTP Status", False, 
+                self.log_test("Confirm - Valid Drills Success", False, 
                             f"Expected 200, got {response.status_code}: {response.text}")
                 return
             
-            self.log_test("Sections Only - HTTP Status", True, "Returns HTTP 200")
+            self.log_test("Confirm - Valid Drills Success", True, "Returns HTTP 200")
             
+            # Parse response
             try:
                 data = response.json()
             except json.JSONDecodeError as e:
-                self.log_test("Sections Only - JSON Parse", False, f"Invalid JSON: {str(e)}")
+                self.log_test("Confirm - JSON Parse", False, f"Invalid JSON: {str(e)}")
+                return
+            
+            # Check response structure
+            required_keys = ['success', 'inserted', 'updated', 'total', 'drill_ids']
+            missing_keys = [key for key in required_keys if key not in data]
+            
+            if missing_keys:
+                self.log_test("Confirm - Response Structure", False, 
+                            f"Missing required keys: {missing_keys}")
+                return
+            
+            self.log_test("Confirm - Response Structure", True, "Has required response keys")
+            
+            # Check success flag
+            if not data.get('success'):
+                self.log_test("Confirm - Success Flag", False, f"success=False: {data}")
+                return
+            
+            self.log_test("Confirm - Success Flag", True, "success=True")
+            
+            # Check counts
+            total = data.get('total', 0)
+            inserted = data.get('inserted', 0)
+            updated = data.get('updated', 0)
+            
+            if total == 2 and (inserted + updated) == 2:
+                self.log_test("Confirm - Upsert Counts", True, 
+                            f"Total: {total}, Inserted: {inserted}, Updated: {updated}")
+            else:
+                self.log_test("Confirm - Upsert Counts", False, 
+                            f"Expected total=2, got total={total}, inserted={inserted}, updated={updated}")
+            
+            # Check drill_ids
+            drill_ids = data.get('drill_ids', [])
+            if len(drill_ids) == 2:
+                self.log_test("Confirm - Drill IDs", True, f"Returned {len(drill_ids)} drill IDs")
+            else:
+                self.log_test("Confirm - Drill IDs", False, 
+                            f"Expected 2 drill IDs, got {len(drill_ids)}")
+                
+        except Exception as e:
+            self.log_test("Confirm - Upsert Exception", False, f"Error: {str(e)}")
+    
+    def test_get_sections_requires_auth(self):
+        """Test that sections endpoint requires authentication"""
+        print(f"\n🚫 Testing sections without authentication...")
+        
+        # Create session without auth
+        unauth_session = requests.Session()
+        
+        try:
+            response = unauth_session.get(f"{API_BASE}/coach/drills/sections")
+            
+            if response.status_code in [401, 403]:
+                self.log_test("Sections - No Auth Protection", True, 
+                            f"Correctly returned {response.status_code} for unauthenticated request")
+            else:
+                self.log_test("Sections - No Auth Protection", False, 
+                            f"Expected 401/403, got {response.status_code}: {response.text}")
+                
+        except Exception as e:
+            self.log_test("Sections - No Auth Protection", False, f"Error: {str(e)}")
+    
+    def test_get_sections_success(self):
+        """Test successful sections retrieval"""
+        print(f"\n📋 Testing sections endpoint...")
+        
+        try:
+            # Create coach token
+            coach_token = self.create_jwt_token("coach-123", "coach", "test_coach")
+            coach_session = requests.Session()
+            coach_session.headers.update({'Authorization': f'Bearer {coach_token}'})
+            
+            response = coach_session.get(f"{API_BASE}/coach/drills/sections")
+            
+            if response.status_code != 200:
+                self.log_test("Sections - Success Response", False, 
+                            f"Expected 200, got {response.status_code}: {response.text}")
+                return
+            
+            self.log_test("Sections - Success Response", True, "Returns HTTP 200")
+            
+            # Parse response
+            try:
+                data = response.json()
+            except json.JSONDecodeError as e:
+                self.log_test("Sections - JSON Parse", False, f"Invalid JSON: {str(e)}")
                 return
             
             # Check structure
-            if not data.get('success'):
-                self.log_test("Sections Only - Success Flag", False, f"success=False: {data}")
-                return
-            
             if 'sections' not in data:
-                self.log_test("Sections Only - Sections Key", False, "Missing 'sections' key")
+                self.log_test("Sections - Response Structure", False, "Missing 'sections' key")
                 return
-            
-            if 'meta' not in data:
-                self.log_test("Sections Only - Meta Key", False, "Missing 'meta' key")
-                return
-            
-            # Should NOT have full report_json
-            if 'json' in data or 'report_json' in data:
-                self.log_test("Sections Only - Lighter Payload", False, 
-                            "Should not include full JSON object for lighter payload")
-            else:
-                self.log_test("Sections Only - Lighter Payload", True, 
-                            "Correctly excludes full JSON object")
             
             sections = data['sections']
-            if len(sections) == 11:
-                self.log_test("Sections Only - Section Count", True, "Returns 11 sections")
-            else:
-                self.log_test("Sections Only - Section Count", False, 
-                            f"Expected 11 sections, got {len(sections)}")
+            if not isinstance(sections, list) or len(sections) == 0:
+                self.log_test("Sections - Valid Sections", False, 
+                            f"Expected non-empty list, got {type(sections)} with {len(sections) if isinstance(sections, list) else 'N/A'} items")
+                return
             
+            self.log_test("Sections - Valid Sections", True, 
+                        f"Returns {len(sections)} valid sections: {sections}")
+            
+            # Check for intensities
+            if 'intensities' in data:
+                intensities = data['intensities']
+                self.log_test("Sections - Intensities", True, 
+                            f"Returns intensities: {intensities}")
+            else:
+                self.log_test("Sections - Intensities", False, "Missing 'intensities' key")
+                
         except Exception as e:
-            self.log_test("Sections Only - Exception", False, f"Error: {str(e)}")
+            self.log_test("Sections - Exception", False, f"Error: {str(e)}")
     
-    def test_json_only_endpoint(self):
-        """Test GET /api/v2/report/yoyo/{player_id}/json"""
-        print(f"\n🔧 Testing JSON-only endpoint...")
+    def test_admin_token_access(self):
+        """Test that admin token can access all endpoints"""
+        print(f"\n👑 Testing admin token access...")
         
         try:
-            response = self.session.get(f"{API_BASE}/v2/report/yoyo/{TEST_PLAYER_ID}/json")
+            # Create admin token
+            admin_token = self.create_jwt_token("admin-789", "admin", "test_admin")
+            admin_session = requests.Session()
+            admin_session.headers.update({'Authorization': f'Bearer {admin_token}'})
             
-            if response.status_code != 200:
-                self.log_test("JSON Only - HTTP Status", False, 
+            # Test upload-pdf with admin token
+            with open(TEST_PDF_PATH, 'rb') as f:
+                files = {'file': ('test_drills.pdf', f, 'application/pdf')}
+                response = admin_session.post(f"{API_BASE}/coach/drills/upload-pdf", files=files)
+            
+            if response.status_code == 200:
+                self.log_test("Admin Token - Upload PDF Access", True, 
+                            "Admin can access upload-pdf endpoint")
+            else:
+                self.log_test("Admin Token - Upload PDF Access", False, 
                             f"Expected 200, got {response.status_code}: {response.text}")
-                return
             
-            self.log_test("JSON Only - HTTP Status", True, "Returns HTTP 200")
+            # Test sections with admin token
+            response = admin_session.get(f"{API_BASE}/coach/drills/sections")
             
-            try:
-                data = response.json()
-            except json.JSONDecodeError as e:
-                self.log_test("JSON Only - JSON Parse", False, f"Invalid JSON: {str(e)}")
-                return
-            
-            # Check structure
-            if not data.get('success'):
-                self.log_test("JSON Only - Success Flag", False, f"success=False: {data}")
-                return
-            
-            if 'json' not in data:
-                self.log_test("JSON Only - JSON Key", False, "Missing 'json' key")
-                return
-            
-            if 'meta' not in data:
-                self.log_test("JSON Only - Meta Key", False, "Missing 'meta' key")
-                return
-            
-            # Should NOT have sections
-            if 'sections' in data or 'report_sections' in data:
-                self.log_test("JSON Only - Machine Readable", False, 
-                            "Should not include sections for machine-readable endpoint")
+            if response.status_code == 200:
+                self.log_test("Admin Token - Sections Access", True, 
+                            "Admin can access sections endpoint")
             else:
-                self.log_test("JSON Only - Machine Readable", True, 
-                            "Correctly excludes sections for machine-readable data")
-            
-            # Check JSON structure
-            json_obj = data['json']
-            required_keys_present = all(key in json_obj for key in EXPECTED_JSON_KEYS)
-            
-            if required_keys_present:
-                self.log_test("JSON Only - Required Keys", True, "All required JSON keys present")
-            else:
-                missing = [key for key in EXPECTED_JSON_KEYS if key not in json_obj]
-                self.log_test("JSON Only - Required Keys", False, f"Missing keys: {missing}")
-            
+                self.log_test("Admin Token - Sections Access", False, 
+                            f"Expected 200, got {response.status_code}: {response.text}")
+                
         except Exception as e:
-            self.log_test("JSON Only - Exception", False, f"Error: {str(e)}")
+            self.log_test("Admin Token - Exception", False, f"Error: {str(e)}")
     
     def print_summary(self):
         """Print test summary"""
         print(f"\n" + "="*60)
-        print(f"YoYo Report v2 API Test Summary")
+        print(f"Coach PDF Drill Upload Test Summary")
         print(f"="*60)
         
         total_tests = len(self.test_results)
@@ -439,31 +564,44 @@ class YoYoReportV2Tester:
 
 def main():
     """Main test execution"""
-    print("🚀 Starting YoYo Report v2 API Tests")
+    print("🚀 Starting Coach PDF Drill Upload Tests")
     print(f"Backend URL: {BACKEND_URL}")
-    print(f"Test Player ID: {TEST_PLAYER_ID}")
+    print(f"Test PDF: {TEST_PDF_PATH}")
     
-    tester = YoYoReportV2Tester()
-    
-    # Step 1: Test unauthenticated access
-    tester.test_unauthenticated_access()
-    
-    # Step 2: Authenticate
-    if not tester.authenticate():
-        print("❌ Authentication failed. Cannot proceed with authenticated tests.")
-        tester.print_summary()
+    # Check if test PDF exists
+    try:
+        with open(TEST_PDF_PATH, 'rb') as f:
+            pdf_size = len(f.read())
+        print(f"Test PDF found: {pdf_size} bytes")
+    except FileNotFoundError:
+        print(f"❌ Test PDF not found at {TEST_PDF_PATH}")
         return False
     
-    # Step 3: Test full YoYo Report endpoint
-    full_report_data = tester.test_full_yoyo_report()
+    tester = CoachDrillUploadTester()
     
-    # Step 4: Test sections-only endpoint
-    tester.test_sections_only_endpoint()
+    # Authentication Tests
+    print(f"\n🔐 AUTHENTICATION TESTS")
+    tester.test_upload_pdf_requires_auth()
+    tester.test_upload_pdf_requires_coach_or_admin()
+    tester.test_confirm_requires_auth()
+    tester.test_get_sections_requires_auth()
     
-    # Step 5: Test JSON-only endpoint
-    tester.test_json_only_endpoint()
+    # File Validation Tests
+    print(f"\n📄 FILE VALIDATION TESTS")
+    tester.test_upload_pdf_file_validation()
     
-    # Step 6: Print summary
+    # Functional Tests
+    print(f"\n⚙️ FUNCTIONAL TESTS")
+    upload_result = tester.test_upload_pdf_returns_candidates()
+    tester.test_confirm_validates_all_or_none()
+    tester.test_confirm_upserts()
+    tester.test_get_sections_success()
+    
+    # Admin Access Tests
+    print(f"\n👑 ADMIN ACCESS TESTS")
+    tester.test_admin_token_access()
+    
+    # Print summary
     success = tester.print_summary()
     
     return success
