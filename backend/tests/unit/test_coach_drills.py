@@ -235,8 +235,6 @@ class TestDrillPDFParser:
     
     def test_parse_chunk_creates_candidate(self):
         """Test that parse_chunk creates a DrillItemCandidate."""
-        from services.drill_pdf_parser import DrillPDFParser
-        
         parser = DrillPDFParser()
         
         chunk = {
