@@ -58,6 +58,18 @@ backend:
         agent: "main"
         comment: "✅ DRILLS_SOURCE env var: auto/db/static modes. Auto mode uses DB if count>0, else static fallback"
 
+  - task: "Training Program Safety & Drill Enforcement"
+    implemented: true
+    working: true
+    file: "/app/backend/services/safety_validator.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ Full safety system implemented: SafetyStatus computation, AllowedElements generation, coach override (safer only), post-generation validation & sanitization. 30 unit tests proving unsafe plans CANNOT pass."
+
   - task: "Coach PDF Drill Upload - Preview"
     implemented: true
     working: true
