@@ -447,7 +447,7 @@ class TestEliteTrainingEndpoints:
     
     def test_get_wellness_history_endpoint_shape(self, client):
         """Test GET /elite-training/wellness/{player_name} returns expected shape."""
-        with patch('services.elite_training_service.get_elite_training_service') as mock_get_service:
+        with patch('routes.elite_training_routes.get_elite_training_service') as mock_get_service:
             mock_service = MagicMock()
             mock_service.get_wellness_history = AsyncMock(return_value={
                 "player_name": "test_player",
@@ -465,7 +465,7 @@ class TestEliteTrainingEndpoints:
     
     def test_get_load_history_endpoint_shape(self, client):
         """Test GET /elite-training/load-monitoring/{player_name} returns expected shape."""
-        with patch('services.elite_training_service.get_elite_training_service') as mock_get_service:
+        with patch('routes.elite_training_routes.get_elite_training_service') as mock_get_service:
             mock_service = MagicMock()
             mock_service.get_load_history = AsyncMock(return_value={
                 "player_name": "test_player",
@@ -483,7 +483,7 @@ class TestEliteTrainingEndpoints:
     
     def test_get_training_plans_endpoint_shape(self, client):
         """Test GET /elite-training/training-plans/{player_name} returns expected shape."""
-        with patch('services.elite_training_service.get_elite_training_service') as mock_get_service:
+        with patch('routes.elite_training_routes.get_elite_training_service') as mock_get_service:
             mock_service = MagicMock()
             mock_service.get_training_plans = AsyncMock(return_value={
                 "player_name": "test_player",
