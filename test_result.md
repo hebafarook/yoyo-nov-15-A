@@ -1,6 +1,54 @@
 # Test Result MD - YoYo Report v2
 
 backend:
+  - task: "Admin Drill Upload - Authentication"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/admin_drills_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ Admin auth tested: No token→403, Non-admin→403, Admin→200"
+
+  - task: "Admin Drill Upload - Validation & Upsert"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/admin_drills_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ Validation: Duplicate IDs→422, Invalid section→422. Upsert: Same ID updates existing drill"
+
+  - task: "Admin Drill Upload - Stats & List Endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/admin_drills_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ GET /api/admin/drills/stats returns db_count, static_count, source_mode, active_source. GET /api/admin/drills lists all drills with filters"
+
+  - task: "Drill Provider - DB-First with Fallback"
+    implemented: true
+    working: true
+    file: "/app/backend/providers/drill_provider.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ DRILLS_SOURCE env var: auto/db/static modes. Auto mode uses DB if count>0, else static fallback"
+
   - task: "YoYo Report v2 API - Full Report Endpoint"
     implemented: true
     working: true
@@ -11,7 +59,7 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✅ GET /api/v2/report/yoyo/{player_id} working perfectly. Returns HTTP 200, has exactly 11 sections in correct order, all required JSON keys present, validation passes. Performance data verified: Sprint 30m: 4.3, Yo-Yo Test: 1850, Ball Control: 4, Overall Score: 3.85"
+        comment: "✅ GET /api/v2/report/yoyo/{player_id} working perfectly"
 
   - task: "YoYo Report v2 API - Sections Only Endpoint"
     implemented: true
