@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import List, Optional
 import logging
@@ -9,6 +9,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 from models import User, UserCreate, UserLogin, SavedReport, SavedReportCreate, UserProfile, AssessmentBenchmark, AssessmentBenchmarkCreate
 from utils.database import prepare_for_mongo, parse_from_mongo, db
+from utils.rate_limiter import login_limiter, register_limiter, reset_password_limiter
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
