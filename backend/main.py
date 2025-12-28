@@ -40,14 +40,9 @@ register_exception_handlers(app)
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Configure CORS (single source of truth)
+from utils.cors_config import configure_cors
+configure_cors(app)
 
 # Import all models and routes
 from models import *
