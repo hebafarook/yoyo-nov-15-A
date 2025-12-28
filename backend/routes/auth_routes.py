@@ -305,7 +305,11 @@ async def login_user(
         )
 
 @router.post("/forgot-password")
-async def forgot_password(email: str):
+async def forgot_password(
+    email: str,
+    request: Request,
+    _: None = Depends(reset_password_limiter)
+):
     """Generate password reset token for user"""
     try:
         # Find user by email
