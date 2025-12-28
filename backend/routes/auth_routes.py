@@ -245,7 +245,11 @@ async def register_user(
         )
 
 @router.post("/login", response_model=dict)
-async def login_user(login_data: UserLogin):
+async def login_user(
+    login_data: UserLogin,
+    request: Request,
+    _: None = Depends(login_limiter)
+):
     """Login user and return access token"""
     try:
         # Find user by username
