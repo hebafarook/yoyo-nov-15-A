@@ -5,6 +5,7 @@ from pydantic import ValidationError
 from domain.models import User, UserCreate, UserLogin, AssessmentBenchmark
 
 
+@pytest.mark.unit
 class TestUserModels:
     """Test user domain model validation."""
     
