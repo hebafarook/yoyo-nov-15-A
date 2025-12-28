@@ -428,13 +428,13 @@ class TestEliteTrainingEndpoints:
     
     def test_get_rtp_protocol_valid_stage(self, client):
         """Test GET /elite-training/rtp-protocol/{stage} with valid stage."""
-        response = client.get("/elite-training/rtp-protocol/phase_1")
+        response = client.get("/elite-training/rtp-protocol/stage_1")
         
         assert response.status_code == 200
         data = response.json()
         assert "stage" in data
         assert "protocol" in data
-        assert data["stage"] == "phase_1"
+        assert data["stage"] == "stage_1"
     
     def test_get_rtp_protocol_invalid_stage(self, client):
         """Test GET /elite-training/rtp-protocol/{stage} with invalid stage returns 400."""
