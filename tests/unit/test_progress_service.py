@@ -274,19 +274,32 @@ class TestWeeklyProgressCRUD:
         service.repository = mock_repo
         return service
     
+    @pytest.fixture
+    def sample_weekly_progress_dict(self):
+        """Sample weekly progress data matching model requirements."""
+        return {
+            "id": "wp1",
+            "player_id": "player-123",
+            "week_number": 1,
+            "program_id": "program-1",
+            "completed_exercises": ["ex1", "ex2"],
+            "performance_notes": "Good week",
+            "intensity_rating": 4,
+            "fatigue_level": 3,
+            "improvement_areas": ["speed", "agility"],
+            "week_completed": True,
+            "created_at": datetime.now(timezone.utc)
+        }
+    
     @pytest.mark.asyncio
-    async def test_log_weekly_progress(self, service, mock_repo):
+    async def test_log_weekly_progress(self, service, mock_repo, sample_weekly_progress_dict):
         """Test logging weekly progress."""
         from models import WeeklyProgressCreate
         
         mock_repo.create_weekly_progress = AsyncMock(return_value={})
         
         progress_data = MagicMock(spec=WeeklyProgressCreate)
-        progress_data.dict.return_value = {
-            "player_id": "player-123",
-            "week_number": 1,
-            "overall_progress_score": 85
-        }
+        progress_data.dict.return_value = sample_weekly_progress_dict
         progress_data.player_id = "player-123"
         
         result = await service.log_weekly_progress(progress_data)
@@ -294,10 +307,10 @@ class TestWeeklyProgressCRUD:
         mock_repo.create_weekly_progress.assert_called_once()
     
     @pytest.mark.asyncio
-    async def test_get_weekly_progress(self, service, mock_repo):
+    async def test_get_weekly_progress(self, service, mock_repo, sample_weekly_progress_dict):
         """Test getting weekly progress."""
         mock_repo.find_weekly_progress_by_player = AsyncMock(return_value=[
-            {"id": "wp1", "player_id": "p1", "week_number": 1, "overall_progress_score": 85}
+            sample_weekly_progress_dict
         ])
         
         results = await service.get_weekly_progress("p1")
