@@ -62,6 +62,13 @@ api_router.include_router(vo2_router, prefix="/vo2", tags=["vo2-benchmarks"])
 api_router.include_router(progress_router, prefix="/progress", tags=["progress"])
 api_router.include_router(auth_router, prefix="/auth", tags=["authentication"])
 
+# YoYo Report v2 routes (presentation layer)
+try:
+    from api.routes.report_v2 import router as report_v2_router
+    api_router.include_router(report_v2_router, prefix="/v2/report", tags=["yoyo-report-v2"])
+except ImportError:
+    logger.warning("Could not import YoYo Report v2 routes")
+
 # Health check endpoint
 @app.get("/health")
 async def health_check():
