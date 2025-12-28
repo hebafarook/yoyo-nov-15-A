@@ -200,6 +200,18 @@ frontend:
         agent: "testing"
         comment: "⚠️ CANNOT TEST: Unable to access Coach Drill Upload component due to authentication flow issues. Component code exists and appears well-structured with proper 2-step process (PDF upload → preview/edit → confirm), but cannot verify functionality without coach portal access."
 
+  - task: "Investor Real-User Flow Test"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/AuthModal.js"
+    stuck_count: 1
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL BLOCKER: Investor real-user flow test failed at Step 1 (Signup/Login). Authentication system is broken - login attempts fail with 'Login failed' error message. Portal selection works correctly, but backend authentication integration is failing. This blocks the entire investor demonstration flow: users cannot register new accounts or login with existing credentials. Steps 2-4 (Assessment Submit, Program Generation, Report View) are inaccessible due to authentication failure. This is a CRITICAL BLOCKER for investor presentations and user onboarding."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
