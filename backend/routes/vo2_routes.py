@@ -17,7 +17,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-@router.post("/benchmarks", response_model=VO2MaxBenchmark)
+@router.post("", response_model=VO2MaxBenchmark)
 async def save_vo2_benchmark(benchmark: VO2MaxBenchmarkCreate):
     """Save a VO2 Max benchmark test result"""
     try:
@@ -27,11 +27,11 @@ async def save_vo2_benchmark(benchmark: VO2MaxBenchmarkCreate):
         logger.error(f"Error saving VO2 benchmark: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to save VO2 benchmark: {str(e)}"
+            detail=str(e)
         )
 
 
-@router.get("/benchmarks/{player_id}", response_model=List[VO2MaxBenchmark])
+@router.get("/{player_id}", response_model=List[VO2MaxBenchmark])
 async def get_vo2_benchmarks(player_id: str):
     """Get all VO2 Max benchmarks for a player"""
     try:
@@ -41,11 +41,11 @@ async def get_vo2_benchmarks(player_id: str):
         logger.error(f"Error fetching VO2 benchmarks: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch VO2 benchmarks"
+            detail=str(e)
         )
 
 
-@router.get("/benchmarks/latest/{player_id}", response_model=Optional[VO2MaxBenchmark])
+@router.get("/latest/{player_id}", response_model=Optional[VO2MaxBenchmark])
 async def get_latest_vo2_benchmark(player_id: str):
     """Get the latest VO2 Max benchmark for a player"""
     try:
@@ -55,11 +55,11 @@ async def get_latest_vo2_benchmark(player_id: str):
         logger.error(f"Error fetching latest VO2 benchmark: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch latest VO2 benchmark"
+            detail=str(e)
         )
 
 
-@router.delete("/benchmarks/{benchmark_id}")
+@router.delete("/{benchmark_id}")
 async def delete_vo2_benchmark(benchmark_id: str):
     """Delete a specific VO2 Max benchmark"""
     try:
@@ -79,7 +79,7 @@ async def delete_vo2_benchmark(benchmark_id: str):
         logger.error(f"Error deleting VO2 benchmark: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to delete benchmark"
+            detail=str(e)
         )
 
 
