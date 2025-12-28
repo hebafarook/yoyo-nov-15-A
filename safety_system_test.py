@@ -27,14 +27,49 @@ from typing import Dict, Any, List
 # Add backend to path for direct imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'backend'))
 
-# Import safety system components
-from models.safety_models import (
-    SafetyStatus, InjuryStatus, AllowedElements, PlayerContext,
-    LoadContext, AssessmentSummary, SafetyContext, PlanModification,
-    DrillSelection, DayPlan, WeeklyPlan, TrainingProgramOutput
+# Import safety system components directly
+import importlib.util
+
+# Direct import safety_models
+_models_spec = importlib.util.spec_from_file_location(
+    'safety_models',
+    os.path.join(os.path.dirname(__file__), 'backend', 'models', 'safety_models.py')
 )
-from services.safety_validator import SafetyValidator, get_safety_validator
-from services.safe_training_prompt import build_safety_prompt, get_full_training_prompt
+_models_module = importlib.util.module_from_spec(_models_spec)
+_models_spec.loader.exec_module(_models_module)
+
+# Import classes from safety_models
+SafetyStatus = _models_module.SafetyStatus
+InjuryStatus = _models_module.InjuryStatus
+AllowedElements = _models_module.AllowedElements
+PlayerContext = _models_module.PlayerContext
+LoadContext = _models_module.LoadContext
+AssessmentSummary = _models_module.AssessmentSummary
+SafetyContext = _models_module.SafetyContext
+PlanModification = _models_module.PlanModification
+DrillSelection = _models_module.DrillSelection
+DayPlan = _models_module.DayPlan
+WeeklyPlan = _models_module.WeeklyPlan
+TrainingProgramOutput = _models_module.TrainingProgramOutput
+
+# Direct import safety_validator
+_validator_spec = importlib.util.spec_from_file_location(
+    'safety_validator',
+    os.path.join(os.path.dirname(__file__), 'backend', 'services', 'safety_validator.py')
+)
+_validator_module = importlib.util.module_from_spec(_validator_spec)
+_validator_spec.loader.exec_module(_validator_module)
+SafetyValidator = _validator_module.SafetyValidator
+
+# Direct import safe_training_prompt
+_prompt_spec = importlib.util.spec_from_file_location(
+    'safe_training_prompt',
+    os.path.join(os.path.dirname(__file__), 'backend', 'services', 'safe_training_prompt.py')
+)
+_prompt_module = importlib.util.module_from_spec(_prompt_spec)
+_prompt_spec.loader.exec_module(_prompt_module)
+build_safety_prompt = _prompt_module.build_safety_prompt
+get_full_training_prompt = _prompt_module.get_full_training_prompt
 
 # Get backend URL from environment
 BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://drill-uploader.preview.emergentagent.com')
