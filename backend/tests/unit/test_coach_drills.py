@@ -184,8 +184,6 @@ class TestDrillPDFParser:
     
     def test_infer_drill_id(self):
         """Test drill ID inference."""
-        from services.drill_pdf_parser import DrillPDFParser
-        
         parser = DrillPDFParser()
         
         # Should find drill IDs
