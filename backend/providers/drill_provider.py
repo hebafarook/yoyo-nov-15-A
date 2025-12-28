@@ -4,6 +4,13 @@ Drill Provider
 
 Provides drills from database (primary) with fallback to static exercise_database.py.
 This is the single source of truth for drill selection in training services.
+
+Environment Variables:
+- DRILLS_SOURCE: 'auto' | 'db' | 'static' (default: 'auto')
+  - auto: Use DB if drills.count > 0, else static fallback
+  - db: DB only (if empty/unavailable → error)
+  - static: Static only (ignore DB)
+- DRILLS_DB_FALLBACK: 'true' | 'false' (default: 'true', only used in auto mode)
 """
 
 from typing import Optional, List, Dict, Any
@@ -11,27 +18,53 @@ from repositories.drill_repository import DrillRepository, get_drill_repository
 from exercise_database import EXERCISE_DATABASE
 import logging
 import os
+from enum import Enum
 
 logger = logging.getLogger(__name__)
 
 
+class DrillsSourceMode(str, Enum):
+    """Drill source modes."""
+    AUTO = "auto"
+    DB = "db"
+    STATIC = "static"
+
+
+class DrillsNotAvailableError(Exception):
+    """Raised when drills are not available in db-only mode."""
+    def __init__(self, message: str = "No drills available in database and fallback is disabled"):
+        self.message = message
+        super().__init__(message)
+
+
 class DrillProvider:
     """
-    Provider for drill selection with DB-first fallback strategy.
+    Provider for drill selection with configurable source strategy.
     
-    Priority:
-    1. Database drills (when available)
-    2. Static EXERCISE_DATABASE (fallback)
-    
-    The provider transparently handles:
-    - Database connectivity issues
-    - Missing drills in database
-    - Category mapping between DB and static
+    Modes:
+    - auto: Use DB if has drills, else fallback to static (default)
+    - db: DB only, error if unavailable
+    - static: Static only, ignore DB
     """
     
     def __init__(self, repository: Optional[DrillRepository] = None):
         self._repository = repository
-        self._use_db = os.environ.get('DRILL_DB_ENABLED', 'true').lower() == 'true'
+        self._source_mode = self._get_source_mode()
+        self._db_fallback = os.environ.get('DRILLS_DB_FALLBACK', 'true').lower() == 'true'
+    
+    def _get_source_mode(self) -> DrillsSourceMode:
+        """Get the drill source mode from environment."""
+        mode = os.environ.get('DRILLS_SOURCE', 'auto').lower()
+        try:
+            return DrillsSourceMode(mode)
+        except ValueError:
+            logger.warning(f"Invalid DRILLS_SOURCE '{mode}', defaulting to 'auto'")
+            return DrillsSourceMode.AUTO
+    
+    @property
+    def source_mode(self) -> str:
+        """Get current source mode as string."""
+        return self._source_mode.value
     
     @property
     def repository(self) -> DrillRepository:
@@ -40,165 +73,284 @@ class DrillProvider:
             self._repository = get_drill_repository()
         return self._repository
     
+    async def _get_db_count(self) -> int:
+        """Get count of drills in database."""
+        try:
+            return await self.repository.count_drills()
+        except Exception as e:
+            logger.warning(f"DB count failed: {e}")
+            return 0
+    
+    async def _should_use_db(self) -> bool:
+        """
+        Determine if DB should be used based on source mode.
+        
+        Returns:
+            True if DB should be used, False for static
+        """
+        if self._source_mode == DrillsSourceMode.STATIC:
+            return False
+        
+        if self._source_mode == DrillsSourceMode.DB:
+            return True
+        
+        # Auto mode: use DB if has drills
+        db_count = await self._get_db_count()
+        return db_count > 0
+    
+    async def get_active_source(self) -> str:
+        """Get which source is currently active."""
+        if await self._should_use_db():
+            return "database"
+        return "static"
+    
+    def _convert_static_drill(self, drill_id: str, drill_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Convert static drill format to DrillItem format.
+        Maps old category names to new section names.
+        """
+        # Map old categories to new sections
+        category_to_section = {
+            "speed": "speed_agility",
+            "agility": "speed_agility",
+            "technical": "technical",
+            "tactical": "tactical",
+            "physical": "cardio",
+            "psychological": "recovery",
+            "possession": "possession",
+            "shooting": "technical",
+            "passing": "technical",
+            "defending": "tactical",
+            "conditioning": "cardio",
+            "warmup": "mobility",
+            "cooldown": "recovery",
+            "strength": "gym",
+            "flexibility": "mobility",
+            "recovery": "recovery",
+            "goalkeeper": "technical"
+        }
+        
+        category = drill_data.get('category', 'technical').lower()
+        section = category_to_section.get(category, 'technical')
+        
+        # Map intensity
+        intensity_map = {
+            "low": "low",
+            "medium": "moderate",
+            "high": "high",
+            "maximum": "high"
+        }
+        old_intensity = drill_data.get('intensity', 'moderate').lower()
+        intensity = intensity_map.get(old_intensity, 'moderate')
+        
+        return {
+            "drill_id": drill_id,
+            "name": drill_data.get('name', drill_id),
+            "section": section,
+            "tags": drill_data.get('tags', []),
+            "intensity": intensity,
+            "duration_min": drill_data.get('duration'),
+            "equipment": drill_data.get('equipment_needed', []),
+            "coaching_points": drill_data.get('instructions', []),
+            "is_active": True,
+            "_source": "static",
+            # Preserve original data for compatibility
+            "_original": {
+                "description": drill_data.get('description'),
+                "purpose": drill_data.get('purpose'),
+                "expected_outcome": drill_data.get('expected_outcome'),
+                "progression": drill_data.get('progression')
+            }
+        }
+    
     async def get_drill(self, drill_id: str) -> Optional[Dict[str, Any]]:
         """
         Get a single drill by ID.
         
-        Tries database first, falls back to static.
+        In auto/db mode: tries DB first, falls back to static if allowed.
+        In static mode: only checks static.
         """
-        # Try database first
-        if self._use_db:
+        use_db = await self._should_use_db()
+        
+        # Try database first if in db/auto mode
+        if use_db:
             try:
                 drill = await self.repository.find_by_id(drill_id)
                 if drill:
+                    drill['_source'] = 'database'
                     logger.debug(f"Drill '{drill_id}' loaded from database")
                     return drill
             except Exception as e:
                 logger.warning(f"DB lookup failed for drill '{drill_id}': {e}")
+                if self._source_mode == DrillsSourceMode.DB:
+                    raise DrillsNotAvailableError(f"Database error: {e}")
         
-        # Fallback to static
+        # Check if we should fallback to static
+        if self._source_mode == DrillsSourceMode.DB:
+            # DB mode with no result = not found
+            return None
+        
+        # Fallback to static (auto or static mode)
         if drill_id in EXERCISE_DATABASE:
             logger.debug(f"Drill '{drill_id}' loaded from static database")
-            static_drill = EXERCISE_DATABASE[drill_id].copy()
-            static_drill['drill_id'] = drill_id  # Add drill_id for consistency
-            return static_drill
+            return self._convert_static_drill(drill_id, EXERCISE_DATABASE[drill_id])
         
         return None
     
-    async def get_drills_by_category(self, category: str) -> List[Dict[str, Any]]:
+    async def get_drills_by_section(self, section: str) -> List[Dict[str, Any]]:
         """
-        Get all drills in a category.
+        Get all drills in a section.
         
-        Merges database and static drills, with DB taking precedence.
+        In auto mode with DB: returns DB drills only.
+        In static mode: returns static drills mapped to section.
         """
-        drills = {}
+        use_db = await self._should_use_db()
         
-        # Get static drills first
-        for drill_id, drill_data in EXERCISE_DATABASE.items():
-            if drill_data.get('category', '').lower() == category.lower():
-                drill = drill_data.copy()
-                drill['drill_id'] = drill_id
-                drill['_source'] = 'static'
-                drills[drill_id] = drill
-        
-        # Get database drills (override static)
-        if self._use_db:
+        if use_db:
             try:
-                db_drills = await self.repository.find_by_category(category)
-                for drill in db_drills:
+                drills = await self.repository.find_by_section(section)
+                for drill in drills:
                     drill['_source'] = 'database'
-                    drills[drill['drill_id']] = drill
-                logger.debug(f"Loaded {len(db_drills)} DB drills for category '{category}'")
+                logger.debug(f"Loaded {len(drills)} DB drills for section '{section}'")
+                return drills
             except Exception as e:
-                logger.warning(f"DB lookup failed for category '{category}': {e}")
+                logger.warning(f"DB lookup failed for section '{section}': {e}")
+                if self._source_mode == DrillsSourceMode.DB:
+                    raise DrillsNotAvailableError(f"Database error: {e}")
         
-        return list(drills.values())
-    
-    async def get_drills_by_categories(self, categories: List[str]) -> Dict[str, List[Dict[str, Any]]]:
-        """
-        Get drills for multiple categories.
-        
-        Returns dict mapping category -> list of drills.
-        """
-        result = {}
-        for category in categories:
-            result[category] = await self.get_drills_by_category(category)
-        return result
-    
-    async def get_all_drills(self) -> List[Dict[str, Any]]:
-        """
-        Get all available drills (merged DB + static).
-        """
-        drills = {}
-        
-        # Get all static drills
+        # Static mode or fallback
+        drills = []
         for drill_id, drill_data in EXERCISE_DATABASE.items():
-            drill = drill_data.copy()
-            drill['drill_id'] = drill_id
-            drill['_source'] = 'static'
-            drills[drill_id] = drill
+            converted = self._convert_static_drill(drill_id, drill_data)
+            if converted['section'] == section:
+                drills.append(converted)
         
-        # Get database drills (override static)
-        if self._use_db:
+        logger.debug(f"Loaded {len(drills)} static drills for section '{section}'")
+        return drills
+    
+    async def get_all_drills(
+        self,
+        section: Optional[str] = None,
+        tag: Optional[str] = None,
+        age: Optional[int] = None,
+        position: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Get all available drills with optional filters.
+        """
+        use_db = await self._should_use_db()
+        
+        if use_db:
             try:
-                db_drills = await self.repository.find_all()
-                for drill in db_drills:
+                drills = await self.repository.find_all(
+                    section=section,
+                    tag=tag,
+                    age=age,
+                    position=position
+                )
+                for drill in drills:
                     drill['_source'] = 'database'
-                    drills[drill['drill_id']] = drill
-                logger.info(f"Loaded {len(db_drills)} drills from database")
+                logger.info(f"Loaded {len(drills)} drills from database")
+                return drills
             except Exception as e:
                 logger.warning(f"DB drill load failed: {e}")
+                if self._source_mode == DrillsSourceMode.DB:
+                    raise DrillsNotAvailableError(f"Database error: {e}")
         
-        return list(drills.values())
+        # Static mode or fallback
+        drills = []
+        for drill_id, drill_data in EXERCISE_DATABASE.items():
+            converted = self._convert_static_drill(drill_id, drill_data)
+            
+            # Apply filters
+            if section and converted['section'] != section:
+                continue
+            if tag and tag not in converted.get('tags', []):
+                continue
+            # Age and position filtering not supported for static drills
+            
+            drills.append(converted)
+        
+        logger.info(f"Loaded {len(drills)} drills from static database")
+        return drills
     
     async def search_drills(
         self,
         query: Optional[str] = None,
-        category: Optional[str] = None,
-        intensity: Optional[str] = None
+        section: Optional[str] = None,
+        intensity: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        exclude_contraindications: Optional[List[str]] = None
     ) -> List[Dict[str, Any]]:
         """
         Search drills with filters.
-        
-        Searches both DB and static, with DB taking precedence.
+        Useful for program generation to find suitable drills.
         """
-        drills = {}
+        use_db = await self._should_use_db()
         
-        # Search static drills
-        for drill_id, drill_data in EXERCISE_DATABASE.items():
-            matches = True
-            
-            if category and drill_data.get('category', '').lower() != category.lower():
-                matches = False
-            
-            if intensity and drill_data.get('intensity', '').lower() != intensity.lower():
-                matches = False
-            
-            if query:
-                query_lower = query.lower()
-                searchable = f"{drill_data.get('name', '')} {drill_data.get('description', '')} {drill_data.get('purpose', '')}".lower()
-                if query_lower not in searchable:
-                    matches = False
-            
-            if matches:
-                drill = drill_data.copy()
-                drill['drill_id'] = drill_id
-                drill['_source'] = 'static'
-                drills[drill_id] = drill
-        
-        # Search database drills (override static)
-        if self._use_db:
+        if use_db:
             try:
-                db_drills = await self.repository.search_drills(
+                drills = await self.repository.search_drills(
                     query=query,
-                    category=category,
-                    intensity=intensity
+                    section=section,
+                    intensity=intensity,
+                    tags=tags,
+                    contraindications_exclude=exclude_contraindications
                 )
-                for drill in db_drills:
+                for drill in drills:
                     drill['_source'] = 'database'
-                    drills[drill['drill_id']] = drill
+                return drills
             except Exception as e:
                 logger.warning(f"DB drill search failed: {e}")
+                if self._source_mode == DrillsSourceMode.DB:
+                    raise DrillsNotAvailableError(f"Database error: {e}")
         
-        return list(drills.values())
+        # Static mode or fallback - basic filtering
+        drills = []
+        for drill_id, drill_data in EXERCISE_DATABASE.items():
+            converted = self._convert_static_drill(drill_id, drill_data)
+            
+            # Apply filters
+            if section and converted['section'] != section:
+                continue
+            if intensity and converted.get('intensity') != intensity:
+                continue
+            if tags and not any(t in converted.get('tags', []) for t in tags):
+                continue
+            if query:
+                if query.lower() not in converted['name'].lower():
+                    continue
+            # Contraindication filtering not supported for static drills
+            
+            drills.append(converted)
+        
+        return drills
     
-    async def get_drill_count(self) -> Dict[str, int]:
+    async def get_stats(self) -> Dict[str, Any]:
         """
-        Get count of drills from each source.
+        Get statistics about drill sources.
         """
         static_count = len(EXERCISE_DATABASE)
         db_count = 0
+        db_available = False
+        sections = {}
         
-        if self._use_db:
-            try:
-                db_count = await self.repository.count_drills()
-            except Exception as e:
-                logger.warning(f"DB count failed: {e}")
+        try:
+            db_count = await self.repository.count_drills()
+            sections = await self.repository.count_by_section()
+            db_available = True
+        except Exception as e:
+            logger.warning(f"DB stats failed: {e}")
+        
+        active_source = await self.get_active_source()
         
         return {
-            "static": static_count,
-            "database": db_count,
-            "total": static_count + db_count  # Note: may have overlap
+            "db_count": db_count,
+            "static_count": static_count,
+            "source_mode": self._source_mode.value,
+            "active_source": active_source,
+            "db_available": db_available,
+            "sections": sections
         }
     
     def get_static_drill_ids(self) -> List[str]:
@@ -207,8 +359,6 @@ class DrillProvider:
     
     async def is_db_available(self) -> bool:
         """Check if database is available for drill storage."""
-        if not self._use_db:
-            return False
         try:
             await self.repository.count_drills()
             return True
@@ -226,3 +376,9 @@ def get_drill_provider() -> DrillProvider:
     if _drill_provider is None:
         _drill_provider = DrillProvider()
     return _drill_provider
+
+
+def reset_drill_provider() -> None:
+    """Reset the drill provider singleton (useful for testing)."""
+    global _drill_provider
+    _drill_provider = None
