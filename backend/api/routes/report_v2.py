@@ -55,23 +55,31 @@ async def get_yoyo_report_v2(
             {"_id": 0}
         )
         
+        # Get player name for additional lookups
+        player_name = user.get('full_name') if user else None
+        
         # Fetch latest assessment
         assessment = await db.assessments.find_one(
             {"$or": [
                 {"user_id": player_id},
                 {"user_id": user_id},
-                {"id": player_id}
+                {"id": player_id},
+                {"player_name": player_name} if player_name else {"_id": None}
             ]},
             {"_id": 0},
             sort=[("created_at", -1)]
         )
+        
+        # Update player_name from assessment if found
+        if assessment and not player_name:
+            player_name = assessment.get('player_name')
         
         # Fetch latest benchmark
         benchmark = await db.benchmarks.find_one(
             {"$or": [
                 {"user_id": player_id},
                 {"user_id": user_id},
-                {"player_name": assessment.get('player_name') if assessment else None}
+                {"player_name": player_name} if player_name else {"_id": None}
             ]},
             {"_id": 0},
             sort=[("benchmark_date", -1)]
