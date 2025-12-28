@@ -2595,6 +2595,14 @@ try:
     logging.info("✅ Progress routes loaded successfully (refactored)")
 except ImportError as e:
     logging.warning(f"Could not import Progress routes: {e}")
+
+# Import Assessment routes (refactored to service/repository pattern)
+try:
+    from routes.assessment_routes import router as assessment_router
+    api_router.include_router(assessment_router, prefix="/assessments", tags=["assessments"])
+    logging.info("✅ Assessment routes loaded successfully (refactored)")
+except ImportError as e:
+    logging.warning(f"Could not import Assessment routes: {e}")
     logging.warning(f"Could not import dynamic training routes: {e}")
 
 # Include refactored routes (v2 - Clean Architecture)
