@@ -20,6 +20,7 @@ import pytest
 from datetime import datetime, timezone
 import os
 import sys
+import importlib.util
 
 # Add backend to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -29,7 +30,16 @@ from models.safety_models import (
     LoadContext, AssessmentSummary, SafetyContext, PlanModification,
     DrillSelection, DayPlan, WeeklyPlan, TrainingProgramOutput
 )
-from services.safety_validator import SafetyValidator, get_safety_validator
+
+# Direct import safety_validator to bypass services/__init__.py
+_validator_spec = importlib.util.spec_from_file_location(
+    'safety_validator',
+    os.path.join(os.path.dirname(__file__), '..', '..', 'services', 'safety_validator.py')
+)
+_validator_module = importlib.util.module_from_spec(_validator_spec)
+_validator_spec.loader.exec_module(_validator_module)
+SafetyValidator = _validator_module.SafetyValidator
+get_safety_validator = _validator_module.get_safety_validator
 
 
 # =============================================================================
