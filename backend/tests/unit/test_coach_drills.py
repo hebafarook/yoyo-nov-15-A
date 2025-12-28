@@ -168,6 +168,17 @@ class TestCoachDrillsAuth:
 # PDF PARSER TESTS
 # =============================================================================
 
+# Import parser directly to bypass services/__init__.py
+import importlib.util
+_parser_spec = importlib.util.spec_from_file_location(
+    'drill_pdf_parser', 
+    os.path.join(os.path.dirname(__file__), '..', '..', 'services', 'drill_pdf_parser.py')
+)
+_parser_module = importlib.util.module_from_spec(_parser_spec)
+_parser_spec.loader.exec_module(_parser_module)
+DrillPDFParser = _parser_module.DrillPDFParser
+
+
 class TestDrillPDFParser:
     """Tests for drill PDF parser service."""
     
