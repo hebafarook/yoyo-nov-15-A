@@ -8,7 +8,7 @@ import requests
 import json
 
 class VO2EdgeCaseTester:
-    def __init__(self, base_url="https://soccer-pro-portal.preview.emergentagent.com"):
+    def __init__(self, base_url="https://soccer-onboarding.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.tests_run = 0

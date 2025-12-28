@@ -13,7 +13,7 @@ import sys
 import os
 
 # Backend URL from environment
-BACKEND_URL = "https://soccer-pro-portal.preview.emergentagent.com/api"
+BACKEND_URL = "https://soccer-onboarding.preview.emergentagent.com/api"
 
 class ForgotPasswordTester:
     def __init__(self):
