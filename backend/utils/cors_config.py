@@ -127,21 +127,9 @@ def configure_cors(app: FastAPI) -> None:
     origins = get_cors_origins()
     is_prod = _is_production()
     
-    # In development with no origins configured, allow all for convenience
-    # This matches the old behavior with CORS_ORIGINS='*'
-    allow_all = not is_prod and not origins
-    
-    if allow_all:
-        # Check if old CORS_ORIGINS env var is set to '*'
-        old_cors = os.environ.get("CORS_ORIGINS", "").strip()
-        if old_cors == "*":
-            logger.info("CORS: Using wildcard '*' from CORS_ORIGINS (dev mode)")
-            origins = ["*"]
-            allow_all = True
-    
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins if origins else ["*"] if not is_prod else [],
+        allow_origins=origins if origins else [],
         allow_credentials=True,
         allow_methods=ALLOWED_METHODS,
         allow_headers=ALLOWED_HEADERS,
@@ -149,10 +137,10 @@ def configure_cors(app: FastAPI) -> None:
     )
     
     env_name = "production" if is_prod else "development"
-    if origins:
+    if origins and origins != ["*"]:
         logger.info(f"✅ CORS configured ({env_name}): {len(origins)} origin(s)")
-    elif not is_prod:
-        logger.info(f"✅ CORS configured ({env_name}): allowing all origins")
+    elif origins == ["*"]:
+        logger.info(f"✅ CORS configured ({env_name}): allowing all origins (wildcard)")
     else:
         logger.warning(f"⚠️  CORS configured ({env_name}): NO origins allowed")
 
