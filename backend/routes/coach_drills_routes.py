@@ -17,7 +17,9 @@ from typing import List
 import logging
 import jwt
 import os
+import sys
 
+# Import models directly to avoid circular imports
 from models.drill_models import DrillItem, DrillUploadResponse
 from models.drill_candidate_models import (
     DrillItemCandidate,
@@ -25,7 +27,17 @@ from models.drill_candidate_models import (
     DrillConfirmRequest,
     DrillConfirmResponse
 )
-from services.drill_pdf_parser import get_drill_pdf_parser, DrillPDFParser
+
+# Import drill_pdf_parser directly to bypass services/__init__.py
+import importlib.util
+_parser_spec = importlib.util.spec_from_file_location(
+    'drill_pdf_parser', 
+    os.path.join(os.path.dirname(__file__), '..', 'services', 'drill_pdf_parser.py')
+)
+_parser_module = importlib.util.module_from_spec(_parser_spec)
+_parser_spec.loader.exec_module(_parser_module)
+get_drill_pdf_parser = _parser_module.get_drill_pdf_parser
+
 from repositories.drill_repository import get_drill_repository
 
 router = APIRouter(prefix="/coach/drills", tags=["coach-drills"])
