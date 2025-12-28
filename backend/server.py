@@ -1258,80 +1258,13 @@ async def get_scheduled_retests(player_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@api_router.post("/assessments/{assessment_id}/retest")
-async def create_retest_assessment(assessment_id: str, assessment: AssessmentCreate):
-    try:
-        # Get original assessment
-        original = await db.assessments.find_one({"id": assessment_id})
-        if not original:
-            raise HTTPException(status_code=404, detail="Original assessment not found")
-        
-        assessment_dict = assessment.dict()
-        
-        # Calculate scores
-        scores = calculate_assessment_scores(assessment_dict, assessment.age)
-        assessment_dict["overall_score"] = scores["overall"]
-        assessment_dict["category_scores"] = scores
-        assessment_dict["previous_assessment_id"] = assessment_id
-        
-        # Create new assessment
-        assessment_obj = PlayerAssessment(**assessment_dict)
-        assessment_data = prepare_for_mongo(assessment_obj.dict())
-        await db.assessments.insert_one(assessment_data)
-        
-        # Compare with original and create progress notification
-        original_score = original.get("overall_score", 0)
-        new_score = scores["overall"]
-        improvement = new_score - original_score
-        
-        improvement_message = f"Overall score: {original_score} → {new_score} "
-        if improvement > 0:
-            improvement_message += f"(+{improvement:.2f} improvement! 🎉)"
-        elif improvement < 0:
-            improvement_message += f"({improvement:.2f} - keep working! 💪)"
-        else:
-            improvement_message += "(maintained level 👍)"
-        
-        notification = Notification(
-            player_id=assessment.player_id if hasattr(assessment, 'player_id') else assessment_obj.id,
-            title="🏆 Retest Results - Progress Update!",
-            message=f"Retest completed! {improvement_message}",
-            notification_type="progress"
-        )
-        notification_data = prepare_for_mongo(notification.dict())
-        await db.notifications.insert_one(notification_data)
-        
-        return assessment_obj
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@api_router.get("/assessments/{player_id}/progress")
-async def get_assessment_progress(player_id: str):
-    try:
-        # Get all assessments for player, ordered by date
-        assessments = await db.assessments.find({"player_name": player_id}).sort("assessment_date", 1).to_list(1000)
-        
-        if not assessments:
-            raise HTTPException(status_code=404, detail="No assessments found")
-        
-        progress_data = []
-        for assessment in assessments:
-            progress_data.append({
-                "date": assessment.get("assessment_date"),
-                "overall_score": assessment.get("overall_score", 0),
-                "category_scores": assessment.get("category_scores", {}),
-                "is_retest": assessment.get("previous_assessment_id") is not None
-            })
-        
-        return {
-            "player_id": player_id,
-            "assessments": progress_data,
-            "total_assessments": len(assessments),
-            "latest_score": progress_data[-1]["overall_score"] if progress_data else 0,
-            "improvement": progress_data[-1]["overall_score"] - progress_data[0]["overall_score"] if len(progress_data) > 1 else 0
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# =============================================================================
+# LEGACY ASSESSMENT RETEST/PROGRESS ROUTES - DEPRECATED
+# =============================================================================
+# These routes used the old PlayerAssessment model from server.py.
+# They should be migrated to the AssessmentService if needed.
+# For now, the main CRUD operations are handled by routes/assessment_routes.py
+# =============================================================================
 @api_router.post("/weekly-progress", response_model=WeeklyProgress)
 async def create_weekly_progress(progress: WeeklyProgressCreate):
     try:
