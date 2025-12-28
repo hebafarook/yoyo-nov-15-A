@@ -367,7 +367,9 @@ class YoYoReportV2Formatter:
         # Determine mode from position or existing flag
         mode = self.training_program.get('mode') or self.user.get('training_mode')
         if not mode:
-            if "goalkeeper" in position or "gk" in position or "keeper" in position:
+            # Check for goalkeeper position variants
+            gk_keywords = ["goalkeeper", "gk", "keeper", "goalie", "portero", "gardien"]
+            if any(kw in position for kw in gk_keywords):
                 mode = "GK"
             else:
                 mode = "FIELD"
