@@ -1591,51 +1591,7 @@ async def get_voice_notes(player_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# VO2 Max Benchmark Endpoints
-@api_router.post("/vo2-benchmarks", response_model=VO2MaxBenchmark)
-async def save_vo2_benchmark(benchmark: VO2MaxBenchmarkCreate):
-    """Save a VO2 Max benchmark test result"""
-    try:
-        benchmark_obj = VO2MaxBenchmark(**benchmark.dict())
-        benchmark_data = prepare_for_mongo(benchmark_obj.dict())
-        await db.vo2_benchmarks.insert_one(benchmark_data)
-        return benchmark_obj
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@api_router.get("/vo2-benchmarks/{player_id}", response_model=List[VO2MaxBenchmark])
-async def get_vo2_benchmarks(player_id: str):
-    """Get all VO2 Max benchmarks for a player"""
-    try:
-        benchmarks = await db.vo2_benchmarks.find({"player_id": player_id}).sort("test_date", -1).to_list(1000)
-        return [VO2MaxBenchmark(**parse_from_mongo(benchmark)) for benchmark in benchmarks]
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@api_router.get("/vo2-benchmarks/latest/{player_id}", response_model=Optional[VO2MaxBenchmark])
-async def get_latest_vo2_benchmark(player_id: str):
-    """Get the latest VO2 Max benchmark for a player"""
-    try:
-        benchmark = await db.vo2_benchmarks.find_one(
-            {"player_id": player_id}, 
-            sort=[("test_date", -1)]
-        )
-        if benchmark:
-            return VO2MaxBenchmark(**parse_from_mongo(benchmark))
-        return None
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@api_router.delete("/vo2-benchmarks/{benchmark_id}")
-async def delete_vo2_benchmark(benchmark_id: str):
-    """Delete a specific VO2 Max benchmark"""
-    try:
-        result = await db.vo2_benchmarks.delete_one({"id": benchmark_id})
-        if result.deleted_count == 0:
-            raise HTTPException(status_code=404, detail="Benchmark not found")
-        return {"message": "Benchmark deleted successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+# VO2 Max Benchmark routes moved to routes/vo2_routes.py (refactored to service/repository pattern)
 
 # Enhanced Training Program Endpoints with Periodization
 @api_router.post("/periodized-programs", response_model=PeriodizedProgram)
