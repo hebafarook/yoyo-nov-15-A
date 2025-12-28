@@ -223,8 +223,6 @@ class TestDrillPDFParser:
     
     def test_infer_sets_reps(self):
         """Test sets and reps extraction."""
-        from services.drill_pdf_parser import DrillPDFParser
-        
         parser = DrillPDFParser()
         
         sets, reps = parser.infer_sets_reps("3 sets of 10 reps")
