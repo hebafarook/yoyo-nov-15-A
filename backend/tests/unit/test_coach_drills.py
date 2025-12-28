@@ -206,8 +206,6 @@ class TestDrillPDFParser:
     
     def test_infer_tags(self):
         """Test tag inference."""
-        from services.drill_pdf_parser import DrillPDFParser
-        
         parser = DrillPDFParser()
         
         tags = parser.infer_tags("Passing and dribbling with first touch focus")
