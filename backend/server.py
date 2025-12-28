@@ -2620,6 +2620,10 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import dynamic training routes: {e}")
 
+# Include refactored routes (v2 - Clean Architecture)
+if AUTH_V2_AVAILABLE:
+    api_router.include_router(auth_v2.router, prefix="/auth-v2", tags=["auth-v2-refactored"])
+    logging.info("✅ Refactored auth routes (v2) loaded at /api/auth-v2")
 
 # Include the router in the main app
 app.include_router(api_router)
