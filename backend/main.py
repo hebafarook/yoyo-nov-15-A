@@ -66,6 +66,10 @@ api_router.include_router(progress_router, prefix="/progress", tags=["progress"]
 api_router.include_router(auth_router, prefix="/auth", tags=["authentication"])
 api_router.include_router(admin_drills_router, tags=["admin-drills"])
 
+# Import Coach Drills routes
+from routes.coach_drills_routes import router as coach_drills_router
+api_router.include_router(coach_drills_router, tags=["coach-drills"])
+
 # YoYo Report v2 routes (presentation layer)
 try:
     from api.routes.report_v2 import router as report_v2_router
