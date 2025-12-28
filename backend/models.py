@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone
@@ -10,6 +10,11 @@ class PlayerAssessment(BaseModel):
     player_name: str
     age: int
     position: str
+    
+    # Physical measurements (optional)
+    height_cm: Optional[float] = None
+    weight_kg: Optional[float] = None
+    bmi: Optional[float] = None
     
     # PHYSICAL PERFORMANCE METRICS (20% weight)
     sprint_30m: float  # seconds - 30m sprint test
@@ -37,8 +42,21 @@ class PlayerAssessment(BaseModel):
     # METADATA
     overall_score: Optional[float] = None
     performance_level: Optional[str] = None
+    category_scores: Optional[Dict[str, float]] = None  # Physical, Technical, Tactical, Psychological scores
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    
+    # Legacy compatibility fields
+    retest_scheduled: Optional[datetime] = None
+    previous_assessment_id: Optional[str] = None  # For tracking progress between retests
+    total_coins: int = Field(default=0)  # Gamification
+    level: int = Field(default=1)  # Gamification
+    
+    @computed_field
+    @property
+    def assessment_date(self) -> datetime:
+        """Backward compatibility alias for created_at."""
+        return self.created_at
 
 class AssessmentCreate(BaseModel):
     user_id: Optional[str] = None  # User creating this assessment
