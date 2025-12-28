@@ -46,6 +46,7 @@ configure_cors(app)
 # Import all models and routes
 from models import *
 from routes.assessment_routes import router as assessment_router
+from routes.assessment_routes_public import router as assessment_public_router
 from routes.training_routes import router as training_router
 from routes.vo2_routes import router as vo2_router
 from routes.progress_routes import router as progress_router
@@ -55,6 +56,7 @@ from utils.llm_integration import generate_training_program
 
 # Include all routers
 api_router.include_router(assessment_router, prefix="/assessments", tags=["assessments"])
+api_router.include_router(assessment_public_router, prefix="/assessments", tags=["assessments-public"])
 api_router.include_router(training_router, prefix="/training", tags=["training"])
 api_router.include_router(vo2_router, prefix="/vo2-benchmarks", tags=["vo2-benchmarks"])
 api_router.include_router(progress_router, prefix="/progress", tags=["progress"])
