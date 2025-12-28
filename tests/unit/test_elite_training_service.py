@@ -286,9 +286,9 @@ class TestRTPProtocols:
     
     def test_get_rtp_protocol_valid_stage(self, service):
         """Should return protocol for valid stage."""
-        result = service.get_rtp_protocol("phase_1")
+        result = service.get_rtp_protocol("stage_1")
         
-        assert result["stage"] == "phase_1"
+        assert result["stage"] == "stage_1"
         assert "protocol" in result
     
     def test_get_rtp_protocol_invalid_stage(self, service):
