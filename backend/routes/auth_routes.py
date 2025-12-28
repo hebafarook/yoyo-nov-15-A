@@ -353,7 +353,12 @@ async def forgot_password(
         )
 
 @router.post("/reset-password")
-async def reset_password(reset_token: str, new_password: str):
+async def reset_password(
+    reset_token: str,
+    new_password: str,
+    request: Request,
+    _: None = Depends(reset_password_limiter)
+):
     """Reset user password using reset token"""
     try:
         # Find user by reset token
