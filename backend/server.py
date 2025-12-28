@@ -21,6 +21,14 @@ except ImportError:
     def verify_token():
         raise HTTPException(status_code=401, detail="Authentication not available")
 
+# Import new refactored auth routes (v2)
+try:
+    from api.routes import auth as auth_v2
+    AUTH_V2_AVAILABLE = True
+except ImportError:
+    AUTH_V2_AVAILABLE = False
+    logging.warning("Refactored auth routes (v2) not available")
+
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
