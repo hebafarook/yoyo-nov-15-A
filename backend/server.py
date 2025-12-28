@@ -2358,6 +2358,14 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import admin drills routes: {e}")
 
+# Import Coach Drills routes (PDF upload + confirm)
+try:
+    from routes.coach_drills_routes import router as coach_drills_router
+    api_router.include_router(coach_drills_router, tags=["coach-drills"])
+    logging.info("✅ Coach Drills routes loaded successfully")
+except ImportError as e:
+    logging.warning(f"Could not import coach drills routes: {e}")
+
 # Import Report Generation routes
 try:
     from routes.report_generation_routes import router as report_gen_router
