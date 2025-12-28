@@ -1,5 +1,4 @@
 from fastapi import FastAPI, APIRouter, HTTPException, status
-from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
