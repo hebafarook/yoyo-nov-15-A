@@ -95,12 +95,15 @@ class AssessmentService:
         
         # Extract user_id from current_user (derived from JWT in route layer)
         # This ensures the assessment is properly linked to the authenticated user
+        # We override any user_id from the request payload with the JWT-derived one
         user_id = current_user.get('user_id')
+        
+        # Override user_id in the dict before creating PlayerAssessment
+        assessment_dict['user_id'] = user_id
         
         # Create the assessment object with user_id linked
         player_assessment = PlayerAssessment(
             **assessment_dict,
-            user_id=user_id,  # Link to authenticated user
             overall_score=overall_score,
             performance_level=performance_level,
             bmi=bmi
