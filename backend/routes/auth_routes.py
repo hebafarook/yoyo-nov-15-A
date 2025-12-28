@@ -140,7 +140,11 @@ async def create_coach_relationship(player_id: str, coach_email: str):
 
 
 @router.post("/register", response_model=dict)
-async def register_user(user_data: UserCreate):
+async def register_user(
+    user_data: UserCreate,
+    request: Request,
+    _: None = Depends(register_limiter)
+):
     """Register a new user"""
     try:
         # Check if username already exists
