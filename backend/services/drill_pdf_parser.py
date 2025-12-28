@@ -9,7 +9,7 @@ Best-effort parsing with heuristics - coach reviews results before confirm.
 import re
 import logging
 from typing import List, Optional, Tuple
-from models.drill_candidate_models import DrillItemCandidate
+from data_models.drill_candidate_models import DrillItemCandidate
 
 logger = logging.getLogger(__name__)
 

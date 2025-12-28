@@ -18,7 +18,7 @@ from typing import Optional, List, Dict, Any, Tuple
 from datetime import datetime, timezone
 import logging
 
-from models.safety_models import (
+from data_models.safety_models import (
     SafetyStatus, InjuryStatus, AllowedElements, PlayerContext,
     LoadContext, AssessmentSummary, SafetyContext, PlanModification,
     DrillSelection, DayPlan, WeeklyPlan, TrainingProgramOutput,

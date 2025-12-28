@@ -318,7 +318,7 @@ class TestUploadPDFEndpoint:
     @patch('routes.coach_drills_routes.get_drill_pdf_parser')
     def test_upload_pdf_returns_candidates(self, mock_parser, client):
         """Test that upload-pdf returns parsed candidates."""
-        from models.drill_candidate_models import DrillItemCandidate
+        from data_models.drill_candidate_models import DrillItemCandidate
         
         # Mock parser
         mock_parser_instance = MagicMock()
@@ -484,7 +484,7 @@ class TestCoachDrillsIntegration:
     @patch('routes.coach_drills_routes.get_drill_repository')
     def test_full_upload_confirm_flow(self, mock_repo, mock_parser, client):
         """Test complete upload -> preview -> confirm flow."""
-        from models.drill_candidate_models import DrillItemCandidate
+        from data_models.drill_candidate_models import DrillItemCandidate
         
         # Step 1: Mock parser for upload
         mock_parser_instance = MagicMock()

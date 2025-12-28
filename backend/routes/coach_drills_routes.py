@@ -20,8 +20,8 @@ import os
 import sys
 
 # Import models directly to avoid circular imports
-from models.drill_models import DrillItem, DrillUploadResponse
-from models.drill_candidate_models import (
+from data_models.drill_models import DrillItem, DrillUploadResponse
+from data_models.drill_candidate_models import (
     DrillItemCandidate,
     PDFUploadResponse,
     DrillConfirmRequest,
@@ -314,7 +314,7 @@ async def get_valid_sections(
     
     Useful for frontend to populate section selector.
     """
-    from models.drill_models import DrillSection
+    from data_models.drill_models import DrillSection
     
     return {
         "sections": [s.value for s in DrillSection],

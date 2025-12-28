@@ -58,7 +58,7 @@ class TestDrillModels:
     
     def test_drill_item_required_fields(self):
         """Test that DrillItem requires drill_id, name, and section."""
-        from models.drill_models import DrillItem
+        from data_models.drill_models import DrillItem
         
         # Valid drill
         drill = DrillItem(
@@ -72,7 +72,7 @@ class TestDrillModels:
     
     def test_drill_item_section_validation(self):
         """Test that section must be one of the valid values."""
-        from models.drill_models import DrillItem
+        from data_models.drill_models import DrillItem
         from pydantic import ValidationError
         
         # Valid sections
@@ -99,7 +99,7 @@ class TestDrillModels:
     
     def test_drill_item_optional_fields(self):
         """Test optional fields with defaults."""
-        from models.drill_models import DrillItem
+        from data_models.drill_models import DrillItem
         
         drill = DrillItem(
             drill_id="test_drill_2",
@@ -121,7 +121,7 @@ class TestDrillModels:
     
     def test_drill_item_age_range_validation(self):
         """Test that age_max must be >= age_min."""
-        from models.drill_models import DrillItem
+        from data_models.drill_models import DrillItem
         from pydantic import ValidationError
         
         # Valid age range
@@ -147,7 +147,7 @@ class TestDrillModels:
     
     def test_drill_upload_request_unique_ids(self):
         """Test that DrillUploadRequest rejects duplicate drill_ids."""
-        from models.drill_models import DrillUploadRequest, DrillItem
+        from data_models.drill_models import DrillUploadRequest, DrillItem
         from pydantic import ValidationError
         
         # Valid - unique IDs
@@ -514,7 +514,7 @@ class TestUploadValidation:
     
     def test_invalid_section_rejected(self):
         """Test that invalid sections are rejected."""
-        from models.drill_models import DrillUploadRequest, DrillItem
+        from data_models.drill_models import DrillUploadRequest, DrillItem
         from pydantic import ValidationError
         
         with pytest.raises(ValidationError):
@@ -528,7 +528,7 @@ class TestUploadValidation:
     
     def test_empty_drill_id_rejected(self):
         """Test that empty drill_id is rejected."""
-        from models.drill_models import DrillItem
+        from data_models.drill_models import DrillItem
         from pydantic import ValidationError
         
         with pytest.raises(ValidationError):
@@ -536,7 +536,7 @@ class TestUploadValidation:
     
     def test_empty_name_rejected(self):
         """Test that empty name is rejected."""
-        from models.drill_models import DrillItem
+        from data_models.drill_models import DrillItem
         from pydantic import ValidationError
         
         with pytest.raises(ValidationError):
@@ -544,7 +544,7 @@ class TestUploadValidation:
     
     def test_empty_drills_list_rejected(self):
         """Test that empty drills list is rejected."""
-        from models.drill_models import DrillUploadRequest
+        from data_models.drill_models import DrillUploadRequest
         from pydantic import ValidationError
         
         with pytest.raises(ValidationError):
@@ -552,7 +552,7 @@ class TestUploadValidation:
     
     def test_intensity_validation(self):
         """Test that only valid intensity values are accepted."""
-        from models.drill_models import DrillItem
+        from data_models.drill_models import DrillItem
         from pydantic import ValidationError
         
         # Valid intensities
@@ -576,7 +576,7 @@ class TestUploadValidation:
     
     def test_age_bounds_validation(self):
         """Test age min/max bounds validation."""
-        from models.drill_models import DrillItem
+        from data_models.drill_models import DrillItem
         from pydantic import ValidationError
         
         # Valid ages

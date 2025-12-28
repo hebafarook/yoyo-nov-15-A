@@ -13,7 +13,7 @@ import logging
 import jwt
 import os
 
-from models.drill_models import (
+from data_models.drill_models import (
     DrillItem,
     DrillUploadRequest,
     DrillUploadResponse,

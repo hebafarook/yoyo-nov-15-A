@@ -7,7 +7,7 @@ Ensures safety rules are included in generation prompts.
 """
 
 from typing import Optional, Dict, Any
-from models.safety_models import SafetyContext, SafetyStatus
+from data_models.safety_models import SafetyContext, SafetyStatus
 import logging
 
 logger = logging.getLogger(__name__)

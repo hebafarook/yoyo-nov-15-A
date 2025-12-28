@@ -25,7 +25,7 @@ import importlib.util
 # Add backend to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from models.safety_models import (
+from data_models.safety_models import (
     SafetyStatus, InjuryStatus, AllowedElements, PlayerContext,
     LoadContext, AssessmentSummary, SafetyContext, PlanModification,
     DrillSelection, DayPlan, WeeklyPlan, TrainingProgramOutput
