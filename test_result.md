@@ -69,6 +69,9 @@ backend:
       - working: true
         agent: "main"
         comment: "✅ POST /api/coach/drills/upload-pdf parses PDF, returns candidates with NO DB writes"
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE TESTING COMPLETED: POST /api/coach/drills/upload-pdf working perfectly. Authentication: No token→403, Player token→403, Coach/Admin token→200. File validation: Non-PDF→400, Empty file→400, Valid PDF→200 with 3 parsed candidates. Response structure correct with parsed candidates, errors, and meta fields. PDF parsing successful with proper candidate structure including raw_text, needs_review, confidence fields."
 
   - task: "Coach PDF Drill Upload - Confirm"
     implemented: true
@@ -81,6 +84,21 @@ backend:
       - working: true
         agent: "main"
         comment: "✅ POST /api/coach/drills/confirm validates all drills, rejects batch if any invalid (422), upserts valid drills"
+      - working: true
+        agent: "testing"
+        comment: "✅ VALIDATION & UPSERT VERIFIED: POST /api/coach/drills/confirm working correctly. Authentication protection working (No token→403, Player token→403, Coach/Admin→200). All-or-none validation confirmed: Invalid section→422 (whole batch rejected), Duplicate drill_ids→422 (whole batch rejected), Valid drills→200 with proper upsert (Total: 2, Inserted: 2, Updated: 0). Response structure correct with success, inserted, updated, total, drill_ids fields."
+
+  - task: "Coach PDF Drill Upload - Sections"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/coach_drills_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/coach/drills/sections working perfectly. Authentication protection working (No token→403, Coach/Admin→200). Returns 9 valid sections: technical, tactical, possession, speed_agility, cardio, gym, mobility, recovery, prehab. Also returns intensities: low, moderate, high. Perfect for frontend dropdown population."
 
   - task: "YoYo Report v2 API - Full Report Endpoint"
     implemented: true
