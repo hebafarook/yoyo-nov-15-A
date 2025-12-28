@@ -2587,6 +2587,14 @@ try:
     logging.info("✅ VO2 Benchmark routes loaded successfully (refactored)")
 except ImportError as e:
     logging.warning(f"Could not import VO2 routes: {e}")
+
+# Import Progress routes (refactored to service/repository pattern)
+try:
+    from routes.progress_routes import router as progress_router
+    api_router.include_router(progress_router, prefix="/progress", tags=["progress"])
+    logging.info("✅ Progress routes loaded successfully (refactored)")
+except ImportError as e:
+    logging.warning(f"Could not import Progress routes: {e}")
     logging.warning(f"Could not import dynamic training routes: {e}")
 
 # Include refactored routes (v2 - Clean Architecture)
