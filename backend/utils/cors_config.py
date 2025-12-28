@@ -67,22 +67,37 @@ def get_cors_origins() -> List[str]:
     Returns:
         List of allowed origin strings
     """
+    # Check new var first, then fall back to old var for backward compatibility
     env_origins = os.environ.get("CORS_ALLOW_ORIGINS", "").strip()
+    if not env_origins:
+        env_origins = os.environ.get("CORS_ORIGINS", "").strip()
+    
     is_prod = _is_production()
     
-    if env_origins:
+    if env_origins and env_origins != "*":
         # Parse comma-separated origins
         origins = [o.strip() for o in env_origins.split(",") if o.strip()]
         
         # Warn if wildcard in production
         if is_prod and "*" in origins:
             logger.warning(
-                "⚠️  SECURITY WARNING: CORS_ALLOW_ORIGINS contains '*' in production. "
+                "⚠️  SECURITY WARNING: CORS origins contains '*' in production. "
                 "This is insecure. Please specify explicit origins."
             )
         
         logger.info(f"CORS origins from env: {origins}")
         return origins
+    
+    # Wildcard or no env var set
+    if env_origins == "*":
+        if is_prod:
+            logger.warning(
+                "⚠️  SECURITY WARNING: CORS_ORIGINS='*' in production. "
+                "This is insecure. Please specify explicit origins."
+            )
+        else:
+            logger.info("CORS using wildcard '*' (development mode)")
+        return ["*"]
     
     # No env var set
     if is_prod:
