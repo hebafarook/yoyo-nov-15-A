@@ -2392,6 +2392,14 @@ except ImportError as e:
     logging.warning(f"Could not import Assessment routes: {e}")
     logging.warning(f"Could not import dynamic training routes: {e}")
 
+# Import Public Assessment routes (backward compatibility - no auth required)
+try:
+    from routes.assessment_routes_public import router as assessment_public_router
+    api_router.include_router(assessment_public_router, prefix="/assessments", tags=["assessments-public"])
+    logging.info("✅ Public Assessment routes loaded (backward compatibility)")
+except ImportError as e:
+    logging.warning(f"Could not import Public Assessment routes: {e}")
+
 # Include refactored routes (v2 - Clean Architecture)
 if AUTH_V2_AVAILABLE:
     api_router.include_router(auth_v2.router, prefix="/auth-v2", tags=["auth-v2-refactored"])
