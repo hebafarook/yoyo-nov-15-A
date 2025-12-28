@@ -196,8 +196,6 @@ class TestDrillPDFParser:
     
     def test_infer_section(self):
         """Test section inference from keywords."""
-        from services.drill_pdf_parser import DrillPDFParser
-        
         parser = DrillPDFParser()
         
         assert parser.infer_section("Technical passing and dribbling drill") == "technical"
