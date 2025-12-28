@@ -2625,6 +2625,14 @@ if AUTH_V2_AVAILABLE:
     api_router.include_router(auth_v2.router, prefix="/auth-v2", tags=["auth-v2-refactored"])
     logging.info("✅ Refactored auth routes (v2) loaded at /api/auth-v2")
 
+# Include YoYo Report v2 routes (Presentation Layer)
+try:
+    from api.routes.report_v2 import router as report_v2_router
+    api_router.include_router(report_v2_router, prefix="/v2/report", tags=["yoyo-report-v2"])
+    logging.info("✅ YoYo Report v2 routes loaded at /api/v2/report")
+except ImportError as e:
+    logging.warning(f"Could not import YoYo Report v2 routes: {e}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
