@@ -2,3 +2,4 @@
 
 from .vo2_service import VO2Service, VO2ValidationError, get_vo2_service
 from .progress_service import ProgressService, ProgressNotFoundError, get_progress_service
+from .assessment_service import AssessmentService, AssessmentNotFoundError, AccessDeniedError, get_assessment_service
