@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-backend:
+    name: Lint Backend (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install ruff
+        run: pip install ruff
+      
+      - name: Run ruff linter
+        run: ruff check backend/ --ignore E501,F401,F841 --exit-zero
+        # exit-zero: warnings don't fail CI initially (can tighten later)
+
+  lint-frontend:
+    name: Lint Frontend (JavaScript)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+      
+      - name: Install dependencies
+        working-directory: frontend
+        run: yarn install --frozen-lockfile
+      
+      - name: Run ESLint
+        working-directory: frontend
+        run: yarn lint --max-warnings=0 || true
+        # || true: don't fail CI on lint warnings initially
+
+  test-backend:
+    name: Test Backend (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          pip install pytest pytest-asyncio
+      
+      - name: Run unit tests
+        working-directory: backend
+        env:
+          MONGO_URL: mongodb://localhost:27017
+          DB_NAME: test_db
+          JWT_SECRET_KEY: test-secret-key
+        run: |
+          python -m pytest ../tests/unit/ -v --tb=short
