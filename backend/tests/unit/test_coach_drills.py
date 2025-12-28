@@ -254,8 +254,6 @@ class TestDrillPDFParser:
     
     def test_parse_chunk_needs_review_when_missing_fields(self):
         """Test that candidates need review when missing critical fields."""
-        from services.drill_pdf_parser import DrillPDFParser
-        
         parser = DrillPDFParser()
         
         # Chunk with no drill ID
