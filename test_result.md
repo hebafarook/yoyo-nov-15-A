@@ -58,6 +58,30 @@ backend:
         agent: "main"
         comment: "✅ DRILLS_SOURCE env var: auto/db/static modes. Auto mode uses DB if count>0, else static fallback"
 
+  - task: "Coach PDF Drill Upload - Preview"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/coach_drills_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ POST /api/coach/drills/upload-pdf parses PDF, returns candidates with NO DB writes"
+
+  - task: "Coach PDF Drill Upload - Confirm"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/coach_drills_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "✅ POST /api/coach/drills/confirm validates all drills, rejects batch if any invalid (422), upserts valid drills"
+
   - task: "YoYo Report v2 API - Full Report Endpoint"
     implemented: true
     working: true
