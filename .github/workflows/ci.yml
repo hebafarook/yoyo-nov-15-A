@@ -22,8 +22,12 @@ jobs:
         run: pip install ruff
       
       - name: Run ruff linter
-        run: ruff check backend/ --ignore E501,F401,F841 --exit-zero
-        # exit-zero: warnings don't fail CI initially (can tighten later)
+        run: |
+          # Block on errors (E), keep line length and unused imports as warnings only
+          # E501: line too long (style)
+          # F401: unused import (can be intentional re-exports)
+          # F841: unused variable (sometimes needed for unpacking)
+          ruff check backend/ --ignore E501,F401,F841
 
   lint-frontend:
     name: Lint Frontend (JavaScript)
@@ -44,8 +48,9 @@ jobs:
       
       - name: Run ESLint
         working-directory: frontend
-        run: yarn lint --max-warnings=0 || true
-        # || true: don't fail CI on lint warnings initially
+        run: |
+          # Allow up to 50 warnings (gradual cleanup), block on errors
+          yarn lint --max-warnings=50
 
   test-backend:
     name: Test Backend (pytest)
