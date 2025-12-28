@@ -175,11 +175,36 @@ backend:
         agent: "testing"
         comment: "✅ Report structure validation working perfectly. All 11 sections in exact order, all required JSON keys present (player_id, name, age, gender, position, dominant_leg, mode, profile_label, weekly_sessions, total_weeks, benchmarks, safety_rules, sub_program, matches), sub_program has all 3 required keys (phases, weekly_microcycle, expanded_sections), expanded_sections has all 9 required keys (technical, tactical, possession, cardio, gym, speed_agility, mobility, recovery, prehab)"
 
+frontend:
+  - task: "Coach Portal Access & Authentication"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/coach/CoachDashboard.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: Coach Portal authentication flow has overlay interception problems. Modal dialogs prevent proper interaction with registration/login forms. Users cannot complete registration or login process due to persistent modal overlay blocking clicks. This blocks access to all coach features including drill upload."
+
+  - task: "Coach Drill Upload UI Components"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/coach/CoachDrillUpload.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "⚠️ CANNOT TEST: Unable to access Coach Drill Upload component due to authentication flow issues. Component code exists and appears well-structured with proper 2-step process (PDF upload → preview/edit → confirm), but cannot verify functionality without coach portal access."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1
-  run_ui: false
+  test_sequence: 2
+  run_ui: true
 
 test_plan:
   current_focus:
