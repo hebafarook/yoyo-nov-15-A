@@ -2367,6 +2367,14 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import dynamic training routes: {e}")
 
+# Import Training routes (refactored to service/repository pattern)
+try:
+    from routes.training_routes import router as training_router
+    api_router.include_router(training_router, prefix="/training", tags=["training"])
+    logging.info("✅ Training routes loaded successfully (refactored)")
+except ImportError as e:
+    logging.warning(f"Could not import Training routes: {e}")
+
 # Import VO2 routes (refactored to service/repository pattern)
 try:
     from routes.vo2_routes import router as vo2_router
@@ -2381,7 +2389,7 @@ try:
     api_router.include_router(progress_router, prefix="/progress", tags=["progress"])
     logging.info("✅ Progress routes loaded successfully (refactored)")
 except ImportError as e:
-    logging.warning(f"Could not import Progress routes: {e}")
+    logging.warning(f"Could not import Progress routes: {e})")
 
 # Import Assessment routes (refactored to service/repository pattern)
 try:
