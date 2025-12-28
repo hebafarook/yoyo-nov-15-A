@@ -1,83 +1,40 @@
 """
-Models Package Re-exports
-=========================
-
-Re-exports all models from the root models.py file to support
-both `from models import X` and `from models.X import Y` patterns.
+Models Package - Re-exports from root models.py
 """
 
-# Re-export everything from the root models.py
-import sys
-import os
-
-# Get the parent directory (backend)
-backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Import from models.py (the root file)
-sys.path.insert(0, backend_dir)
-
-from models import (
-    PlayerAssessment,
-    AssessmentCreate,
-    VO2MaxBenchmark,
-    VO2MaxBenchmarkCreate,
-    Exercise,
-    DailyRoutine,
-    ExerciseCompletion,
-    MicroCycle,
-    MacroCycle,
-    PeriodizedProgram,
-    DailyProgress,
-    PerformanceMetric,
-    WeeklyProgress,
-    TrainingProgram,
-    RetestSchedule,
-    PeriodizedProgramCreate,
-    ExerciseCompletionCreate,
-    DailyProgressCreate,
-    User,
-    UserCreate,
-    UserLogin,
-    SavedReport,
-    SavedReportCreate,
-    AssessmentBenchmark,
-    AssessmentBenchmarkCreate,
-    UserProfile,
-    NotificationPreferences,
-    CheckInOut,
-    TrainingProgramCreate,
-    WeeklyProgressCreate
-)
-
-__all__ = [
-    'PlayerAssessment',
-    'AssessmentCreate',
-    'VO2MaxBenchmark',
-    'VO2MaxBenchmarkCreate',
-    'Exercise',
-    'DailyRoutine',
-    'ExerciseCompletion',
-    'MicroCycle',
-    'MacroCycle',
-    'PeriodizedProgram',
-    'DailyProgress',
-    'PerformanceMetric',
-    'WeeklyProgress',
-    'TrainingProgram',
-    'RetestSchedule',
-    'PeriodizedProgramCreate',
-    'ExerciseCompletionCreate',
-    'DailyProgressCreate',
-    'User',
-    'UserCreate',
-    'UserLogin',
-    'SavedReport',
-    'SavedReportCreate',
-    'AssessmentBenchmark',
-    'AssessmentBenchmarkCreate',
-    'UserProfile',
-    'NotificationPreferences',
-    'CheckInOut',
-    'TrainingProgramCreate',
-    'WeeklyProgressCreate'
-]
+# Import specific models needed by routes
+# Using relative import to avoid circular issues
+try:
+    import importlib
+    _models = importlib.import_module('models')
+    
+    # Export all needed classes
+    User = _models.User
+    UserCreate = _models.UserCreate
+    UserLogin = _models.UserLogin
+    PlayerAssessment = _models.PlayerAssessment
+    AssessmentCreate = _models.AssessmentCreate
+    VO2MaxBenchmark = _models.VO2MaxBenchmark
+    VO2MaxBenchmarkCreate = _models.VO2MaxBenchmarkCreate
+    PeriodizedProgram = _models.PeriodizedProgram
+    DailyProgress = _models.DailyProgress
+    NotificationPreferences = _models.NotificationPreferences
+    SavedReport = _models.SavedReport
+    SavedReportCreate = _models.SavedReportCreate
+    TrainingProgram = _models.TrainingProgram
+    Exercise = _models.Exercise
+    DailyRoutine = _models.DailyRoutine
+    ExerciseCompletion = _models.ExerciseCompletion
+    MicroCycle = _models.MicroCycle
+    MacroCycle = _models.MacroCycle
+    PerformanceMetric = _models.PerformanceMetric
+    WeeklyProgress = _models.WeeklyProgress
+    RetestSchedule = _models.RetestSchedule
+    UserProfile = _models.UserProfile
+    CheckInOut = _models.CheckInOut
+    AssessmentBenchmark = _models.AssessmentBenchmark
+    
+except Exception as e:
+    # If import fails, don't break everything
+    import logging
+    logging.warning(f"Could not import from root models: {e}")
