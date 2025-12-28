@@ -382,6 +382,124 @@ class TestServiceSingleton:
 
 
 # ============================================================================
+# TEST: USER_ID LINKING (Bug Fix Verification)
+# ============================================================================
+
+class TestUserIdLinking:
+    """Test that assessments are properly linked to user_id from JWT."""
+    
+    @pytest.fixture
+    def mock_repo(self):
+        return MagicMock()
+    
+    @pytest.fixture
+    def service(self, mock_repo):
+        service = AssessmentService()
+        service.repository = mock_repo
+        return service
+    
+    @pytest.fixture
+    def sample_assessment_create(self):
+        """Sample assessment creation data."""
+        from models import AssessmentCreate
+        return AssessmentCreate(
+            player_name="john_doe",
+            age=17,
+            position="Midfielder",
+            sprint_30m=4.2,
+            yo_yo_test=1800,
+            vo2_max=55.0,
+            vertical_jump=50,
+            body_fat=12.0,
+            ball_control=4,
+            passing_accuracy=80,
+            dribbling_success=75,
+            shooting_accuracy=70,
+            defensive_duels=65,
+            game_intelligence=4,
+            positioning=4,
+            decision_making=4,
+            coachability=5,
+            mental_toughness=4
+        )
+    
+    @pytest.fixture
+    def current_user_player(self):
+        """Current user as player (JWT-derived)."""
+        return {
+            "role": "player",
+            "username": "john_doe",
+            "user_id": "user-abc-123"
+        }
+    
+    @pytest.fixture
+    def current_user_coach(self):
+        """Current user as coach (JWT-derived)."""
+        return {
+            "role": "coach",
+            "username": "coach_smith",
+            "user_id": "coach-xyz-789"
+        }
+    
+    @pytest.mark.asyncio
+    async def test_assessment_created_with_user_id(self, service, mock_repo, sample_assessment_create, current_user_player):
+        """Assessment should be created with user_id from JWT-derived current_user."""
+        mock_repo.create_assessment = AsyncMock(return_value={})
+        
+        result = await service.create_assessment(sample_assessment_create, current_user_player)
+        
+        # The returned PlayerAssessment should have user_id set
+        assert result.user_id == "user-abc-123"
+    
+    @pytest.mark.asyncio
+    async def test_assessment_saved_to_db_with_user_id(self, service, mock_repo, sample_assessment_create, current_user_player):
+        """The data saved to database should include user_id."""
+        mock_repo.create_assessment = AsyncMock(return_value={})
+        
+        await service.create_assessment(sample_assessment_create, current_user_player)
+        
+        # Verify the repository was called with data including user_id
+        call_args = mock_repo.create_assessment.call_args
+        saved_data = call_args[0][0]
+        
+        assert saved_data['user_id'] == "user-abc-123"
+        assert saved_data['created_by_username'] == "john_doe"
+    
+    @pytest.mark.asyncio
+    async def test_coach_creating_assessment_links_their_user_id(self, service, mock_repo, sample_assessment_create, current_user_coach):
+        """When coach creates assessment, their user_id should be linked."""
+        # Coach needs to have managed_players
+        mock_repo.find_user_by_id = AsyncMock(return_value={
+            "id": "coach-xyz-789",
+            "managed_players": ["john_doe"]
+        })
+        mock_repo.create_assessment = AsyncMock(return_value={})
+        
+        result = await service.create_assessment(sample_assessment_create, current_user_coach)
+        
+        # The coach's user_id should be linked
+        assert result.user_id == "coach-xyz-789"
+    
+    @pytest.mark.asyncio
+    async def test_missing_user_id_handled_gracefully(self, service, mock_repo, sample_assessment_create):
+        """Should handle missing user_id gracefully (backward compatibility)."""
+        mock_repo.create_assessment = AsyncMock(return_value={})
+        
+        # current_user without user_id (edge case)
+        current_user_no_id = {
+            "role": "player",
+            "username": "john_doe"
+            # user_id missing
+        }
+        
+        result = await service.create_assessment(sample_assessment_create, current_user_no_id)
+        
+        # Should still create assessment, user_id will be None
+        assert result.user_id is None
+        assert result.player_name == "john_doe"
+
+
+# ============================================================================
 # RUN TESTS
 # ============================================================================
 
