@@ -28,8 +28,8 @@ logger = logging.getLogger(__name__)
 
 security = HTTPBearer()
 
-# JWT Configuration - same as auth_routes.py
-JWT_SECRET = os.environ.get('JWT_SECRET', 'your-secret-key-change-in-production')
+# JWT Configuration - same as .env
+JWT_SECRET = os.environ.get('JWT_SECRET', 'elite-soccer-ai-coach-secret-key-2024-change-in-production')
 JWT_ALGORITHM = 'HS256'
 
 
