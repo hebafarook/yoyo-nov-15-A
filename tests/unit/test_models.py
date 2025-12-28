@@ -133,6 +133,7 @@ class TestUserModels:
         assert "email" in str(exc_info.value).lower()
 
 
+@pytest.mark.unit
 class TestAssessmentModels:
     """Test assessment domain model validation."""
     
