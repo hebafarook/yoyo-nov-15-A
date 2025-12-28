@@ -215,8 +215,6 @@ class TestDrillPDFParser:
     
     def test_infer_duration(self):
         """Test duration extraction."""
-        from services.drill_pdf_parser import DrillPDFParser
-        
         parser = DrillPDFParser()
         
         assert parser.infer_duration("Duration: 15 minutes") == 15
