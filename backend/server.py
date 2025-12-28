@@ -2350,6 +2350,14 @@ try:
 except ImportError as e:
     logging.warning(f"Could not import admin routes: {e}")
 
+# Import Admin Drills routes
+try:
+    from routes.admin_drills_routes import router as admin_drills_router
+    api_router.include_router(admin_drills_router, tags=["admin-drills"])
+    logging.info("✅ Admin Drills routes loaded successfully")
+except ImportError as e:
+    logging.warning(f"Could not import admin drills routes: {e}")
+
 # Import Report Generation routes
 try:
     from routes.report_generation_routes import router as report_gen_router
