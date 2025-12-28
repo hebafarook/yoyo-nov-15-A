@@ -108,6 +108,7 @@ class TestPeriodizedPrograms:
         return PeriodizedProgramCreate(
             player_id="test_player",
             program_name="Test Program",
+            total_duration_weeks=12,
             assessment_interval_weeks=6,
             program_objectives=["Improve speed", "Better passing"]
         )
