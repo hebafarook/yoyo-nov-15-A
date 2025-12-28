@@ -25,7 +25,7 @@ from typing import Dict, Any, Optional
 from datetime import datetime
 
 # Backend URL from environment
-BACKEND_URL = "https://soccer-onboarding.preview.emergentagent.com"
+BACKEND_URL = "https://soccerpro-api.preview.emergentagent.com"
 API_BASE = f"{BACKEND_URL}/api"
 
 # Test credentials
