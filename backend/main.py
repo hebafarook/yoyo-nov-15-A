@@ -56,7 +56,7 @@ from utils.llm_integration import generate_training_program
 # Include all routers
 api_router.include_router(assessment_router, prefix="/assessments", tags=["assessments"])
 api_router.include_router(training_router, prefix="/training", tags=["training"])
-api_router.include_router(vo2_router, prefix="/vo2", tags=["vo2-benchmarks"])
+api_router.include_router(vo2_router, prefix="/vo2-benchmarks", tags=["vo2-benchmarks"])
 api_router.include_router(progress_router, prefix="/progress", tags=["progress"])
 api_router.include_router(auth_router, prefix="/auth", tags=["authentication"])
 
