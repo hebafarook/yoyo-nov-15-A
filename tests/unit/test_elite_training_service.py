@@ -91,16 +91,10 @@ def sample_previous_load():
     from elite_training_system import PreviousLoad
     return PreviousLoad(
         acwr=1.1,
-        chronic_load=2500,
-        acute_load=2750,
-        total_distance_m=8500,
-        hsr_distance_m=850,
-        sprint_distance_m=250,
-        accelerations=45,
-        decelerations=42,
         rpe_avg=6.5,
-        training_duration_min=75,
-        days_since_match=3
+        total_distance_m=8500,
+        sprint_count=25,
+        hsr_m=850
     )
 
 
@@ -110,11 +104,9 @@ def sample_match_schedule():
     from elite_training_system import MatchSchedule
     return MatchSchedule(
         days_to_next_match=4,
-        opponent_quality="high",
-        match_importance="league",
-        home_away="home",
-        expected_minutes=90,
-        travel_required=False
+        matches_this_week=2,
+        opponent="Team A",
+        match_importance=4
     )
 
 
