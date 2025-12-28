@@ -7,6 +7,7 @@ import CoachPlayerProfile from './CoachPlayerProfile';
 import CoachAssessmentManagement from './CoachAssessmentManagement';
 import CoachAssessmentReport from './CoachAssessmentReport';
 import CoachDrillLibrary from './CoachDrillLibrary';
+import CoachDrillUpload from './CoachDrillUpload';
 import CoachAITrainingGenerator from './CoachAITrainingGenerator';
 import CoachTeamManagement from './CoachTeamManagement';
 import CoachRecovery from './CoachRecovery';
@@ -14,7 +15,7 @@ import CoachMessages from './CoachMessages';
 import CoachSettings from './CoachSettings';
 import { 
   Home, Users, FileText, Activity, Book, Zap, Shield, MessageSquare, 
-  Settings, Bell, Search, Menu, X, Heart, LogOut 
+  Settings, Bell, Search, Menu, X, Heart, LogOut, Upload 
 } from 'lucide-react';
 
 const CoachDashboard = () => {
