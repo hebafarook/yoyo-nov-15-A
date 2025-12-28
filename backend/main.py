@@ -91,15 +91,6 @@ async def root():
 # Include the API router
 app.include_router(api_router)
 
-# Global exception handler
-@app.exception_handler(Exception)
-async def global_exception_handler(request, exc):
-    logger.error(f"Global exception handler caught: {exc}")
-    return HTTPException(
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        detail="An internal server error occurred"
-    )
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
