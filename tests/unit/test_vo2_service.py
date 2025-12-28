@@ -272,22 +272,32 @@ class TestBenchmarkCRUD:
         service.repository = mock_repo
         return service
     
+    @pytest.fixture
+    def sample_benchmark_dict(self):
+        """Sample benchmark data matching model requirements."""
+        return {
+            "id": "test-id",
+            "player_id": "player-123",
+            "vo2_max": 45.5,
+            "calculation_inputs": {
+                "age": 25,
+                "gender": "male",
+                "resting_heart_rate": 60,
+                "max_heart_rate": 180
+            },
+            "calculation_method": "ACSM",
+            "fitness_level": "Good"
+        }
+    
     @pytest.mark.asyncio
-    async def test_create_benchmark(self, service, mock_repo):
+    async def test_create_benchmark(self, service, mock_repo, sample_benchmark_dict):
         """Test creating a benchmark."""
         from models import VO2MaxBenchmarkCreate
         
-        mock_repo.create_benchmark = AsyncMock(return_value={
-            "id": "test-id",
-            "player_id": "player-123",
-            "vo2_max": 45.5
-        })
+        mock_repo.create_benchmark = AsyncMock(return_value=sample_benchmark_dict)
         
         benchmark_data = MagicMock(spec=VO2MaxBenchmarkCreate)
-        benchmark_data.dict.return_value = {
-            "player_id": "player-123",
-            "vo2_max": 45.5
-        }
+        benchmark_data.dict.return_value = sample_benchmark_dict
         benchmark_data.player_id = "player-123"
         
         result = await service.create_benchmark(benchmark_data)
@@ -295,11 +305,11 @@ class TestBenchmarkCRUD:
         mock_repo.create_benchmark.assert_called_once()
     
     @pytest.mark.asyncio
-    async def test_get_benchmarks_by_player(self, service, mock_repo):
+    async def test_get_benchmarks_by_player(self, service, mock_repo, sample_benchmark_dict):
         """Test getting benchmarks for a player."""
         mock_repo.find_by_player_id = AsyncMock(return_value=[
-            {"id": "b1", "player_id": "p1", "vo2_max": 45.0},
-            {"id": "b2", "player_id": "p1", "vo2_max": 46.0}
+            sample_benchmark_dict,
+            {**sample_benchmark_dict, "id": "test-id-2", "vo2_max": 46.0}
         ])
         
         results = await service.get_benchmarks_by_player("p1")
@@ -308,11 +318,9 @@ class TestBenchmarkCRUD:
         assert len(results) == 2
     
     @pytest.mark.asyncio
-    async def test_get_latest_benchmark_found(self, service, mock_repo):
+    async def test_get_latest_benchmark_found(self, service, mock_repo, sample_benchmark_dict):
         """Test getting latest benchmark when it exists."""
-        mock_repo.find_latest_by_player_id = AsyncMock(return_value={
-            "id": "b1", "player_id": "p1", "vo2_max": 45.0
-        })
+        mock_repo.find_latest_by_player_id = AsyncMock(return_value=sample_benchmark_dict)
         
         result = await service.get_latest_benchmark("p1")
         
