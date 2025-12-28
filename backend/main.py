@@ -33,6 +33,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Register central error handlers
+from utils.error_handlers import register_exception_handlers
+register_exception_handlers(app)
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
