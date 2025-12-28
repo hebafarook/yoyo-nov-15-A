@@ -533,7 +533,8 @@ class YoYoReportV2Formatter:
         position = (self.assessment.get('position') or self.user.get('position') or "").lower()
         mode = self.training_program.get('mode') or self.user.get('training_mode')
         if not mode:
-            mode = "GK" if ("goalkeeper" in position or "gk" in position) else "FIELD"
+            gk_keywords = ["goalkeeper", "gk", "keeper", "goalie", "portero", "gardien"]
+            mode = "GK" if any(kw in position for kw in gk_keywords) else "FIELD"
         
         # Build sub_program from existing training data
         existing_phases = _safe_get(self.generated_report, 'development_roadmap') or {}
