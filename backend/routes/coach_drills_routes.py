@@ -25,7 +25,7 @@ from models.drill_candidate_models import (
     DrillConfirmRequest,
     DrillConfirmResponse
 )
-from services.drill_pdf_parser import get_drill_pdf_parser
+from services.drill_pdf_parser import get_drill_pdf_parser, DrillPDFParser
 from repositories.drill_repository import get_drill_repository
 
 router = APIRouter(prefix="/coach/drills", tags=["coach-drills"])
