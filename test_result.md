@@ -208,12 +208,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "YoYo Report v2 API - Full Report Endpoint"
-    - "YoYo Report v2 API - Sections Only Endpoint"
-    - "YoYo Report v2 API - JSON Only Endpoint"
-    - "YoYo Report v2 API - Authentication Protection"
-    - "YoYo Report v2 API - Data Structure Validation"
-  stuck_tasks: []
+    - "Coach Portal Access & Authentication"
+    - "Coach Drill Upload UI Components"
+  stuck_tasks:
+    - "Coach Portal Access & Authentication"
   test_all: false
   test_priority: "high_first"
 
@@ -226,6 +224,8 @@ agent_communication:
     message: "✅ COACH PDF DRILL UPLOAD TESTING COMPLETED: Comprehensive testing of all 3 coach drill endpoints with 24 test cases achieved 100% success rate. Key findings: 1) Authentication working perfectly - all endpoints properly protected (No token→403, Player token→403, Coach/Admin token→200), 2) File validation robust (Non-PDF→400, Empty file→400, Valid PDF→200), 3) PDF parsing successful - extracted 3 drill candidates from test PDF with proper structure (raw_text, needs_review, confidence), 4) All-or-none validation confirmed (Invalid section→422, Duplicate drill_ids→422, Valid drills→200), 5) Upsert functionality working (Total: 2, Inserted: 2, Updated: 0), 6) Sections endpoint returns 9 valid sections and 3 intensities for frontend dropdown. The 2-step coach drill upload process (preview → confirm) is working perfectly with NO DB writes during preview phase."
   - agent: "testing"
     message: "✅ TRAINING PROGRAM SAFETY & DRILL ENFORCEMENT SYSTEM TESTING COMPLETED: Comprehensive testing of all safety system components achieved 100% success rate with all 30 unit tests passing. Key findings: 1) Safety Status Computation working correctly - HEALTHY→GREEN, SEVERE→RED, ACWR>1.8→RED, ACL injury→RED, high fatigue→YELLOW, 2) Allowed Elements Generation properly restricts activities - RED status: 0 sprint days, no plyometrics/contact, low intensity only; YELLOW status: ≤1 sprint day, ≤2 hard days, moderate intensity max; GREEN status: full training allowed, 3) Age-based limits enforced - under 14: max 1 sprint day/week, 14+: max 2 sprint days/week, 4) Coach override restrictions working - can only make status MORE restrictive (GREEN→YELLOW allowed, RED→GREEN blocked), 5) Post-generation validation catches unsafe programs - RED status rejects full training, excessive sprint days flagged, insufficient warmup detected, 6) Post-generation sanitization fixes unsafe plans - RED converts to recovery-only, age limits enforced, contraindications filtered, 7) ALL CRITICAL SCENARIOS VERIFIED - ACL injury blocks plyometrics/contact/sprints, critical ACWR triggers RED regardless of injury status, under 14 cannot exceed sprint limits, coach cannot bypass safety rules. The safety system successfully ensures PLAYER SAFETY IS THE TOP PRIORITY and unsafe training plans CANNOT pass the validation and sanitization layers."
+  - agent: "testing"
+    message: "❌ COACH PORTAL UI TESTING FAILED: Critical authentication flow issues prevent access to coach features. Key problems: 1) Modal overlay interception - persistent modal dialogs block user interactions with registration/login forms, 2) Registration process fails - users cannot complete coach account creation, 3) Login process blocked - existing coach credentials cannot be used due to modal overlay issues, 4) Coach Drill Upload component cannot be tested - well-structured code exists but inaccessible due to auth flow problems. IMPACT: Coach Portal is effectively unusable for end users. Backend APIs work perfectly but frontend authentication flow is broken."
 
 ## Test Summary
 ✅ YoYo Report v2 API testing completed successfully with 100% pass rate.
