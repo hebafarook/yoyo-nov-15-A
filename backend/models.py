@@ -62,26 +62,29 @@ class AssessmentCreate(BaseModel):
     user_id: Optional[str] = None  # User creating this assessment
     player_name: str
     age: int
-    position: str
+    position: str = "midfielder"
     # Physical metrics
-    sprint_30m: float
-    yo_yo_test: int
-    vo2_max: float
-    vertical_jump: int
-    body_fat: float
+    sprint_30m: Optional[float] = None
+    yo_yo_test: Optional[int] = None
+    vo2_max: Optional[float] = None
+    vertical_jump: Optional[int] = None
+    body_fat: Optional[float] = None
     # Technical metrics
-    ball_control: int
-    passing_accuracy: float
-    dribbling_success: float
-    shooting_accuracy: float
-    defensive_duels: float
+    ball_control: Optional[int] = None
+    passing_accuracy: Optional[float] = None
+    dribbling_success: Optional[float] = None
+    shooting_accuracy: Optional[float] = None
+    defensive_duels: Optional[float] = None
     # Tactical metrics
-    game_intelligence: int
-    positioning: int
-    decision_making: int
+    game_intelligence: Optional[int] = None
+    positioning: Optional[int] = None
+    decision_making: Optional[int] = None
     # Psychological metrics
-    coachability: int
-    mental_toughness: int
+    coachability: Optional[int] = None
+    mental_toughness: Optional[int] = None
+    # Optional fields
+    height_cm: Optional[float] = None
+    weight_kg: Optional[float] = None
 
 # ============ VO2 MAX BENCHMARK MODELS ============
 class VO2MaxBenchmark(BaseModel):
