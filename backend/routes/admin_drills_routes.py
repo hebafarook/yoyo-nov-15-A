@@ -10,6 +10,8 @@ from fastapi import APIRouter, HTTPException, Depends, Query, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from typing import Optional, List
 import logging
+import jwt
+import os
 
 from models.drill_models import (
     DrillItem,
@@ -20,12 +22,53 @@ from models.drill_models import (
 )
 from repositories.drill_repository import get_drill_repository, DrillRepository
 from providers.drill_provider import get_drill_provider, DrillProvider
-from routes.auth_routes import verify_token
 
 router = APIRouter(prefix="/admin/drills", tags=["admin-drills"])
 logger = logging.getLogger(__name__)
 
 security = HTTPBearer()
+
+# JWT Configuration - same as auth_routes.py
+JWT_SECRET = os.environ.get('JWT_SECRET', 'your-secret-key-change-in-production')
+JWT_ALGORITHM = 'HS256'
+
+
+def verify_token(credentials: HTTPAuthorizationCredentials) -> dict:
+    """
+    Verify JWT token and extract user information.
+    
+    Returns:
+        Dict with user_id, username, and role
+    
+    Raises:
+        HTTPException 401: If token is invalid or expired
+    """
+    try:
+        token = credentials.credentials
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        
+        user_id = payload.get('user_id') or payload.get('sub')
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token: missing user_id"
+            )
+        
+        return {
+            'user_id': user_id,
+            'username': payload.get('username', ''),
+            'role': payload.get('role', 'player')
+        }
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired"
+        )
+    except jwt.InvalidTokenError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Invalid token: {str(e)}"
+        )
 
 
 # =============================================================================
