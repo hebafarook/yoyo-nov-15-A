@@ -1,6 +1,6 @@
 """Report repository for data access."""
 
-from typing import List
+from typing import List, Optional
 from .base import BaseRepository
 from utils.database import db
 
