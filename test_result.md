@@ -12,6 +12,9 @@ backend:
       - working: true
         agent: "main"
         comment: "✅ Admin auth tested: No token→403, Non-admin→403, Admin→200"
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE TESTING COMPLETED: All 5 admin drill endpoints tested with 23 test cases, 100% pass rate. Authentication working perfectly: No token→403, Player/Coach tokens→403, Admin token→200. All endpoints properly protected."
 
   - task: "Admin Drill Upload - Validation & Upsert"
     implemented: true
@@ -24,6 +27,9 @@ backend:
       - working: true
         agent: "main"
         comment: "✅ Validation: Duplicate IDs→422, Invalid section→422. Upsert: Same ID updates existing drill"
+      - working: true
+        agent: "testing"
+        comment: "✅ VALIDATION & UPSERT VERIFIED: Empty drills list→422, Duplicate drill_ids→422, Invalid section→422, Valid 3 drills→200. Upsert behavior confirmed: First upload→uploaded_count=1, Second upload same ID→updated_count=1, uploaded_count=0."
 
   - task: "Admin Drill Upload - Stats & List Endpoints"
     implemented: true
@@ -36,6 +42,9 @@ backend:
       - working: true
         agent: "main"
         comment: "✅ GET /api/admin/drills/stats returns db_count, static_count, source_mode, active_source. GET /api/admin/drills lists all drills with filters"
+      - working: true
+        agent: "testing"
+        comment: "✅ ALL ENDPOINTS VERIFIED: GET /api/admin/drills/stats returns all required keys (db_count=8, static_count=9, source_mode=auto, active_source=database). GET /api/admin/drills works with filters (total=8, drills returned correctly). GET /api/admin/drills/{drill_id} retrieves single drills. DELETE /api/admin/drills/{drill_id} supports both soft and hard delete."
 
   - task: "Drill Provider - DB-First with Fallback"
     implemented: true
