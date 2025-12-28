@@ -25,6 +25,7 @@ security = HTTPBearer()
 
 
 @router.post("/", response_model=PlayerAssessment)
+@router.post("", response_model=PlayerAssessment, include_in_schema=False)
 async def create_assessment(
     assessment: AssessmentCreate,
     credentials: HTTPAuthorizationCredentials = Depends(security)
