@@ -583,7 +583,7 @@ const CoachDrillUpload = () => {
           <li>Upload a PDF containing your training drills</li>
           <li>The system will automatically parse and extract drill information</li>
           <li>Review the parsed drills and edit any fields that need correction</li>
-          <li>Click "Confirm & Save" to add the drills to your library</li>
+          <li>Click &quot;Confirm &amp; Save&quot; to add the drills to your library</li>
         </ol>
         <p className="text-sm text-blue-600 mt-2 italic">
           Note: All drills are saved by ID. Uploading a drill with the same ID will update the existing drill.
