@@ -69,6 +69,9 @@ backend:
       - working: true
         agent: "main"
         comment: "✅ Full safety system implemented: SafetyStatus computation, AllowedElements generation, coach override (safer only), post-generation validation & sanitization. 30 unit tests proving unsafe plans CANNOT pass."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE SAFETY SYSTEM TESTING COMPLETED: All 30 unit tests passed with 100% success rate. Key findings: 1) Safety Status Computation working correctly (HEALTHY→GREEN, SEVERE→RED, ACWR>1.8→RED, ACL injury→RED), 2) Allowed Elements Generation properly restricts activities (RED: 0 sprint days, no plyometrics/contact; YELLOW: ≤1 sprint day, ≤2 hard days; GREEN: full training), 3) Age-based limits enforced (under 14: max 1 sprint day/week), 4) Coach override only allows MORE restrictive changes (RED→GREEN blocked), 5) Post-generation validation catches unsafe programs, 6) Post-generation sanitization converts unsafe plans to recovery-only, 7) ALL CRITICAL SCENARIOS VERIFIED: ACL injury blocks high-risk activities, critical ACWR triggers RED regardless of injury status, under 14 cannot exceed sprint limits, coach cannot bypass safety. The safety system successfully ensures PLAYER SAFETY IS THE TOP PRIORITY and unsafe training plans CANNOT pass."
 
   - task: "Coach PDF Drill Upload - Preview"
     implemented: true
