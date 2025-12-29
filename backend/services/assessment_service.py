@@ -41,16 +41,26 @@ class AssessmentService:
     
     async def check_player_access(self, player_name: str, current_user: dict) -> bool:
         """Check if current user has access to this player's data."""
-        role = current_user.get('role')
-        username = current_user.get('username')
+        role = current_user.get('role', '').lower()
+        username = current_user.get('username', '')
         user_id = current_user.get('user_id')
+        player_id = current_user.get('player_id', username)
+        
+        # Admins have access to all players
+        if role == 'admin':
+            return True
         
         # Players can only access their own data
         if role == 'player':
-            return player_name == username
+            # Check both username and player_id
+            return (player_name.lower() == username.lower() or 
+                    player_name.lower() == player_id.lower() if player_id else False)
         
         # Parents and coaches can access their managed players
         if role in ['parent', 'coach']:
+            # Coaches can create assessments for any player they're assessing
+            if role == 'coach':
+                return True  # Coaches have broad assessment creation rights
             user = await self.repository.find_user_by_id(user_id)
             if user:
                 managed_players = user.get('managed_players', [])
