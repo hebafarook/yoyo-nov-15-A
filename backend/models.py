@@ -9,35 +9,35 @@ class PlayerAssessment(BaseModel):
     user_id: Optional[str] = None  # User who created this assessment
     player_name: str
     age: int
-    position: str
+    position: str = "midfielder"
     
     # Physical measurements (optional)
     height_cm: Optional[float] = None
     weight_kg: Optional[float] = None
     bmi: Optional[float] = None
     
-    # PHYSICAL PERFORMANCE METRICS (20% weight)
-    sprint_30m: float  # seconds - 30m sprint test
-    yo_yo_test: int  # meters - Yo-Yo Intermittent Recovery Test  
-    vo2_max: float  # ml/kg/min - Maximum oxygen uptake
-    vertical_jump: int  # cm - Countermovement jump height
-    body_fat: float  # percentage - Body fat percentage
+    # PHYSICAL PERFORMANCE METRICS (20% weight) - All optional
+    sprint_30m: Optional[float] = None  # seconds - 30m sprint test
+    yo_yo_test: Optional[int] = None  # meters - Yo-Yo Intermittent Recovery Test  
+    vo2_max: Optional[float] = None  # ml/kg/min - Maximum oxygen uptake
+    vertical_jump: Optional[int] = None  # cm - Countermovement jump height
+    body_fat: Optional[float] = None  # percentage - Body fat percentage
     
-    # TECHNICAL SKILLS METRICS (40% weight)
-    ball_control: int  # 1-5 scale - First touch and ball manipulation under pressure
-    passing_accuracy: float  # percentage - Successful passes to target under pressure
-    dribbling_success: float  # percentage - Successful 1v1 dribbling attempts
-    shooting_accuracy: float  # percentage - Shots on target from various positions
-    defensive_duels: float  # percentage - Defensive actions won
+    # TECHNICAL SKILLS METRICS (40% weight) - All optional
+    ball_control: Optional[int] = None  # 1-5 scale - First touch and ball manipulation under pressure
+    passing_accuracy: Optional[float] = None  # percentage - Successful passes to target under pressure
+    dribbling_success: Optional[float] = None  # percentage - Successful 1v1 dribbling attempts
+    shooting_accuracy: Optional[float] = None  # percentage - Shots on target from various positions
+    defensive_duels: Optional[float] = None  # percentage - Defensive actions won
     
-    # TACTICAL AWARENESS METRICS (30% weight)
-    game_intelligence: int  # 1-5 scale - Reading game situations and making smart decisions
-    positioning: int  # 1-5 scale - Proper positioning for role
-    decision_making: int  # 1-5 scale - Quality of decisions under pressure
+    # TACTICAL AWARENESS METRICS (30% weight) - All optional
+    game_intelligence: Optional[int] = None  # 1-5 scale - Reading game situations and making smart decisions
+    positioning: Optional[int] = None  # 1-5 scale - Proper positioning for role
+    decision_making: Optional[int] = None  # 1-5 scale - Quality of decisions under pressure
     
-    # PSYCHOLOGICAL METRICS (10% weight)
-    coachability: int  # 1-5 scale - Willingness to learn and apply feedback
-    mental_toughness: int  # 1-5 scale - Performance under pressure
+    # PSYCHOLOGICAL METRICS (10% weight) - All optional
+    coachability: Optional[int] = None  # 1-5 scale - Willingness to learn and apply feedback
+    mental_toughness: Optional[int] = None  # 1-5 scale - Performance under pressure
     
     # METADATA
     overall_score: Optional[float] = None
